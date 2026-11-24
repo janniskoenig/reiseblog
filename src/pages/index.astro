@@ -1,0 +1,33 @@
+---
+import Basis from '../layouts/Basis.astro';
+import BerichtKarte from '../components/BerichtKarte.astro';
+import Karte from '../components/Karte.astro';
+import { berichte, url } from '../lib';
+
+const alle = await berichte();
+const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: url(`/berichte/${b.id}/`) })));
+---
+<Basis titel="Reiseblog" beschreibung="Reise- und Outdoor-Berichte mit Karten und Bildern">
+  <section class="intro wrap">
+    <h1>Unterwegs</h1>
+    <!-- TODO: ein, zwei Sätze über dich und den Blog -->
+    <p class="muted">Berichte, Karten und Bilder von Reisen und Touren.</p>
+  </section>
+  <section class="wrap">
+    <h2>Neueste Berichte</h2>
+    {alle.length ? <div class="cards">{alle.slice(0, 6).map((b) => <BerichtKarte bericht={b} />)}</div>
+                 : <p class="muted">Noch keine Berichte.</p>}
+    <p><a href={url('/berichte/')}>Alle Berichte →</a></p>
+  </section>
+  {orte.length > 0 && (
+    <section class="wrap">
+      <h2>Wo wir unterwegs waren</h2>
+      <Karte orte={orte} hoehe="50vh" />
+    </section>
+  )}
+</Basis>
+<style>
+  .intro { padding-block: 3rem 1rem; }
+  .intro h1 { font-size: clamp(2rem, 6vw, 3.2rem); margin: 0 0 .5rem; }
+  section { margin-bottom: 2.5rem; }
+</style>

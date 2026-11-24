@@ -1,0 +1,20 @@
+---
+import Basis from '../../layouts/Basis.astro';
+import BerichtKarte from '../../components/BerichtKarte.astro';
+import { berichte } from '../../lib';
+
+const alle = await berichte();
+const reisen = [...new Set(alle.map((b) => b.data.reise))];
+---
+<Basis titel="Berichte">
+  <div class="wrap">
+    <h1>Berichte</h1>
+    {reisen.map((r) => (
+      <section>
+        <h2>{r}</h2>
+        <div class="cards">{alle.filter((b) => b.data.reise === r).map((b) => <BerichtKarte bericht={b} />)}</div>
+      </section>
+    ))}
+  </div>
+</Basis>
+<style>section { margin-bottom: 3rem; }</style>

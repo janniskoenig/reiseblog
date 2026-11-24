@@ -1,0 +1,51 @@
+---
+import Basis from '../layouts/Basis.astro';
+import { berichte } from '../lib';
+
+// Platzhalter: summiert nur die Werte, die du in den Berichten unter
+// `statistik` selbst einträgst. Später können GPX-, Strava- oder Komoot-Daten folgen.
+const alle = await berichte();
+const summe = (k: 'km' | 'hoehenmeter' | 'naechte') => {
+  const werte = alle.map((b) => b.data.statistik[k]).filter((v): v is number => typeof v === 'number');
+  return werte.length ? werte.reduce((a, b) => a + b, 0) : undefined;
+};
+const laender = new Set(alle.map((b) => b.data.statistik.land).filter(Boolean));
+const fmt = (n?: number) => (n === undefined ? '–' : n.toLocaleString('de-DE'));
+const kacheln = [
+  { wert: fmt(alle.length), text: 'Berichte' },
+  { wert: fmt(laender.size || undefined), text: 'Länder' },
+  { wert: fmt(summe('km')), text: 'Kilometer' },
+  { wert: fmt(summe('hoehenmeter')), text: 'Höhenmeter' },
+  { wert: fmt(summe('naechte')), text: 'Nächte unterwegs' },
+];
+---
+<Basis titel="Dashboard" beschreibung="Statistiken zu Reisen und Touren">
+  <div class="wrap">
+    <h1>Dashboard</h1>
+    <p class="muted">Erste Version: Die Zahlen stammen aus den Angaben in den Berichten. Felder ohne Angabe zeigen „–“.</p>
+    <ul class="tiles">
+      {kacheln.map((k) => <li><span class="wert">{k.wert}</span><span class="text">{k.text}</span></li>)}
+    </ul>
+    <h2>Je Bericht</h2>
+    <div class="tabelle">
+      <table>
+        <thead><tr><th>Bericht</th><th>Land</th><th>km</th><th>Hm</th><th>Nächte</th></tr></thead>
+        <tbody>
+          {alle.map((b) => (
+            <tr><td>{b.data.titel}</td><td>{b.data.statistik.land ?? '–'}</td><td>{fmt(b.data.statistik.km)}</td><td>{fmt(b.data.statistik.hoehenmeter)}</td><td>{fmt(b.data.statistik.naechte)}</td></tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </div>
+</Basis>
+<style>
+  .tiles { list-style: none; padding: 0; display: grid; gap: .75rem; grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr)); }
+  .tiles li { background: var(--card); box-shadow: var(--shadow); border-radius: var(--radius); padding: 1rem; display: flex; flex-direction: column; }
+  .wert { font-size: 1.8rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .text { color: var(--muted); font-size: .9rem; }
+  .tabelle { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+  th, td { text-align: left; padding: .5rem .6rem; border-bottom: 1px solid var(--line); }
+  td:nth-child(n+3), th:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
+</style>

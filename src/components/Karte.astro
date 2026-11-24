@@ -1,0 +1,63 @@
+---
+// Interaktive Karte (Leaflet + OpenTopoMap). Zeigt Orte als Punkte und
+// GPX-Tracks als Linien; Länge und Höhenmeter werden aus der GPX-Datei berechnet.
+interface Ort { name: string; lat: number; lng: number; link?: string }
+interface Props { orte?: Ort[]; gpx?: string[]; hoehe?: string; linie?: boolean }
+const { orte = [], gpx = [], hoehe, linie = false } = Astro.props;
+---
+<div class="map" data-orte={JSON.stringify(orte)} data-gpx={JSON.stringify(gpx)} data-linie={linie ? '1' : ''} style={hoehe ? `height:${hoehe}` : undefined}></div>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+
+  const akzent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#b5651d';
+
+  function distanz(a: L.LatLng, b: L.LatLng) { return a.distanceTo(b); }
+
+  async function ladeGpx(map: L.Map, pfad: string, grenzen: L.LatLngBounds) {
+    const xml = new DOMParser().parseFromString(await (await fetch(pfad)).text(), 'application/xml');
+    const punkte = [...xml.querySelectorAll('trkpt, rtept')];
+    const ll = punkte.map((p) => L.latLng(+p.getAttribute('lat')!, +p.getAttribute('lon')!));
+    if (!ll.length) return;
+    // Höhenmeter mit 5-m-Schwelle, damit GPS-Rauschen nicht mitgezählt wird.
+    let m = 0, auf = 0, letzteHoehe: number | undefined;
+    punkte.forEach((p, i) => {
+      if (i) m += distanz(ll[i - 1], ll[i]);
+      const e = p.querySelector('ele'); if (!e) return;
+      const h = parseFloat(e.textContent!);
+      if (letzteHoehe === undefined || h < letzteHoehe) letzteHoehe = h;
+      else if (h - letzteHoehe >= 5) { auf += h - letzteHoehe; letzteHoehe = h; }
+    });
+    const name = xml.querySelector('trk > name, rte > name')?.textContent ?? pfad.split('/').pop();
+    const info = `<strong>${name}</strong><br>${(m / 1000).toFixed(1).replace('.', ',')} km` +
+      (letzteHoehe !== undefined ? ` · ${Math.round(auf)} Hm` : '');
+    const line = L.polyline(ll, { color: akzent, weight: 4, opacity: .9 }).addTo(map).bindPopup(info);
+    line.on('mouseover', () => line.setStyle({ weight: 7 }));
+    line.on('mouseout', () => line.setStyle({ weight: 4 }));
+    grenzen.extend(line.getBounds());
+    map.fitBounds(grenzen, { padding: [30, 30] });
+  }
+
+  document.querySelectorAll<HTMLElement>('.map').forEach((el) => {
+    const orte = JSON.parse(el.dataset.orte || '[]');
+    const gpx: string[] = JSON.parse(el.dataset.gpx || '[]');
+    const map = L.map(el, { scrollWheelZoom: false });
+    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
+      maxZoom: 17,
+      attribution: 'Karte: © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA), Daten: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende',
+    }).addTo(map);
+    L.control.scale({ imperial: false }).addTo(map);
+    const grenzen = L.latLngBounds([]);
+    const pts = orte.map((o: any) => {
+      const p = L.latLng(o.lat, o.lng); grenzen.extend(p);
+      const label = o.link ? `<a href="${o.link}">${o.name}</a>` : o.name;
+      L.circleMarker(p, { radius: 6, color: '#fff', weight: 2, fillColor: akzent, fillOpacity: 1 }).addTo(map).bindPopup(label);
+      return p;
+    });
+    if (el.dataset.linie && pts.length > 1) L.polyline(pts, { color: akzent, weight: 2, dashArray: '4 6' }).addTo(map);
+    if (grenzen.isValid()) map.fitBounds(grenzen, { padding: [30, 30], maxZoom: 12 });
+    else map.setView([47.5, 11], 5);
+    gpx.forEach((g) => ladeGpx(map, g, grenzen).catch((err) => console.warn('GPX nicht geladen:', g, err)));
+  });
+</script>

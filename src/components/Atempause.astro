@@ -1,0 +1,32 @@
+---
+// Atempause: Stimmungsfoto als breiter Streifen zwischen zwei Abschnitten
+// (Variante „Letterbox“). Blendet scrollgekoppelt von unten ein.
+interface Props { bild: string; alt?: string; unterschrift?: string }
+const { bild, alt = '', unterschrift } = Astro.props;
+---
+<figure class="atempause">
+  <img src={bild} alt={alt} loading="lazy" />
+  {unterschrift && <figcaption>{unterschrift}</figcaption>}
+</figure>
+<style>
+  .atempause { margin: 3rem 0; background: #000; }
+  .atempause img { width: 100%; max-height: 85vh; object-fit: cover; --p: 1;
+    -webkit-mask-image: linear-gradient(to top, #000 calc(var(--p) * 100%), transparent calc(var(--p) * 100% + 45%));
+            mask-image: linear-gradient(to top, #000 calc(var(--p) * 100%), transparent calc(var(--p) * 100% + 45%)); }
+  figcaption { color: #ddd; font-size: .9rem; padding: .6rem 16px .9rem; text-align: center; }
+</style>
+<script>
+  // Fortschritt 0→1, während das Bild von unten in den Bildschirm fährt.
+  const bilder = [...document.querySelectorAll<HTMLImageElement>('.atempause img')];
+  const tick = () => {
+    const vh = innerHeight;
+    for (const img of bilder) {
+      const top = img.getBoundingClientRect().top;
+      const p = Math.min(1, Math.max(0, (vh - top) / (vh * 0.6)));
+      img.style.setProperty('--p', String(p * 1.45 - 0.45));
+    }
+  };
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    addEventListener('scroll', tick, { passive: true }); addEventListener('resize', tick); tick();
+  }
+</script>

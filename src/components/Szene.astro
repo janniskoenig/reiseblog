@@ -1,0 +1,11 @@
+---
+// Ein Abschnitt einer Sticky-Story.
+// bild: Pfad unter /bilder/…; ohne bild bleibt das vorige Bild stehen.
+// weich: Crossfade (für Stimmungsabschnitte), sonst harter Schnitt.
+interface Props { bild?: string; alt?: string; weich?: boolean }
+const { bild, alt = '', weich = false } = Astro.props;
+---
+<div class="szene" data-bild={bild} data-alt={alt} data-weich={weich ? '' : undefined}>
+  {bild && <img class="szene-bild" src={bild} alt={alt} loading="lazy" />}
+  <slot />
+</div>

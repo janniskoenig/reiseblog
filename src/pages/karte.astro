@@ -1,0 +1,16 @@
+---
+import Basis from '../layouts/Basis.astro';
+import Karte from '../components/Karte.astro';
+import { berichte, url } from '../lib';
+
+const alle = await berichte();
+const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, name: `${o.name} · ${b.data.titel}`, link: url(`/berichte/${b.id}/`) })));
+const gpx = alle.flatMap((b) => b.data.gpx);
+---
+<Basis titel="Karte" beschreibung="Alle Orte und Touren auf einer Karte">
+  <div class="wrap">
+    <h1>Karte</h1>
+    <p class="muted">Alle Orte und GPX-Touren. Klick auf einen Punkt öffnet den Bericht, Klick auf eine Linie zeigt Länge und Höhenmeter.</p>
+    <Karte orte={orte} gpx={gpx} hoehe="70vh" />
+  </div>
+</Basis>

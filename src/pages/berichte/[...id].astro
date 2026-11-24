@@ -1,0 +1,12 @@
+---
+import { render } from 'astro:content';
+import BerichtLayout from '../../layouts/BerichtLayout.astro';
+import { berichte } from '../../lib';
+
+export async function getStaticPaths() {
+  return (await berichte()).map((b) => ({ params: { id: b.id }, props: { bericht: b } }));
+}
+const { bericht } = Astro.props;
+const { Content } = await render(bericht);
+---
+<BerichtLayout bericht={bericht}><Content /></BerichtLayout>

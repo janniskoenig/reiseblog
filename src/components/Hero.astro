@@ -1,0 +1,22 @@
+---
+// Hero: Kicker (Region · Orte), kurzer Titel, Untertitel mit 3–4 Themen.
+interface Props { bild: string; kicker: string; titel: string; untertitel?: string }
+const { bild, kicker, titel, untertitel } = Astro.props;
+---
+<header class="hero">
+  <img src={bild} alt="" fetchpriority="high" />
+  <div class="hero-text">
+    <p class="hero-kicker">{kicker}</p>
+    <h1>{titel}</h1>
+    {untertitel && <p class="hero-sub">{untertitel}</p>}
+  </div>
+</header>
+<style>
+  .hero { position: relative; height: calc(var(--vh) * 88); min-height: 420px; background: #000; color: #fff; overflow: hidden; }
+  .hero img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+  .hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(to top, rgb(0 0 0 / .7), rgb(0 0 0 / 0) 55%); }
+  .hero-text { position: absolute; z-index: 1; left: 0; right: 0; bottom: 0; padding: 0 16px 2.5rem; max-width: 70rem; margin-inline: auto; }
+  .hero-kicker { margin: 0; font-size: .85rem; text-transform: uppercase; letter-spacing: .08em; opacity: .9; }
+  h1 { margin: .3rem 0 .4rem; font-size: clamp(2rem, 6vw, 3.6rem); }
+  .hero-sub { margin: 0; font-size: 1.1rem; opacity: .92; max-width: 40rem; }
+</style>

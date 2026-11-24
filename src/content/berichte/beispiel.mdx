@@ -1,0 +1,77 @@
+---
+# ─────────────────────────────────────────────────────────────────────────────
+# VORLAGE für einen Scrollytelling-Bericht (Alta-Via-Standard).
+# Kopieren, umbenennen (Dateiname = Adresse, z. B. trockener-westen.mdx) und
+# alles mit „Platzhalter“ ersetzen. Diese Beispieldatei danach löschen.
+# ─────────────────────────────────────────────────────────────────────────────
+titel: "Beispiel-Etappe"                 # kurz und konkret
+kicker: "Region · Ort A · Ort B"
+untertitel: "Thema eins, Thema zwei, Thema drei"   # darf den Titel nicht doppeln
+reise: "Beispielreise"                   # gruppiert Etappen einer Reise
+reihenfolge: 1                           # Position in der Reiseroute
+datum: 2026-11-24
+titelbild: /bilder/beispiel/titel.jpg
+teaser:
+  - "Absatz 1: charakterisiert die Region in zwei, drei Sätzen. (Platzhalter)"
+  - "Absatz 2: nennt die Highlights, also Erlebnisse, nicht die Streckenabfolge. (Platzhalter)"
+highlights:                              # 4 Kacheln, je das stärkste Motiv
+  - { bild: /bilder/beispiel/hoch-1.jpg, text: "Highlight 1" }
+  - { bild: /bilder/beispiel/quer-1.jpg, text: "Highlight 2" }
+  - { bild: /bilder/beispiel/hoch-2.jpg, text: "Highlight 3" }
+  - { bild: /bilder/beispiel/quer-2.jpg, text: "Highlight 4" }
+orte:
+  - { name: "Beispielort A", lat: 47.421, lng: 10.985 }
+  - { name: "Beispielort B", lat: 47.439, lng: 11.026 }
+gpx: [/gpx/beispiel.gpx]
+statistik: {}                            # nur eigene Werte, z. B. { km: 42, hoehenmeter: 1800, naechte: 4, land: "Italien" }
+entwurf: false                           # true = erscheint nicht auf der Live-Seite
+---
+import Story from '../../components/Story.astro';
+import Szene from '../../components/Szene.astro';
+import Atempause from '../../components/Atempause.astro';
+import Galerie from '../../components/Galerie.astro';
+import Karte from '../../components/Karte.astro';
+
+{/* Sticky-Story: Bild bleibt stehen, Text scrollt. Hochformat füllt den Rahmen,
+    Querformat wird ganz gezeigt. `weich` = Crossfade für Stimmungsabschnitte. */}
+<Story>
+  <Szene bild="/bilder/beispiel/hoch-1.jpg" alt="Platzhalter">
+    ## Erster Abschnitt
+
+    Kurz, konkret, Gegenwart. Pro Szene ein sinnliches Detail, das nur hier vorkommt (Platzhalter).
+  </Szene>
+  <Szene>
+    Szene ohne eigenes Bild: Das vorige Bild bleibt stehen. Nutze das, statt ein zweites Bild zu zeigen, das nichts Neues zeigt.
+  </Szene>
+  <Szene bild="/bilder/beispiel/quer-1.jpg" alt="Platzhalter">
+    Bildwechsel erst bei dem Satz, der das Motiv nennt (Platzhalter).
+  </Szene>
+</Story>
+
+<Atempause bild="/bilder/beispiel/atempause.jpg" alt="Platzhalter" />
+
+<Story>
+  <Szene bild="/bilder/beispiel/hoch-2.jpg" alt="Platzhalter" weich>
+    ## Zweiter Abschnitt
+
+    Stimmungsabschnitt mit weicher Überblendung (Platzhalter).
+  </Szene>
+  <Szene bild="/bilder/beispiel/hoch-3.jpg" alt="Platzhalter" weich>
+    Noch ein Absatz (Platzhalter).
+  </Szene>
+</Story>
+
+## Die Route
+
+<Karte orte={frontmatter.orte} gpx={frontmatter.gpx} linie />
+
+<Galerie titel="Weitere Bilder" bilder={[
+  { src: '/bilder/beispiel/galerie-1.jpg', alt: 'Platzhalter', text: 'Bildunterschrift (optional)' },
+  { src: '/bilder/beispiel/galerie-2.jpg', alt: 'Platzhalter' },
+  { src: '/bilder/beispiel/galerie-3.jpg', alt: 'Platzhalter' },
+  { src: '/bilder/beispiel/galerie-4.jpg', alt: 'Platzhalter' },
+  { src: '/bilder/beispiel/galerie-5.jpg', alt: 'Platzhalter' },
+  { src: '/bilder/beispiel/galerie-6.jpg', alt: 'Platzhalter' },
+]} />
+
+Kurzer Schluss mit Ausblick auf die nächste Etappe. Endet dort, wo die nächste Region beginnt (Platzhalter).

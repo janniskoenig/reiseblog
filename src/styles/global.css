@@ -1,0 +1,70 @@
+/* Farben als Tokens. Akzent wie im Alta-Via-Standard. */
+:root {
+  --bg: #faf8f5;
+  --fg: #1f1d1a;
+  --muted: #6b655c;
+  --card: #ffffff;
+  --line: #e4ded5;
+  --accent: #b5651d;
+  --accent-fg: #ffffff;
+  --shadow: 0 1px 3px rgb(0 0 0 / .08), 0 6px 20px rgb(0 0 0 / .06);
+  --radius: 10px;
+  --maxw: 70rem;
+  --textw: 38rem;
+  --vh: 1vh;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #151412; --fg: #ece8e2; --muted: #a39b90; --card: #1f1d1a; --line: #34302b;
+    --accent: #e0975a; --accent-fg: #151412; --shadow: 0 1px 3px rgb(0 0 0 / .4);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #151412; --fg: #ece8e2; --muted: #a39b90; --card: #1f1d1a; --line: #34302b;
+  --accent: #e0975a; --accent-fg: #151412; --shadow: 0 1px 3px rgb(0 0 0 / .4);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+/* overflow-x: clip statt hidden, sonst bricht position: sticky */
+html, body { overflow-x: clip; }
+body {
+  margin: 0; background: var(--bg); color: var(--fg);
+  font: 1.0625rem/1.65 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+img, video { max-width: 100%; display: block; }
+a { color: var(--accent); }
+h1, h2, h3 { line-height: 1.2; text-wrap: balance; }
+p { hyphens: auto; }
+.prose p, .story-text p { text-align: justify; }
+
+.wrap { max-width: var(--maxw); margin-inline: auto; padding-inline: 16px; }
+.textwrap { max-width: var(--textw); margin-inline: auto; padding-inline: 16px; }
+.muted { color: var(--muted); }
+
+/* Kopf und Fuß */
+.site-head { border-bottom: 1px solid var(--line); background: var(--bg); }
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; flex-wrap: wrap; }
+.logo { font-weight: 700; text-decoration: none; color: var(--fg); letter-spacing: .01em; }
+.nav { display: flex; gap: 1rem; flex-wrap: wrap; }
+.nav a { color: var(--fg); text-decoration: none; font-size: .95rem; }
+.nav a[aria-current="page"] { color: var(--accent); font-weight: 600; }
+.site-foot { border-top: 1px solid var(--line); margin-top: 4rem; padding-block: 2rem; font-size: .9rem; color: var(--muted); }
+.site-foot a { color: var(--muted); }
+
+/* Karten-Raster für Beitragslisten */
+.cards { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fill, minmax(min(100%, 18rem), 1fr)); }
+.card { background: var(--card); border-radius: var(--radius); box-shadow: var(--shadow); overflow: hidden; text-decoration: none; color: inherit; display: flex; flex-direction: column; }
+.card img { aspect-ratio: 3 / 2; object-fit: cover; width: 100%; }
+.card-body { padding: .9rem 1rem 1.1rem; }
+.card-kicker { font-size: .8rem; text-transform: uppercase; letter-spacing: .06em; color: var(--accent); }
+.card h3 { margin: .25rem 0 .35rem; font-size: 1.15rem; }
+.card p { margin: 0; color: var(--muted); font-size: .95rem; }
+
+.tag-draft { background: #c33; color: #fff; font-size: .75rem; padding: .1rem .4rem; border-radius: 4px; }
+
+/* Leaflet-Karten */
+.map { width: 100%; height: 60vh; min-height: 320px; border-radius: var(--radius); box-shadow: var(--shadow); z-index: 0; }

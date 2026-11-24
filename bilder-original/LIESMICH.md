@@ -1,0 +1,1 @@
+Hier kommen deine Originalfotos hinein (Unterordner je Bericht, z. B. `bilder-original/dolomiten/`). Dieser Ordner wird nicht hochgeladen. `npm run bilder` verkleinert sie nach `public/bilder/…` und entfernt dabei GPS- und Kameradaten.

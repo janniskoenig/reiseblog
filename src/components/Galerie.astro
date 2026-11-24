@@ -1,0 +1,43 @@
+---
+// Galerie mit Lightbox. bilder: [{ src, alt, text? }]
+interface Bild { src: string; alt?: string; text?: string }
+interface Props { bilder: Bild[]; titel?: string }
+const { bilder, titel } = Astro.props;
+---
+<section class="galerie wrap">
+  {titel && <h2>{titel}</h2>}
+  <div class="gallery-grid">
+    {bilder.map((b) => (
+      <button class="gallery-btn" type="button" data-full={b.src} data-text={b.text ?? ''} aria-label={`Bild vergrößern: ${b.alt ?? b.text ?? ''}`}>
+        <img class="gallery-img" src={b.src} alt={b.alt ?? ''} loading="lazy" />
+      </button>
+    ))}
+  </div>
+</section>
+<style is:global>
+  .galerie { margin-block: 2.5rem; }
+  .gallery-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .5rem; }
+  .gallery-btn { padding: 0; border: 0; background: none; cursor: zoom-in; border-radius: 8px; overflow: hidden; }
+  .gallery-img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; }
+  @media (min-width: 700px) { .gallery-grid { grid-template-columns: repeat(3, 1fr); } .gallery-img { height: 180px; } }
+  .lightbox-overlay { position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,.92); display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 16px; cursor: zoom-out; }
+  .lightbox-full { max-width: 100%; max-height: 88vh; object-fit: contain; }
+  .lightbox-text { color: #ddd; margin-top: .75rem; text-align: center; font-size: .95rem; }
+</style>
+<script>
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest<HTMLElement>('.gallery-btn');
+    if (!btn) return;
+    const ov = document.createElement('div');
+    ov.className = 'lightbox-overlay'; ov.setAttribute('role', 'dialog'); ov.tabIndex = -1;
+    const img = document.createElement('img');
+    img.className = 'lightbox-full'; img.src = btn.dataset.full!;
+    img.alt = btn.querySelector('img')?.alt ?? '';
+    ov.append(img);
+    if (btn.dataset.text) { const p = document.createElement('p'); p.className = 'lightbox-text'; p.textContent = btn.dataset.text; ov.append(p); }
+    const zu = () => { ov.remove(); removeEventListener('keydown', esc); btn.focus(); };
+    const esc = (k: KeyboardEvent) => { if (k.key === 'Escape') zu(); };
+    ov.addEventListener('click', zu); addEventListener('keydown', esc);
+    document.body.append(ov); ov.focus();
+  });
+</script>

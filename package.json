@@ -1,0 +1,25 @@
+{
+  "name": "reiseblog",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "bilder": "node scripts/bilder-komprimieren.mjs",
+    "astro": "astro"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^8.1.6",
+    "@astrojs/sitemap": "^3.7.6",
+    "astro": "^7.4.13",
+    "leaflet": "^1.9.4"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "sharp": "^0.35.5"
+  }
+}

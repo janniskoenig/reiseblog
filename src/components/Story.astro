@@ -1,0 +1,77 @@
+---
+// Sticky-Story: Bild bleibt fix (Handy oben, Desktop links), Text scrollt.
+// Inhalt: mehrere <Szene bild="…">-Blöcke. Ohne JavaScript stehen die Bilder
+// einfach über dem jeweiligen Text.
+---
+<section class="story">
+  <div class="story-media" aria-hidden="true"></div>
+  <div class="story-text"><slot /></div>
+</section>
+
+<style is:global>
+  .story, .story-media, .story-text { overflow-anchor: none; }
+  .story { position: relative; margin-block: 2rem; }
+  .story.js { display: grid; }
+  .story-media { display: none; }
+  .story.js .story-media {
+    display: block; position: sticky; top: 0; z-index: 1;
+    height: calc(var(--vh) * 45); background: #000; overflow: hidden;
+  }
+  .story-media img {
+    position: absolute; inset: 0; width: 100%; height: 100%; max-width: none;
+    object-fit: cover; opacity: 0;
+  }
+  .story-media img.quer { object-fit: contain; }
+  .story-media img.weich { transition: opacity .9s ease; }
+  .story-media img.aktiv { opacity: 1; }
+  .story.js .szene-bild { display: none; }
+  .story.js .szene { padding-block: 6vh 22vh; }
+  .story.js .szene:last-child { padding-bottom: 8vh; }
+  .story.js .szene.folgt { padding-top: 0; }
+  .story-text { padding-inline: 16px; max-width: var(--textw); margin-inline: auto; position: relative; }
+  .szene h2 { margin-top: 0; }
+  @media (min-width: 900px) {
+    .story.js { grid-template-columns: 52% 1fr; }
+    .story.js .story-media { height: calc(var(--vh) * 100); }
+    .story.js .story-text { padding-inline: 2.5rem; }
+    .story.js .szene { padding-block: 30vh; }
+  }
+</style>
+
+<script>
+  // Baut die Bildebenen aus den Szenen und schaltet sie beim Scrollen um.
+  function init(story: HTMLElement) {
+    const media = story.querySelector<HTMLElement>('.story-media')!;
+    const szenen = [...story.querySelectorAll<HTMLElement>('.szene')];
+    const ebenen = new Map<string, HTMLImageElement>();
+    let letzte: string | undefined;
+    for (const s of szenen) {
+      const src = s.dataset.bild ?? letzte; // Szene ohne Bild hält das vorige
+      if (!src) continue;
+      s.dataset.src = src;
+      if (src === letzte) s.classList.add('folgt');
+      letzte = src;
+      if (ebenen.has(src)) continue;
+      const img = document.createElement('img');
+      img.src = src; img.alt = s.dataset.alt ?? ''; img.decoding = 'async';
+      if (ebenen.size) img.loading = 'lazy';
+      const pruefe = () => { if (img.naturalWidth > 1.2 * img.naturalHeight) img.classList.add('quer'); };
+      img.complete ? pruefe() : img.addEventListener('load', pruefe);
+      media.append(img); ebenen.set(src, img);
+    }
+    story.classList.add('js');
+    const zeige = (s: HTMLElement) => {
+      const img = ebenen.get(s.dataset.src!);
+      if (!img || img.classList.contains('aktiv')) return;
+      img.classList.toggle('weich', 'weich' in s.dataset);
+      ebenen.forEach((e) => e.classList.toggle('aktiv', e === img));
+    };
+    if (szenen[0]) zeige(szenen[0]);
+    // Szene wird aktiv, sobald sie die Bildschirmmitte erreicht.
+    const io = new IntersectionObserver((eintraege) => {
+      for (const e of eintraege) if (e.isIntersecting) zeige(e.target as HTMLElement);
+    }, { rootMargin: '-50% 0px -50% 0px' });
+    szenen.forEach((s) => io.observe(s));
+  }
+  document.querySelectorAll<HTMLElement>('.story').forEach(init);
+</script>
