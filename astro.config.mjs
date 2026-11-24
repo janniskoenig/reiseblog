@@ -3,9 +3,8 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
 
-// TODO: nach dem ersten Deploy durch deine echte Adresse ersetzen,
-// z. B. https://reiseblog.pages.dev oder https://deine-domain.de
+// Live-Adresse (Cloudflare Pages). Bei eigener Domain hier ändern.
 export default defineConfig({
-  site: 'https://reiseblog.pages.dev',
+  site: 'https://reiseblog-dln.pages.dev',
   integrations: [mdx(), sitemap()],
 });
