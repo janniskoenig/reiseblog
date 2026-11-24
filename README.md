@@ -51,7 +51,7 @@ Ab dann geht jede Änderung, die auf GitHub landet, automatisch online.
 ## Vor dem Veröffentlichen
 
 - [x] Impressum und Datenschutzerklärung ausgefüllt (Angaben zentral in `src/config.ts`).
-- [ ] Web3Forms: Access Key holen, Auftragsverarbeitungsvertrag (https://web3forms.com/dpa) akzeptieren, Key in `src/config.ts` (`web3formsKey`) eintragen.
+- [x] Web3Forms: Access Key holen, Auftragsverarbeitungsvertrag (https://web3forms.com/dpa) akzeptieren, Key in `src/config.ts` (`web3formsKey`) eintragen.
 - [ ] Datenschutzerklärung Abschnitt 4 (OpenTopoMap-Betreiber) vervollständigen, siehe TODO-Kommentar. Zur Absicherung mit einem Generator (eRecht24 oder Dr. Schwenke) abgleichen; keine Rechtsberatung.
 - [ ] Blognamen in `src/layouts/Basis.astro` (`seitenname`) und Text auf der Startseite anpassen.
 - [ ] Beispielbericht, Beispielbilder (`public/bilder/beispiel/`) und `public/gpx/beispiel.gpx` löschen.

@@ -11,6 +11,6 @@ export const betreiber = {
 // Web3Forms: Zugangsschlüssel (Access Key) von https://web3forms.com.
 // Er ist laut Web3Forms öffentlich unbedenklich; er sorgt nur dafür, dass
 // Nachrichten an deine Adresse gehen.
-export const web3formsKey = 'HIER-ACCESS-KEY-EINTRAGEN';
+export const web3formsKey = '9de9e5c5-588b-4237-950b-c40f4b455ad3';
 
 export const datenschutzStand = 'November 2026';
