@@ -1,7 +1,7 @@
 ---
 import Basis from './Basis.astro';
 import Hero from '../components/Hero.astro';
-import { berichte, url, type Bericht } from '../lib';
+import { berichte, link, url, type Bericht } from '../lib';
 
 interface Props { bericht: Bericht }
 const { bericht } = Astro.props;
@@ -32,8 +32,8 @@ const vor = etappen[i - 1], nach = etappen[i + 1];
 
     {(vor || nach) && (
       <nav class="etappen wrap" aria-label="Etappen">
-        {vor ? <a class="etappe" href={url(`/berichte/${vor.id}/`)}><img src={vor.data.titelbild} alt="" loading="lazy" /><span>← {vor.data.titel}</span></a> : <span />}
-        {nach && <a class="etappe nach" href={url(`/berichte/${nach.id}/`)}><img src={nach.data.titelbild} alt="" loading="lazy" /><span>{nach.data.titel} →</span></a>}
+        {vor ? <a class="etappe" href={link(vor)}><img src={vor.data.titelbild} alt="" loading="lazy" /><span>← {vor.data.titel}</span></a> : <span />}
+        {nach && <a class="etappe nach" href={link(nach)}><img src={nach.data.titelbild} alt="" loading="lazy" /><span>{nach.data.titel} →</span></a>}
       </nav>
     )}
   </article>
