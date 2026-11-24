@@ -8,7 +8,7 @@ export default defineConfig({
   site: 'https://reiseblog-dln.pages.dev',
   integrations: [mdx(), sitemap({
     // Handgebaute Seiten unter public/ kennt Astro nicht, deshalb hier nennen.
-    customPages: ['', 'hochland/', 'trockener-westen/', 'suedwesten/', 'isalo/', 'sava/']
+    customPages: ['', 'hochland/', 'trockener-westen/', 'suedwesten/', 'isalo/', 'sava/', 'reiseplanung/', 'hochland/reiseinfos/', 'trockener-westen/reiseinfos/', 'suedwesten/reiseinfos/', 'isalo/reiseinfos/', 'sava/reiseinfos/']
       .map((p) => `https://reiseblog-dln.pages.dev/madagaskar/${p}`),
   })],
 });
