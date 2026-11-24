@@ -50,7 +50,9 @@ Ab dann geht jede Änderung, die auf GitHub landet, automatisch online.
 
 ## Vor dem Veröffentlichen
 
-- [ ] **Impressum** (`src/pages/impressum.astro`) und **Datenschutzerklärung** (`src/pages/datenschutz.astro`) ausfüllen. In Deutschland Pflicht für einen öffentlichen Blog.
+- [x] Impressum und Datenschutzerklärung ausgefüllt (Angaben zentral in `src/config.ts`).
+- [x] Web3Forms: Access Key holen, Auftragsverarbeitungsvertrag (https://web3forms.com/dpa) akzeptieren, Key in `src/config.ts` (`web3formsKey`) eintragen.
+- [x] Datenschutzerklärung vervollständigt (Cloudflare, OpenTopoMap, Web3Forms, E-Mail). Zur Absicherung mit einem Generator (eRecht24 oder Dr. Schwenke) abgleichen; keine Rechtsberatung.
 - [ ] Blognamen in `src/layouts/Basis.astro` (`seitenname`) und Text auf der Startseite anpassen.
 - [ ] Beispielbericht, Beispielbilder (`public/bilder/beispiel/`) und `public/gpx/beispiel.gpx` löschen.
 

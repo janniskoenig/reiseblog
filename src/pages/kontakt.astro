@@ -1,0 +1,58 @@
+---
+import Basis from '../layouts/Basis.astro';
+import Email from '../components/Email.astro';
+import { web3formsKey } from '../config';
+import { url } from '../lib';
+---
+<Basis titel="Kontakt" beschreibung="Kontakt aufnehmen">
+  <div class="textwrap">
+    <h1>Kontakt</h1>
+    <p>Schreib mir über das Formular oder per E-Mail an <Email />.</p>
+
+    <form id="kontakt" class="formular" data-key={web3formsKey} novalidate>
+      <label>Name <input name="name" required autocomplete="name" maxlength="100" /></label>
+      <label>E-Mail <input name="email" type="email" required autocomplete="email" maxlength="200" /></label>
+      <label>Nachricht <textarea name="message" required rows="7" maxlength="5000"></textarea></label>
+      <!-- Honeypot: für Menschen unsichtbar, Bots füllen es aus -->
+      <input type="checkbox" name="botcheck" class="honig" tabindex="-1" autocomplete="off" aria-hidden="true" />
+      <p class="hinweis">Die Nachricht wird über den Dienst Web3Forms an mich weitergeleitet. Details in der <a href={url('/datenschutz/')}>Datenschutzerklärung</a>.</p>
+      <button type="submit">Nachricht senden</button>
+      <p class="status" role="status" aria-live="polite"></p>
+    </form>
+  </div>
+</Basis>
+<style>
+  .formular { display: grid; gap: 1rem; margin-top: 1.5rem; }
+  label { display: grid; gap: .3rem; font-weight: 600; font-size: .95rem; }
+  input, textarea { font: inherit; font-weight: 400; padding: .6rem .7rem; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); width: 100%; }
+  input:focus, textarea:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .honig { position: absolute; left: -9999px; }
+  .hinweis { font-size: .85rem; color: var(--muted); margin: 0; }
+  button { justify-self: start; font: inherit; font-weight: 600; padding: .65rem 1.3rem; border: 0; border-radius: 8px; background: var(--accent); color: var(--accent-fg); cursor: pointer; }
+  button:disabled { opacity: .6; cursor: wait; }
+  .status { margin: 0; min-height: 1.5em; }
+</style>
+<script>
+  const form = document.querySelector<HTMLFormElement>('#kontakt')!;
+  const status = form.querySelector<HTMLElement>('.status')!;
+  const btn = form.querySelector<HTMLButtonElement>('button')!;
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.checkValidity()) { status.textContent = 'Bitte alle Felder ausfüllen und eine gültige E-Mail angeben.'; return; }
+    const daten = Object.fromEntries(new FormData(form));
+    if (daten.botcheck) return; // Bot
+    btn.disabled = true; status.textContent = 'Wird gesendet …';
+    try {
+      const r = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ ...daten, access_key: form.dataset.key, subject: 'Neue Nachricht über den Reiseblog', from_name: 'Reiseblog' }),
+      });
+      const j = await r.json();
+      if (!r.ok || !j.success) throw new Error(j.message);
+      form.reset(); status.textContent = 'Danke! Deine Nachricht ist angekommen.';
+    } catch {
+      status.textContent = 'Das hat leider nicht geklappt. Bitte schreib mir direkt per E-Mail.';
+    } finally { btn.disabled = false; }
+  });
+</script>

@@ -1,0 +1,17 @@
+---
+// Zeigt die E-Mail-Adresse so, dass einfache Spam-Bots sie nicht im HTML finden:
+// Im Quelltext steht sie nur umgedreht und base64-kodiert; JavaScript baut daraus
+// einen mailto-Link. Ohne JavaScript erscheint „name [at] domain“.
+import { betreiber } from '../config';
+const adr = `${betreiber.emailNutzer}@${betreiber.emailDomain}`;
+const kodiert = Buffer.from([...adr].reverse().join('')).toString('base64');
+const ersatz = `${betreiber.emailNutzer} [at] ${betreiber.emailDomain}`;
+---
+<a class="email-schutz" data-e={kodiert} href="#" rel="nofollow">{ersatz}</a>
+<script>
+  document.querySelectorAll<HTMLAnchorElement>('.email-schutz').forEach((a) => {
+    const adr = [...atob(a.dataset.e!)].reverse().join('');
+    a.textContent = adr;
+    a.href = 'mailto:' + adr;
+  });
+</script>
