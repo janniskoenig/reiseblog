@@ -8,9 +8,9 @@ export const betreiber = {
   emailDomain: 'gmx.de',
 };
 
-// Formspree: Auf https://formspree.io ein Konto anlegen, ein Formular erstellen
-// und dessen ID eintragen (der Teil nach /f/ in der Adresse, z. B. 'xyzabcd').
-// Die ID ist öffentlich unbedenklich, sie steht ohnehin im Seitenquelltext.
-export const formspreeId = 'HIER-FORMULAR-ID-EINTRAGEN';
+// Web3Forms: Zugangsschlüssel (Access Key) von https://web3forms.com.
+// Er ist laut Web3Forms öffentlich unbedenklich; er sorgt nur dafür, dass
+// Nachrichten an deine Adresse gehen.
+export const web3formsKey = 'HIER-ACCESS-KEY-EINTRAGEN';
 
 export const datenschutzStand = 'November 2026';
