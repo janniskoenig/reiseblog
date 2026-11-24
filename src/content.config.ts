@@ -32,6 +32,9 @@ const berichte = defineCollection({
       land: z.string().optional(),
     }).default({}),
     entwurf: z.boolean().default(false),       // true = wird nicht veröffentlicht
+    // Fertige, handgebaute Seite unter public/ (z. B. „/madagaskar/hochland/“).
+    // Dann ist die .mdx-Datei nur ein Steckbrief für Listen, Karte und Dashboard.
+    extern: z.string().optional(),
   }),
 });
 

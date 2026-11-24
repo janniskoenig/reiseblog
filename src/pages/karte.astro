@@ -1,10 +1,10 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import Karte from '../components/Karte.astro';
-import { berichte, url } from '../lib';
+import { berichte, link } from '../lib';
 
 const alle = await berichte();
-const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, name: `${o.name} · ${b.data.titel}`, link: url(`/berichte/${b.id}/`) })));
+const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, name: `${o.name} · ${b.data.titel}`, link: link(b) })));
 const gpx = alle.flatMap((b) => b.data.gpx);
 ---
 <Basis titel="Karte" beschreibung="Alle Orte und Touren auf einer Karte">

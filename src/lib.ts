@@ -12,3 +12,6 @@ export async function berichte(): Promise<Bericht[]> {
 }
 
 export const url = (pfad: string) => import.meta.env.BASE_URL.replace(/\/$/, '') + pfad;
+
+/** Adresse eines Berichts: eigene Seite (extern) oder die gerenderte .mdx-Seite. */
+export const link = (b: Bericht) => url(b.data.extern ?? `/berichte/${b.id}/`);

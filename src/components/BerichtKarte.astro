@@ -1,9 +1,9 @@
 ---
-import { url, type Bericht } from '../lib';
+import { link, type Bericht } from '../lib';
 interface Props { bericht: Bericht }
 const { bericht: b } = Astro.props;
 ---
-<a class="card" href={url(`/berichte/${b.id}/`)}>
+<a class="card" href={link(b)}>
   <img src={b.data.titelbild} alt="" loading="lazy" />
   <div class="card-body">
     <div class="card-kicker">{b.data.reise} {b.data.entwurf && <span class="tag-draft">Entwurf</span>}</div>

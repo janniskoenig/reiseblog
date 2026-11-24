@@ -2,10 +2,10 @@
 import Basis from '../layouts/Basis.astro';
 import BerichtKarte from '../components/BerichtKarte.astro';
 import Karte from '../components/Karte.astro';
-import { berichte, url } from '../lib';
+import { berichte, link, url } from '../lib';
 
 const alle = await berichte();
-const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: url(`/berichte/${b.id}/`) })));
+const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) })));
 ---
 <Basis titel="Reiseblog" beschreibung="Reise- und Outdoor-Berichte mit Karten und Bildern">
   <section class="intro wrap">

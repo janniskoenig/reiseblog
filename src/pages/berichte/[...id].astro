@@ -4,7 +4,7 @@ import BerichtLayout from '../../layouts/BerichtLayout.astro';
 import { berichte } from '../../lib';
 
 export async function getStaticPaths() {
-  return (await berichte()).map((b) => ({ params: { id: b.id }, props: { bericht: b } }));
+  return (await berichte()).filter((b) => !b.data.extern).map((b) => ({ params: { id: b.id }, props: { bericht: b } }));
 }
 const { bericht } = Astro.props;
 const { Content } = await render(bericht);
