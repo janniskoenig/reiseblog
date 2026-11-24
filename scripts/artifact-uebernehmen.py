@@ -30,7 +30,18 @@ ARTIFACTS = {
     'MBrGYBaSM2cSnr8bCawNQv': ('suedwesten', 'artifact-a37a92c4-1793190970-5658.html'),
     '3nLcVeSmbHKNx4zExMGtnf': ('isalo', 'artifact-1686d551-1793190973-ee9b.html'),
     'CHez9yXWaDRcTKodUg3b7U': ('sava', 'artifact-5b67d5be-1793190961-52a0.html'),
+    # Nützliche Reiseinfos (öffentlich seit 2026-11-24, ohne Namen/Nummern von Fahrern)
+    'HpmerbTZ3LTpjQopaiy5GP': ('reiseplanung', 'artifact-883db1a5-1793301442-41f2.html'),
+    'DmJsHNQeyEXqgi9Qriuyd4': ('hochland/reiseinfos', 'artifact-675d6693-1793207640-8ac6.html'),
+    'BYD7yP4k8bMgGdv5UZRQi7': ('trockener-westen/reiseinfos', 'artifact-5556e9ae-1793196219-2832.html'),
+    'PWkNfVxLXHnXRowxA89Zbu': ('suedwesten/reiseinfos', 'artifact-b6505987-1793196226-d529.html'),
+    '7oXUC5QbfshYxD3NUitR3x': ('isalo/reiseinfos', 'artifact-3715d28c-1793196229-9dd5.html'),
+    'RkVe67Q2qcmZYyMEcyEKLc': ('sava/reiseinfos', 'artifact-c86df5aa-1793301536-d1bb.html'),
 }
+# Bericht → Reiseinfo-Seite (für den Link in der Kopfleiste)
+REISEINFO = {'hochland': 'hochland/reiseinfos', 'trockener-westen': 'trockener-westen/reiseinfos',
+             'suedwesten': 'suedwesten/reiseinfos', 'isalo': 'isalo/reiseinfos', 'sava': 'sava/reiseinfos', '': 'reiseplanung'}
+def ist_info(slug): return slug == 'reiseplanung' or slug.endswith('/reiseinfos')
 
 def blogpfad(slug): return '/madagaskar/' + (slug + '/' if slug else '')
 
@@ -40,11 +51,14 @@ KOPF_CSS = """
  background:linear-gradient(to bottom,rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:none}
 .blog-bar a{color:#fff;text-decoration:none;text-shadow:0 1px 4px rgba(0,0,0,.6);pointer-events:auto}
 .blog-bar a:hover{text-decoration:underline}
+.blog-bar span{display:flex;gap:1rem}
+.blog-bar.hell{position:static;background:none;padding:max(.7rem,env(safe-area-inset-top,0px)) 0 .2rem;max-width:52rem;margin:0 auto}
+.blog-bar.hell a{color:var(--muted,#6b6b66);text-shadow:none}
 .blog-foot{padding:2rem 1.5rem 2.5rem;text-align:center;font:.85rem/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--muted,#6b6b66)}
 .blog-foot a{color:inherit}
 """
 
-def kopf(titel, beschreibung, bild, pfad):
+def kopf(titel, beschreibung, bild, pfad, slug):
     t = html.escape(titel)
     d = html.escape(beschreibung)
     return f"""<!doctype html>
@@ -62,8 +76,16 @@ def kopf(titel, beschreibung, bild, pfad):
 <style>:root{{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}}html{{scroll-padding-top:env(safe-area-inset-top,0px)}}body{{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#faf8f4;color:#2c2c2a}}img{{max-width:100%}}[hidden]:not([hidden=until-found i]){{display:none!important}}{KOPF_CSS}</style>
 </head>
 <body>
-<nav class="blog-bar" aria-label="Blog"><a href="/">← Reiseblog</a><a href="/madagaskar/">Madagaskar 2026</a></nav>
+{leiste(slug)}
 """
+
+def leiste(slug):
+    rechts = '<a href="/madagaskar/">Madagaskar 2026</a>'
+    if slug in REISEINFO:
+        rechts += f'<a href="{blogpfad(REISEINFO[slug])}">{"Reiseplanung" if slug == "" else "Reiseinfos"}</a>'
+    if ist_info(slug):
+        return f'<nav class="blog-bar hell" aria-label="Blog"><a href="/">← Reiseblog</a><span>{rechts}</span></nav>'
+    return f'<nav class="blog-bar" aria-label="Blog"><a href="/">← Reiseblog</a><span>{rechts}</span></nav>'
 
 FUSS = """
 <footer class="blog-foot"><a href="/">Reiseblog</a> · <a href="/impressum/">Impressum</a> · <a href="/datenschutz/">Datenschutz</a></footer>
@@ -112,6 +134,13 @@ def uebernehmen(aid, slug, datei):
         (BILD_ORIG / (name + endung)).write_bytes(daten)
         return f'/bilder/madagaskar/{name}.jpg'
 
+    # Interne Lückenlisten („Noch zu ergänzen“) nicht veröffentlichen
+    s = re.sub(r'<h2>Noch zu ergänzen</h2>\s*<div class="gaps">.*?</div>', '', s, flags=re.S)
+    # GPX-Download: statt der Claude-Schnittstelle normaler Browser-Download
+    s = s.replace('!window.claude||!claude.use)return;claude.use("downloads")',
+                  '0)return;Promise.resolve({save:function(o){var a=document.createElement("a");'
+                  'a.href=URL.createObjectURL(new Blob([o.data],{type:"application/zip"}));a.download=o.filename;'
+                  'document.body.appendChild(a);a.click();a.remove();return Promise.resolve();}})')
     s = re.sub(r'data:(image/[\w+.-]+|video/mp4);base64,([A-Za-z0-9+/=]+)', ersetze, s)
 
     # Videos, die als eigene Dateien mit dem Artifact veröffentlicht waren
@@ -126,13 +155,13 @@ def uebernehmen(aid, slug, datei):
     # Links innerhalb der Seite im selben Fenster öffnen
     s = re.sub(r'(href="/madagaskar/[^"]*")\s+target="_(?:blank|top)"(?:\s+rel="[^"]*")?', r'\1', s)
 
-    sub = re.search(r'class="(?:ihero-sub|pl-sub)"[^>]*>(.*?)</p>', s, re.S)
+    sub = re.search(r'class="(?:ihero-sub|pl-sub|lead)"[^>]*>(.*?)</p>', s, re.S)
     beschreibung = html.unescape(re.sub(r'<[^>]+>', '', sub.group(1))).strip() if sub else titel
     og = re.search(r'class="ihero-img[^"]*"[^>]*?src="([^"]+)"', s) or re.search(r'src="(/bilder/[^"]+)"', s)
     pfad = blogpfad(slug)
     ziel = SEITEN / slug / 'index.html' if slug else SEITEN / 'index.html'
     ziel.parent.mkdir(parents=True, exist_ok=True)
-    ziel.write_text(kopf(titel, beschreibung, og.group(1) if og else None, pfad) + s + FUSS, encoding='utf-8')
+    ziel.write_text(kopf(titel, beschreibung, og.group(1) if og else None, pfad, slug) + s + FUSS, encoding='utf-8')
     print(f'✓ {pfad}  ({titel}) – {ziel.stat().st_size // 1024} KB')
 
 def verarbeite_videos():

@@ -16,12 +16,15 @@
  background:linear-gradient(to bottom,rgba(0,0,0,.55),rgba(0,0,0,0));pointer-events:none}
 .blog-bar a{color:#fff;text-decoration:none;text-shadow:0 1px 4px rgba(0,0,0,.6);pointer-events:auto}
 .blog-bar a:hover{text-decoration:underline}
+.blog-bar span{display:flex;gap:1rem}
+.blog-bar.hell{position:static;background:none;padding:max(.7rem,env(safe-area-inset-top,0px)) 0 .2rem;max-width:52rem;margin:0 auto}
+.blog-bar.hell a{color:var(--muted,#6b6b66);text-shadow:none}
 .blog-foot{padding:2rem 1.5rem 2.5rem;text-align:center;font:.85rem/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;color:var(--muted,#6b6b66)}
 .blog-foot a{color:inherit}
 </style>
 </head>
 <body>
-<nav class="blog-bar" aria-label="Blog"><a href="/">← Reiseblog</a><a href="/madagaskar/">Madagaskar 2026</a></nav>
+<nav class="blog-bar" aria-label="Blog"><a href="/">← Reiseblog</a><span><a href="/madagaskar/">Madagaskar 2026</a><a href="/madagaskar/trockener-westen/reiseinfos/">Reiseinfos</a></span></nav>
 
 
 <style>:root{--bg:#faf8f4;--text:#2c2c2a;--muted:#6b6b66;--accent:#b5651d;--border:rgba(120,120,110,.2);--sea:#dde6e5;--land:#efe8da;--land-edge:#cdc2ab;--hl:#e6c59c;--pin-ink:#fff;--road:#5b3a1e;--vh:1vh}

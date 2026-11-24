@@ -2,7 +2,7 @@
 import Basis from '../layouts/Basis.astro';
 import BerichtKarte from '../components/BerichtKarte.astro';
 import Karte from '../components/Karte.astro';
-import { berichte, link, url } from '../lib';
+import { berichte, link, reisen, url } from '../lib';
 
 const alle = await berichte();
 const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) })));
@@ -12,6 +12,19 @@ const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) }
     <h1>Unterwegs</h1>
     <!-- TODO: ein, zwei Sätze über dich und den Blog -->
     <p class="muted">Berichte, Karten und Bilder von Reisen und Touren.</p>
+  </section>
+  <section class="wrap">
+    <h2>Reisen</h2>
+    {reisen.map((r) => (
+      <div class="reise">
+        <a class="reise-bild" href={r.link}><img src={r.bild} alt="" loading="lazy" /></a>
+        <div class="reise-text">
+          <h3><a href={r.link}>{r.name}</a></h3>
+          <p>{r.text}</p>
+          <p><a href={r.link}>Zur Reise →</a> · <a href={r.planung}>Reiseplanung</a></p>
+        </div>
+      </div>
+    ))}
   </section>
   <section class="wrap">
     <h2>Neueste Berichte</h2>
@@ -30,4 +43,10 @@ const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) }
   .intro { padding-block: 3rem 1rem; }
   .intro h1 { font-size: clamp(2rem, 6vw, 3.2rem); margin: 0 0 .5rem; }
   section { margin-bottom: 2.5rem; }
+  .reise { display: grid; gap: 1rem; align-items: center; border: 1px solid var(--border, rgba(120,120,110,.22)); border-radius: 12px; overflow: hidden; }
+  .reise-bild img { display: block; width: 100%; aspect-ratio: 16 / 9; object-fit: cover; }
+  .reise-text { padding: 0 1.1rem 1rem; }
+  .reise-text h3 { margin: 0 0 .4rem; font-size: 1.4rem; }
+  .reise-text h3 a { color: inherit; text-decoration: none; }
+  @media (min-width: 720px) { .reise { grid-template-columns: 1.3fr 1fr; } .reise-text { padding: 1rem 1.4rem 1rem 0; } }
 </style>
