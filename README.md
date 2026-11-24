@@ -50,7 +50,9 @@ Ab dann geht jede Änderung, die auf GitHub landet, automatisch online.
 
 ## Vor dem Veröffentlichen
 
-- [ ] **Impressum** (`src/pages/impressum.astro`) und **Datenschutzerklärung** (`src/pages/datenschutz.astro`) ausfüllen. In Deutschland Pflicht für einen öffentlichen Blog.
+- [x] Impressum und Datenschutzerklärung ausgefüllt (Angaben zentral in `src/config.ts`).
+- [ ] Formspree: Konto anlegen, Formular erstellen, ID in `src/config.ts` (`formspreeId`) eintragen.
+- [ ] Datenschutzerklärung Abschnitt 5 (Formspree) und 4 (OpenTopoMap) vervollständigen, siehe TODO-Kommentare. Zur Absicherung mit einem Generator (eRecht24 oder Dr. Schwenke) abgleichen; keine Rechtsberatung.
 - [ ] Blognamen in `src/layouts/Basis.astro` (`seitenname`) und Text auf der Startseite anpassen.
 - [ ] Beispielbericht, Beispielbilder (`public/bilder/beispiel/`) und `public/gpx/beispiel.gpx` löschen.
 

@@ -55,8 +55,9 @@ const nav = [
     <main><slot /></main>
     <footer class="site-foot">
       <div class="wrap">
-        © {new Date().getFullYear()} {seitenname} ·
-        <a href={url('/impressum/')}>Impressum</a> ·
+        © {new Date().getFullYear()} {seitenname}{' · '}
+        <a href={url('/kontakt/')}>Kontakt</a>{' · '}
+        <a href={url('/impressum/')}>Impressum</a>{' · '}
         <a href={url('/datenschutz/')}>Datenschutz</a>
       </div>
     </footer>

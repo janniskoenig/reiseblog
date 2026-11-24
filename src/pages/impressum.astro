@@ -1,14 +1,30 @@
 ---
 import Basis from '../layouts/Basis.astro';
+import Email from '../components/Email.astro';
+import { betreiber } from '../config';
+import { url } from '../lib';
 ---
 <Basis titel="Impressum" noindex>
-  <div class="textwrap">
+  <div class="textwrap rechtstext">
     <h1>Impressum</h1>
-    <!-- TODO vor dem Veröffentlichen ausfüllen. Pflichtangaben nach § 5 DDG
-         (Digitale-Dienste-Gesetz) und ggf. § 18 Abs. 2 MStV. Ein Impressum-Generator
-         (z. B. von eRecht24) hilft; im Zweifel rechtlich beraten lassen. -->
-    <p><strong>Platzhalter – noch nicht ausgefüllt.</strong></p>
-    <p>Name<br />Straße Hausnummer<br />PLZ Ort</p>
-    <p>E-Mail: …</p>
+    <h2>Angaben gemäß § 5 DDG und § 18 Abs. 1 MStV</h2>
+    <p>{betreiber.name}<br />{betreiber.strasse}<br />{betreiber.ort}<br />Deutschland</p>
+
+    <h2>Kontakt</h2>
+    <p>E-Mail: <Email /><br />
+       Kontaktformular: <a href={url('/kontakt/')}>zum Formular</a></p>
+
+    <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
+    <p>{betreiber.name}, Anschrift wie oben</p>
+
+    <h2>Haftung für Links</h2>
+    <p>Diese Seite enthält Links zu externen Websites. Auf deren Inhalte habe ich keinen Einfluss; verantwortlich ist der jeweilige Anbieter. Werden mir Rechtsverletzungen bekannt, entferne ich solche Links umgehend.</p>
+
+    <h2>Urheberrecht</h2>
+    <p>Texte und Fotos auf dieser Seite sind, soweit nicht anders angegeben, von mir erstellt und urheberrechtlich geschützt. Eine Verwendung ist nur mit meiner Zustimmung erlaubt. Kartendaten: © OpenStreetMap-Mitwirkende, Kartendarstellung: © OpenTopoMap (CC-BY-SA).</p>
   </div>
 </Basis>
+<style is:global>
+  .rechtstext h2 { font-size: 1.15rem; margin-top: 2rem; }
+  .rechtstext h3 { font-size: 1rem; margin-top: 1.5rem; }
+</style>
