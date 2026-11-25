@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Übernimmt die fertigen Madagaskar-Artifacts (self-contained HTML) als statische
-# Danach: python3 scripts/seo.py ausführen (setzt Titel, Beschreibungen, strukturierte Daten, Lazy Loading).
 Seiten in den Blog.
+Danach scripts/seo.py ausführen (Titel, Beschreibungen, strukturierte Daten, Lazy Loading).
 
 - Eingebettete Bilder (data:image/…;base64) werden als Dateien nach
   bilder-original/madagaskar/ geschrieben. Danach `npm run bilder` ausführen:
