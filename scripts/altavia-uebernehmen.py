@@ -142,14 +142,15 @@ def uebernehmen(quelle, liste, pfad, beschreibung):
         s = s[s.index('<body>') + 6:]
     styles = ''.join(re.findall(r'<style>.*?</style>', s[:s.index('<body>')], re.S))
     skripte_kopf = ''.join(re.findall(r'<script src="[^"]+"></script>', s[:s.index('<body>')]))
-    titel = html.unescape(re.search(r'<title>(.*?)</title>', s, re.S).group(1)).replace(' – Königswege', '').strip()
+    titel = html.unescape(re.search(r'<title>(.*?)</title>', s, re.S).group(1)).strip()
+    titel = re.sub(r' – [^–]+$', '', titel) if titel.count(' – ') > (1 if 'Zahlen' in titel else 0) else titel
     koerper = s[s.index('<body>') + 6:s.rindex('</body>')]
     s = styles + skripte_kopf + '\n</head>\n<body>\n' + koerper
     s = korrigieren(s, liste, quelle.name)
     if 'window.__routemapStops' in s:
         s = karte_aufraeumen(s)
     s = re.sub(r'data:image/jpeg;base64,([A-Za-z0-9+/=]+)', lambda m: bild_speichern(m, s), s)
-    # Alte Kopf-/Fußzeile („Königswege“) durch die des Blogs ersetzen
+    # Alte Kopf-/Fußzeile (alter Blogname) durch die des Blogs ersetzen
     s = re.sub(r'<header class="sitehead">.*?</header>', LEISTE, s, count=1, flags=re.S)
     s = re.sub(r'<footer class="sitefoot">.*?</footer>', FUSS, s, count=1, flags=re.S)
     s = s.replace(f'https://claude.ai/artifact/{ID_BERICHT}', PFAD_BERICHT)
