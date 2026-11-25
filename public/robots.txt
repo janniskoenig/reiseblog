@@ -1,0 +1,5 @@
+# Alle Suchmaschinen dürfen alles lesen.
+User-agent: *
+Allow: /
+
+Sitemap: https://reiseblog-dln.pages.dev/sitemap-index.xml

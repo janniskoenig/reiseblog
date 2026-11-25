@@ -12,7 +12,7 @@ const etappen = (await berichte()).filter((b) => b.data.reise === d.reise);
 const i = etappen.findIndex((b) => b.id === bericht.id);
 const vor = etappen[i - 1], nach = etappen[i + 1];
 ---
-<Basis titel={d.titel} beschreibung={d.untertitel} bild={d.titelbild}>
+<Basis titel={d.titel} beschreibung={d.untertitel} bild={d.titelbild} typ="article">
   <article>
     <Hero bild={d.titelbild} kicker={d.kicker} titel={d.titel} untertitel={d.untertitel} />
     {d.entwurf && <p class="textwrap"><span class="tag-draft">Entwurf – nicht veröffentlicht</span></p>}
