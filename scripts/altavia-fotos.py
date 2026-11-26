@@ -36,9 +36,9 @@ TAGE = {
     2: dict(sticky=[k(12), k(63), k(88), k(90)], reihe=[], danach=k(66)),
     3: dict(sticky=[k(102), k(128), k(146)], reihe=[], danach=k(137)),
     4: dict(sticky=[k(189), k(201)], reihe=[], danach=k(177)),
-    5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[k(219), k(229), k(251), k(282), k(297)], danach=None),
+    5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[f'{ALT}handy-piz-boe-gipfel.jpg', k(219), k(229), k(251), k(282), k(297)], danach=None),
     6: dict(sticky=[k(304), k(311)], reihe=[], danach=None),
-    7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), k(333), k(354), k(365)], danach=None),
+    7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), k(333), k(354), k(365), f'{ALT}handy-gulasch-selle.jpg'], danach=None),
 }
 HUETTEN = {  # Kartenmarker → Foto
     'Schlüterhütte': (k(92), 'Die Schlüterhütte am Morgen'),
