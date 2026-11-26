@@ -40,6 +40,7 @@ TAGE = {
     6: dict(sticky=[k(304), k(311)], reihe=[], danach=None),
     7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), k(333), k(354), k(365), f'{ALT}handy-gulasch-selle.jpg'], danach=None),
 }
+TITELBILD = f'{ALT}kamera-189.jpg'
 HUETTEN = {  # Kartenmarker → Foto
     'Schlüterhütte': (k(92), 'Die Schlüterhütte am Morgen'),
     'Pisciadùhütte': (k(186), 'Die Pisciadùhütte am Abend'),
@@ -238,6 +239,8 @@ def main():
     s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
                '.mk-haus svg,.mk-einkehr svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}\n'
                '</style><script src="/vendor/leaflet-1.9.4.js">')
+    # Titelbild (Wunsch Jannis 26.11.2026): Kamerafoto statt Handyfoto mit Personen im Fokus
+    s = s.replace('/bilder/alta-via-2/titel-2af9ad.jpg', TITELBILD)
     SEITE.write_text(s, encoding='utf-8')
     print('✓ Fotos eingebaut:', SEITE.relative_to(ROOT))
     # Zahlen & Fakten: Abstieg am 29.08. gehört noch zur Tour (Wunsch Jannis, 26.11.2026)
