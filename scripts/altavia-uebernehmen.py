@@ -7,7 +7,7 @@
 - Eingebettete Fotos landen in bilder-original/alta-via-2/. Danach `npm run bilder`
   ausführen: das verkleinert sie nach public/bilder/alta-via-2/ und entfernt alle
   Metadaten (auch GPS).
-- Die Karte nutzt OpenTopoMap (statt Esri, steht so schon in der Datenschutzerklärung)
+- Die Karte nutzt Thunderforest (Stil in KARTENSTIL, Schlüssel in THUNDERFOREST_KEY)
   und ein lokal ausgeliefertes Leaflet (kein Abruf von fremden Servern außer den Kacheln).
 - Die GPX-Downloads sind entfernt: Die Karte enthält nur einen stark vereinfachten
   Track (pro Etappe 150 Punkte, 30–50 % zu kurz), zum Nachwandern taugt der nicht.
@@ -25,6 +25,10 @@ SLUG = 'alta-via-2'
 BILD_ORIG = ROOT / 'bilder-original' / SLUG
 SEITEN = ROOT / 'public' / SLUG
 SITE = 'https://reiseblog-dln.pages.dev'
+# Kartenanbieter: Thunderforest (kommerzielle Nutzung erlaubt, Gratis-Tarif 150.000 Kacheln/Monat).
+# Der Schlüssel ist öffentlich im Seitenquelltext sichtbar, das ist bei Kartendiensten so vorgesehen.
+THUNDERFOREST_KEY = 'c4727ce21bbf4fbd8633df99582a9e88'
+KARTENSTIL = 'landscape'   # oder 'outdoors'
 ID_BERICHT, ID_FAKTEN = '5UasJpd77p8L7U8QhbsPxu', 'LNQAen7CZcoiVQooHo5i5V'
 PFAD_BERICHT, PFAD_FAKTEN = f'/{SLUG}/', f'/{SLUG}/zahlen-fakten/'
 
@@ -55,19 +59,27 @@ KORREKTUREN = [
      '<p><em>Mehr zu meiner Ausrüstung für Klettersteig-Hüttentouren folgt in einem eigenen Guide.</em></p>'),
     ('Pisciadùhütte mitzunehmen.&amp;#32;', 'Pisciadùhütte mitzunehmen.'),
     ('Polenta am Abend.&amp;#32;', 'Polenta am Abend.'),
-    # Karte: OpenTopoMap statt Esri, Hüttenmarker ohne (fehlende) Fotos
+    # Karte: Thunderforest statt Esri, Hüttenmarker ohne (fehlende) Fotos
     ('auf einer echten Geländekarte (Esri World Topo). Hütten antippen fürs Foto, Strecke antippen',
-     'auf einer Geländekarte (OpenTopoMap). Hütten antippen für Name und Höhe, Strecke antippen'),
+     'auf einer Geländekarte (Thunderforest). Hütten antippen für Name und Höhe, Strecke antippen'),
     ('Hütte antippen → Foto', 'Hütte antippen → Name und Höhe'),
     ('Distanz/Höhenmeter, GPX-Download und einen', 'Distanz/Höhenmeter und einen'),
     ('Strecke antippen → Zahlen, GPX &amp; Tagesbeschreibung', 'Strecke antippen → Zahlen &amp; Tagesbeschreibung'),
     ('\'<a href="\' + s.gpx + \'" download>GPX herunterladen \\u2193</a>\' +\n', ''),
     ('L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}", {\n      maxZoom: 17,\n      attribution: "Tiles &copy; Esri"\n    })',
-     'L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png", {\n      maxZoom: 17,\n      attribution: "Kartendaten: &copy; <a href=\\"https://www.openstreetmap.org/copyright\\">OpenStreetMap</a>-Mitwirkende, SRTM | Kartendarstellung: &copy; <a href=\\"https://opentopomap.org\\">OpenTopoMap</a> (CC-BY-SA)"\n    })'),
+     'L.tileLayer("https://tile.thunderforest.com/' + KARTENSTIL + '/{z}/{x}/{y}{r}.png?apikey=' + THUNDERFOREST_KEY + '", {\n      maxZoom: 18,\n      attribution: "Karten &copy; <a href=\\"https://www.thunderforest.com\\">Thunderforest</a>, Daten &copy; <a href=\\"https://www.openstreetmap.org/copyright\\">OpenStreetMap</a>-Mitwirkende"\n    })'),
     ('var html = \'<img src="\' + s.img + \'" alt="\' + s.name + \'" style="width:100%;height:100px;object-fit:cover;border-radius:6px;margin-bottom:.4rem;">\' +\n        \'<div class="title">\'',
      'var html = \'<div class="title">\''),
     ('<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>',
      '<script src="/vendor/leaflet-1.9.4.js"></script>'),
+    # Track orange mit weißem Rand, damit er sich von der Karte abhebt
+    ('      var line = L.polyline(pts, { color: "#b5651d", weight: 4, opacity: 0.85 }).addTo(map);',
+     '      L.polyline(pts, { color: "#fff", weight: 9, opacity: 0.95, interactive: false }).addTo(map);\n'
+     '      var line = L.polyline(pts, { color: "#d9480f", weight: 4.5, opacity: 1 }).addTo(map);'),
+    ('line.on("mouseout", function(){ line.setStyle({ weight: 4 }); });',
+     'line.on("mouseout", function(){ line.setStyle({ weight: 4.5 }); });'),
+    ('radius: 7, color: "#b5651d", fillColor: "#b5651d", fillOpacity: 1, weight: 2',
+     'radius: 7, color: "#fff", fillColor: "#d9480f", fillOpacity: 1, weight: 3'),
 ]
 KORREKTUREN_FAKTEN = [
     ('Hütten- und Mertagestouren', 'Hütten- und Mehrtagestouren'),
