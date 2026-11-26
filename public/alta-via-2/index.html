@@ -177,10 +177,11 @@ window.__routemapStops = [
 {name:"Schlüterhütte",img:"/bilder/alta-via-2/kamera-092.jpg",imgAlt:"Die Schlüterhütte am Morgen",elev:"2297 m",day:"Tag 2",tag:2,lat:46.635407,lon:11.804883},
 {name:"Puezhütte",elev:"2475 m",day:"Tag 3",tag:3,lat:46.590029,lon:11.829118},
 {name:"Pisciadùhütte",img:"/bilder/alta-via-2/kamera-186.jpg",imgAlt:"Die Pisciadùhütte am Abend",elev:"2585 m",day:"Tag 4",tag:4,lat:46.536441,lon:11.821921},
-{name:"Rifugio Castiglioni (Marmolada)",elev:"2045 m",day:"Tag 5",tag:5,lat:46.463543,lon:11.862095},
-{name:"Rifugio Contrin",elev:"2046 m",day:"Tag 6",tag:6,lat:46.429912,lon:11.815782},
+{name:"Rifugio Castiglioni (Marmolada)",img:"/bilder/alta-via-2/huette-castiglioni.jpg",imgAlt:"Das Rifugio Castiglioni vor der Marmolada",elev:"2045 m",day:"Tag 5",tag:5,lat:46.463543,lon:11.862095},
+{name:"Rifugio Contrin",img:"/bilder/alta-via-2/huette-contrin.jpg",imgAlt:"Das Rifugio Contrin",elev:"2046 m",day:"Tag 6",tag:6,lat:46.429912,lon:11.815782},
 {name:"Rifugio Passo delle Selle",img:"/bilder/alta-via-2/kamera-354-huette.jpg",imgAlt:"Das Rifugio Passo delle Selle auf dem Grat",elev:"2530 m",day:"Tag 7",tag:7,lat:46.396667,lon:11.762576}
 ];
+window.__routemapHuts = [{"name": "Rifugio Boè", "elev": "2873 m", "day": "Tag 5, unterwegs", "lat": 46.514416, "lon": 11.823517, "img": "/bilder/alta-via-2/huette-boe.jpg", "imgAlt": "Das Rifugio Boè"}, {"name": "Rifugio Passo San Nicolò", "elev": "", "day": "Tag 7, unterwegs", "lat": 46.42161, "lon": 11.79317, "img": "/bilder/alta-via-2/huette-san-nicolo.jpg", "imgAlt": "Das Rifugio Passo San Nicolò"}];
 window.__routemapSegs = [
 {km:"20,7 km",hm:"+1029 / −1141 m"},
 {km:"14,7 km",hm:"+866 / −705 m"},
@@ -561,6 +562,11 @@ window.__routemapSegLatLon = [
       var html = (s.img ? '<img class="huette-img" src="' + s.img + '" alt="' + s.imgAlt + '">' : '') +
         '<div class="title">' + s.day + '</div>' + s.name + ' (' + s.elev + ')';
       marker.bindPopup(html, { maxWidth: 220 });
+    });
+    (window.__routemapHuts || []).forEach(function(s){
+      var m = L.circleMarker([s.lat, s.lon], { radius: 5, color: '#d9480f', fillColor: '#fff', fillOpacity: 1, weight: 2.5 }).addTo(map);
+      m.bindPopup('<img class="huette-img" src="' + s.img + '" alt="' + s.imgAlt + '">' +
+        '<div class="title">' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : ''), { maxWidth: 220 });
     });
 
     try {

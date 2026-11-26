@@ -15,6 +15,7 @@
 
 Aufruf: python3 scripts/altavia-fotos.py
 """
+import json
 import re
 from pathlib import Path
 from PIL import Image
@@ -43,7 +44,16 @@ HUETTEN = {  # Kartenmarker → Foto
     'Schlüterhütte': (k(92), 'Die Schlüterhütte am Morgen'),
     'Pisciadùhütte': (k(186), 'Die Pisciadùhütte am Abend'),
     'Rifugio Passo delle Selle': (f'{ALT}kamera-354-huette.jpg', 'Das Rifugio Passo delle Selle auf dem Grat'),
+    'Rifugio Castiglioni (Marmolada)': (f'{ALT}huette-castiglioni.jpg', 'Das Rifugio Castiglioni vor der Marmolada'),
+    'Rifugio Contrin': (f'{ALT}huette-contrin.jpg', 'Das Rifugio Contrin'),
 }
+# Hütten unterwegs (kein Etappenziel): Koordinaten am Track geprüft (Boè 30 m, San Nicolò 12 m Abstand)
+UNTERWEGS = [
+    dict(name='Rifugio Boè', elev='2873 m', day='Tag 5, unterwegs', lat=46.514416, lon=11.823517,
+         img=f'{ALT}huette-boe.jpg', imgAlt='Das Rifugio Boè'),
+    dict(name='Rifugio Passo San Nicolò', elev='', day='Tag 7, unterwegs', lat=46.42161, lon=11.79317,
+         img=f'{ALT}huette-san-nicolo.jpg', imgAlt='Das Rifugio Passo San Nicolò'),
+]
 
 CSS = """
 /* Kamerafotos: Hoch-/Querformat je Gerät */
@@ -171,6 +181,14 @@ def main():
     s = einmal(s, "var html = '<div class=\"title\">' + s.day + '</div>' + s.name + ' (' + s.elev + ')';",
                "var html = (s.img ? '<img class=\"huette-img\" src=\"' + s.img + '\" alt=\"' + s.imgAlt + '\">' : '') +\n"
                "        '<div class=\"title\">' + s.day + '</div>' + s.name + ' (' + s.elev + ')';")
+    s = einmal(s, 'window.__routemapSegs = [', 'window.__routemapHuts = ' + json.dumps(UNTERWEGS, ensure_ascii=False) + ';\nwindow.__routemapSegs = [')
+    s = einmal(s, "      marker.bindPopup(html, { maxWidth: 220 });\n    });\n",
+               "      marker.bindPopup(html, { maxWidth: 220 });\n    });\n"
+               "    (window.__routemapHuts || []).forEach(function(s){\n"
+               "      var m = L.circleMarker([s.lat, s.lon], { radius: 5, color: '#d9480f', fillColor: '#fff', fillOpacity: 1, weight: 2.5 }).addTo(map);\n"
+               "      m.bindPopup('<img class=\"huette-img\" src=\"' + s.img + '\" alt=\"' + s.imgAlt + '\">' +\n"
+               "        '<div class=\"title\">' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : ''), { maxWidth: 220 });\n"
+               "    });\n")
     s = einmal(s, 'Hütten antippen für Name und Höhe,', 'Hütten antippen für Name, Höhe und Foto,')
     s = einmal(s, 'Hütte antippen → Name und Höhe', 'Hütte antippen → Name, Höhe, Foto')
     SEITE.write_text(s, encoding='utf-8')
