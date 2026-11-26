@@ -245,6 +245,17 @@ def main():
     s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
                '.mk-haus svg,.mk-einkehr svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}\n'
                '</style><script src="/vendor/leaflet-1.9.4.js">')
+    # Abstecher (Wunsch Jannis 26.11.2026): Tageswerte enthalten freiwillige Abstecher → Stern + Fußnote.
+    # Werte geschätzt aus Track (Hin-und-zurück-Stück) + Komoot-Höhenprofil; Dauer = Tagesgehzeit × Anteil nach DAV-Faustformel.
+    ABSTECHER = {
+        2: ('20,7 km', 'Peitlerkofel', 'ca. 4 km, ca. +500 Hm, ca. 2:30 h'),
+        3: ('14,7 km', 'Piz Duleda', 'ca. 1,3 km, ca. +160 Hm, ca. 0:45 h'),
+        7: ('15,7 km', 'Punta Alochet', 'ca. 2 km, ca. +100 Hm, ca. 0:50 h'),
+    }
+    for tag, (km, ziel, werte) in ABSTECHER.items():
+        s = einmal(s, '{km:"' + km + '",', '{note:"* inkl. Abstecher auf ' + ('die ' if ziel.startswith('Punta') else 'den ') + ziel + ' (' + werte + ')",km:"' + km + '*",')
+    s = einmal(s, "</svg>' + s.hm + '</div>' +\n",
+               "</svg>' + s.hm + '</div>' +\n        (s.note ? '<div class=\"segnote\"><small>' + s.note + '</small></div>' : '') +\n")
     # Titelbild (Wunsch Jannis 26.11.2026): Kamerafoto statt Handyfoto mit Personen im Fokus
     s = s.replace('/bilder/alta-via-2/titel-2af9ad.jpg', TITELBILD)
     SEITE.write_text(s, encoding='utf-8')
@@ -254,6 +265,16 @@ def main():
     f = fakten.read_text(encoding='utf-8')
     if '22.–29. August 2026' not in f:
         f = einmal(f, '<td>22.–28. August 2026</td>', '<td>22.–29. August 2026</td>')
+        fakten.write_text(f, encoding='utf-8')
+    f = fakten.read_text(encoding='utf-8')
+    if 'inkl. Abstecher' not in f:
+        fuss = []
+        for tag, (km, ziel, werte) in ABSTECHER.items():
+            f = einmal(f, '<td>' + km + '</td>', '<td>' + km + '*</td>')
+            fuss.append(f'Tag {tag}: {ziel} ({werte})')
+        f = einmal(f, '<td>ca. 104 km, ca. +6.200 / −5.700 Hm</td>', '<td>ca. 104 km, ca. +6.200 / −5.700 Hm*<br><small>* inkl. Abstecher, siehe „Der Weg, Tag für Tag“</small></td>')
+        f = einmal(f, '</tbody></table></div></section>\n<section class="plain"><h2>Packen',
+                   '</tbody></table></div>\n<p class="tabnote"><small>* inkl. Abstecher, die nicht zwingend zur Route gehören. ' + ' · '.join(fuss) + '. Werte für die Abstecher geschätzt.</small></p></section>\n<section class="plain"><h2>Packen')
         fakten.write_text(f, encoding='utf-8')
     print('✓ Zeitraum 22.–29. August:', fakten.relative_to(ROOT))
 
