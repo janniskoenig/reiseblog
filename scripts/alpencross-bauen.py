@@ -38,7 +38,7 @@ ENTWURF = True
 
 TITEL = 'MTB-Alpencross: In acht Etappen vom Allgäu an den Gardasee'
 BESCHREIBUNG = ('Mit dem Mountainbike in acht Etappen von Füssen über Landeck, das Münstertal und '
-                'Madonna di Campiglio bis nach Riva del Garda. Reisebericht mit Karte.')
+                'Madonna di Campiglio bis nach Torbole am Gardasee. Reisebericht mit Karte.')
 
 # Tag, Datum, von, nach, km, +Hm, −Hm, Fahrzeit (h, Komoot-Aufzeichnung)
 ETAPPEN = [
@@ -49,9 +49,9 @@ ETAPPEN = [
     (5, '05.08.', 'Tschierv', 'Grosio', 73.4, 1726, 1543, 7.95),
     (6, '06.08.', 'Grosio', 'Pezzo', 25.8, 929, 1237, 4.38),
     (7, '07.08.', 'Pezzo', 'Madonna di Campiglio', 65.5, 2026, 2090, 8.87),
-    (8, '08.08.', 'Madonna di Campiglio', 'Riva del Garda', 64.2, 1160, 2606, 8.17),
+    (8, '08.08.', 'Madonna di Campiglio', 'Torbole (Gardasee)', 64.2, 1160, 2606, 8.17),
 ]
-RUECKFAHRT = (10, '10.08.', 'Riva del Garda', 'Bahnhof Rovereto', 22.2, 271, 146, 2.57)
+RUECKFAHRT = (10, '10.08.', 'Torbole', 'Bahnhof Rovereto', 22.2, 271, 146, 2.57)
 
 # Übernachtungen: Name wie in Jannis' Stichpunkten; Lage = Etappenende im Track
 UNTERKUENFTE = [
@@ -62,7 +62,7 @@ UNTERKUENFTE = [
     dict(tag=5, name='La Baita', ort='Grosio'),
     dict(tag=6, name='Ristorante Da Giusy', ort='Pezzo'),
     dict(tag=7, name='Vallesinella', ort='Madonna di Campiglio'),
-    dict(tag=8, name='Unterkunft am Gardasee', ort='', naechte='Tag 8 und 9', offen=True),
+    dict(tag=8, name='Eco Hotel Garnì Bonapace', ort='Torbole', naechte='Tag 8 und 9'),
 ]
 # Einkehrmöglichkeiten unterwegs (graue Tasse): erst eintragen, wenn Jannis sie bestätigt hat.
 # Format wie Alta Via: dict(name=…, elev='… m', day='Tag N', lat=…, lon=…, info='…', img='', imgAlt='')
@@ -80,7 +80,8 @@ TEXTE = {
         'und die Fahrt auf dem Uferweg.'],
     2: ['Ein Highlight des Tages war der Blindseetrail.'],
     3: ['Ein Highlight des Tages war der Fimbachtrail.'],
-    4: ['Ein Highlight des Tages war die Fahrt entlang eines Flusses.'],
+    4: ['Ein Highlight des Tages war die Fahrt entlang eines Flusses durch die UNESCO-Biosfera Engiadina Val Müstair, '
+        'zu der auch der Schweizerische Nationalpark gehört.'],
     5: ['Unterkunft war die entlegene Hütte La Baita in einer pittoresken Landschaft.'],
     8: ['Auf dem Weg zum Gardasee und am See selbst war das mediterrane Flair deutlich zu spüren.'],
     10: ['Der letzte Tag war keine richtige Etappe mehr, nur noch die Fahrt vom Gardasee zum Bahnhof in '
@@ -99,12 +100,10 @@ FAZIT = 'Eine tolle Tour und Erfahrung mit schönen Trails. Ich wäre gerne noch
 
 # Offene Fragen (erscheinen unten in Zahlen & Fakten unter „Noch zu ergänzen“)
 OFFEN = [
-    'Tag 8/9: Wie hieß eure Unterkunft am Gardasee?',
-    'Einkehr: Wo habt ihr unterwegs eingekehrt (Hütten, Almen, Cafés)? Die kommen als graue Tasse auf die Karte.',
+    'Tag 8/9: War es das Eco Hotel Garnì Bonapace in Torbole? (Das Ende deines GPS-Tracks liegt genau dort.)',
     'Tag 2: Der Blindseetrail liegt am Fernpass, also auf der Etappe Heiterwang → Landeck. Passt das?',
     'Tag 3: Heißt der Trail „Fimbachtrail“ oder „Fimbatrail“ (Fimbatal)?',
-    'Tag 4: Du schreibst „Schweizer Nationalpark Val Müstair“. Der Track führt über S-charl, das Val Müstair selbst gehört nicht zum Nationalpark. Welchen Abschnitt meinst du?',
-    'Pässe: Laut GPS liegen die höchsten Punkte bei ca. 2.600 m (Tag 4), 2.240 m (Tag 5), 2.620 m (Tag 6) und 2.610 m (Tag 7). Wie heißen die Pässe?',
+    'Tag 8: Ging es über den Passo Bregn de l’Ors? Der höchste Punkt liegt laut GPS bei ca. 1.860 m.',
     'Kais Bremse: auf den letzten Kilometern welcher Etappe?',
     'Texte: Stichpunkte zu Tag 6 und 7 und gern mehr zu jedem Tag (Landschaft, Wetter, Essen, Unterkünfte)',
     'Fotos: Titelbild und Bilder je Tag',
@@ -121,6 +120,11 @@ def tsd(n):
 def fahrzeit(h):
     m = round(h * 60)
     return f'{m // 60}:{m % 60:02d} h'
+
+# Höchster Punkt je Tag: Name nur, wo GPS-Hochpunkt und Quelle zusammenpassen
+# (bergwelten.com Albrechtroute-Etappen 3–6, tirol.at „Fimbapass … knapp über 2.600 m“)
+PAESSE = {4: 'Fimbapass', 5: 'Döss Radond (2.240 m)', 6: 'Passo di Gavia (2.621 m)',
+          7: 'Forcellina di Montozzo (2.613 m)'}
 
 def hoechster(tag):
     return round(HOECHSTE[tag - 1], -1)
@@ -266,8 +270,6 @@ def karten_daten():
 
 LEGENDE = """  <div class="legend">
     <span><svg viewBox="0 0 24 24" width="20" height="20"><path d="M12 2.5 1.8 11.2h3v10h14.4v-10h3z" fill="#d9480f" stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="18.6" text-anchor="middle" font-size="9.5" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">1</text></svg> Übernachtung</span>
-    <span><svg viewBox="0 0 24 24" width="15" height="15"><circle cx="12" cy="12" r="11" fill="#fff" stroke="#8a8a8a" stroke-width="1.2"/><path d="M6.5 9h8.5v4.2a3.6 3.6 0 0 1-3.6 3.6h-1.3a3.6 3.6 0 0 1-3.6-3.6z M15 10h1.2a1.9 1.9 0 0 1 0 3.8H15" fill="none" stroke="#6f6f6f" stroke-width="1.7" stroke-linejoin="round"/></svg> Einkehrmöglichkeit</span>
-    <span><svg viewBox="0 0 24 6" width="22" height="6"><line x1="1" y1="3" x2="23" y2="3" stroke="#6f6f6f" stroke-width="2.5" stroke-dasharray="5 4"/></svg> Geplant, nicht gefahren</span>
     <span><span class="bar"></span> Strecke antippen → Zahlen &amp; Tagesbeschreibung</span>
   </div>"""
 
@@ -323,7 +325,7 @@ def bericht():
 
 <section class="plain crosslink">
   <h3>Alle Zahlen und Fakten zur Tour</h3>
-  <p>Etappenlängen, Höhenmeter, Fahrzeiten, Unterkünfte und Einkehr – gebündelt in <a href="{PFAD_FAKTEN}">Zahlen &amp; Fakten zum Alpencross</a>.</p>
+  <p>Etappenlängen, Höhenmeter, Fahrzeiten, Unterkünfte – gebündelt in <a href="{PFAD_FAKTEN}">Zahlen &amp; Fakten zum Alpencross</a>.</p>
 </section>
 """
     s += FUSS + f'\n<script>{STORY_JS}</script>\n</body>\n</html>\n'
@@ -334,7 +336,7 @@ def bericht():
 def fakten():
     t = TITEL + ' – Zahlen & Fakten'
     s = kopf(t, 'Der MTB-Alpencross in Zahlen: Etappen, Distanzen, Höhenmeter und Fahrzeiten, '
-                'dazu Unterkünfte und Einkehrmöglichkeiten.', PFAD_FAKTEN, False)
+                'dazu die Unterkünfte.', PFAD_FAKTEN, False)
     s += f'<h1 class="posttitle">{esc(t)}</h1>\n<p class="crosslink-back"><a href="{PFAD_BERICHT}">← Zurück zum Bericht</a></p>\n'
     km = sum(e[4] for e in ETAPPEN); up = sum(e[5] for e in ETAPPEN); dn = sum(e[6] for e in ETAPPEN)
     route = ' → '.join([ETAPPEN[0][2]] + [e[3] for e in ETAPPEN])
@@ -345,7 +347,7 @@ def fakten():
 <tr><td><strong>Dauer</strong></td><td>8 Etappen, dazu ein Ruhetag am Gardasee und die Rückfahrt zum Bahnhof Rovereto</td></tr>
 <tr><td><strong>Strecke</strong></td><td>{esc(route)}</td></tr>
 <tr><td><strong>Distanz / Höhenmeter</strong></td><td>{zahl(km, 0)} km, +{tsd(up)} / −{tsd(dn)} Hm<br><small>ohne Rückfahrt nach Rovereto ({zahl(RUECKFAHRT[4])} km)</small></td></tr>
-<tr><td><strong>Höchster Punkt</strong></td><td>ca. {tsd(max(hoechster(e[0]) for e in ETAPPEN))} m (Tag 6)</td></tr>
+<tr><td><strong>Höchster Punkt</strong></td><td>ca. {tsd(max(hoechster(e[0]) for e in ETAPPEN))} m am Passo di Gavia (Tag 6)</td></tr>
 <tr><td><strong>Rad und Gepäck</strong></td><td>Fully; Cyclite-Touring-Rucksack (23 l) und Cyclite-Lenkerrolle</td></tr>
 <tr><td><strong>Unterkunft</strong></td><td>Jede Nacht woanders, siehe Unterkünfte unten</td></tr>
 <tr><td><strong>Gruppengröße</strong></td><td>2 Personen</td></tr>
@@ -359,7 +361,7 @@ def fakten():
 """
     for (tag, datum, von, nach, km_, up_, dn_, h) in ETAPPEN:
         s += (f'<tr><td>{tag}</td><td>{datum}</td><td>{esc(von)} → {esc(nach)}</td><td>{zahl(km_)} km</td>'
-              f'<td>+{tsd(up_)}/−{tsd(dn_)}</td><td>{fahrzeit(h)}</td><td>ca. {tsd(hoechster(tag))} m</td></tr>\n')
+              f'<td>+{tsd(up_)}/−{tsd(dn_)}</td><td>{fahrzeit(h)}</td><td>ca. {tsd(hoechster(tag))} m' + (f'<br><small>{esc(PAESSE[tag])}</small>' if tag in PAESSE else '') + '</td></tr>\n')
     s += '<tr><td>9</td><td>09.08.</td><td>Gardasee</td><td>–</td><td>–</td><td>–</td><td>–</td></tr>\n'
     tag, datum, von, nach, km_, up_, dn_, h = RUECKFAHRT
     s += (f'<tr><td>{tag}</td><td>{datum}</td><td>{esc(von)} → {esc(nach)}</td><td>{zahl(km_)} km</td>'
@@ -372,21 +374,13 @@ def fakten():
 """
     for u in UNTERKUENFTE:
         name = luecke('Name?') if u.get('offen') else esc(u['name'])
-        ort = esc(u['ort']) if u['ort'] else (esc('Riva del Garda') if u['tag'] == 8 else '–')
+        ort = esc(u['ort']) if u['ort'] else '–'
         s += (f"<tr><td>{u.get('naechte', 'Tag ' + str(u['tag']))}</td><td>{name}</td><td>{ort}</td>"
               f"<td>ca. {tsd(ende_hoehe(u['tag']))} m</td><td>–</td></tr>\n")
     s += ('</tbody></table></div>\n'
           + luecke('Hinweise je Unterkunft: Lage, Zimmer, Essen, Radkeller, was gut oder weniger gut war.')
           + '</section>\n')
-    s += '<section class="plain"><h2>Einkehr unterwegs</h2>'
-    if EINKEHR:
-        s += '<div class="table-scroll"><table class="factstable"><thead><tr><th>Tag</th><th>Einkehr</th><th>Hinweise</th></tr></thead><tbody>\n'
-        for e in EINKEHR:
-            s += f"<tr><td>{esc(e['day'])}</td><td>{esc(e['name'])}</td><td>{esc(e.get('info', ''))}</td></tr>\n"
-        s += '</tbody></table></div>'
-    else:
-        s += luecke('Wo habt ihr unterwegs eingekehrt? Die Einkehrmöglichkeiten kommen hier in die Tabelle und als graue Tasse auf die Karte.')
-    s += '</section>\n'
+    s += '<section class="plain"><h2>Einkehr unterwegs</h2><p>Unterwegs gab es meist genug Möglichkeiten zum Einkehren.</p></section>\n'
     s += ('<section class="plain"><h2>Noch zu ergänzen</h2><div class="luecke"><ul>'
           + ''.join(f'<li>{esc(f)}</li>' for f in OFFEN) + '</ul></div></section>\n')
     s += FUSS + '\n</body>\n</html>\n'
