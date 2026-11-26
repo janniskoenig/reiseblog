@@ -16,6 +16,7 @@
 Aufruf: python3 scripts/altavia-fotos.py
 """
 import json
+import math
 import re
 from pathlib import Path
 from PIL import Image
@@ -256,6 +257,27 @@ def main():
             f'<div class="title">Geplant, nicht gegangen · Tag {tag}</div>{name}'
             f'<div class="segstat"><span class="ic">↔</span>ca. {str(g["km"]).replace(".", ",")} km</div>'
             f'<div class="segstat">ca. +{g["auf_hm"]} / −{g["ab_hm"]} Hm</div><small>{grund}</small>')))
+    # Nur die Abschnitte zeichnen, die nicht auf dem echten Track liegen (Wunsch Jannis: „nicht doppelt auf dem orangenen“)
+    _segs = json.loads(re.search(r'window\.__routemapSegLatLon\s*=\s*(\[.*?\]);', s, re.S).group(1))
+    def _abst(p, a, b):
+        ky = 111320; kx = 111320 * math.cos(math.radians(p[0]))
+        ax, ay, bx, by, px, py = a[1]*kx, a[0]*ky, b[1]*kx, b[0]*ky, p[1]*kx, p[0]*ky
+        dx, dy = bx-ax, by-ay; L = dx*dx+dy*dy
+        t = 0 if L == 0 else max(0, min(1, ((px-ax)*dx+(py-ay)*dy)/L))
+        return math.hypot(px-ax-t*dx, py-ay-t*dy)
+    def _auf_track(p):
+        return any(_abst(p, a, b) < 60 for seg in _segs for a, b in zip(seg, seg[1:])
+                   if abs(a[0]-p[0]) < 0.01 and abs(a[1]-p[1]) < 0.015)
+    for g in geplant:
+        runs, cur = [], []
+        for p in g['pts']:
+            if _auf_track(p):
+                if len(cur) > 3: runs.append(cur)
+                cur = []
+            else:
+                cur.append(p)
+        if len(cur) > 3: runs.append(cur)
+        g['pts'] = runs
     s = einmal(s, 'window.__routemapSegs = [', 'window.__routemapGeplant = ' + json.dumps(geplant, ensure_ascii=False) + ';\nwindow.__routemapSegs = [')
     s = einmal(s, "    if (window.__routemapAbstieg) {\n",
                "    (window.__routemapGeplant || []).forEach(function(g){\n"
