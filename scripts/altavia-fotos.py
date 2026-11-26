@@ -288,11 +288,11 @@ def main():
                "    });\n"
                "    if (window.__routemapAbstieg) {\n")
     # Abstecher (Wunsch Jannis 26.11.2026): Tageswerte enthalten freiwillige Abstecher → Stern + Fußnote.
-    # Werte geschätzt aus Track (Hin-und-zurück-Stück) + Komoot-Höhenprofil; Dauer = Tagesgehzeit × Anteil nach DAV-Faustformel.
+    # Werte aus Track (Hin-und-zurück-Stück) + Komoot-Höhenprofil; keine Zeiten (Track ohne Zeitstempel, Wunsch Jannis: nichts Geschätztes).
     ABSTECHER = {
-        2: ('20,7 km', 'Peitlerkofel', 'ca. 4 km, ca. +500 Hm, ca. 2:30 h'),
-        3: ('14,7 km', 'Piz Duleda', 'ca. 1,3 km, ca. +160 Hm, ca. 0:45 h'),
-        7: ('15,7 km', 'Punta Alochet', 'ca. 2 km, ca. +100 Hm, ca. 0:50 h'),
+        2: ('20,7 km', 'Peitlerkofel', 'ca. 4 km, ca. +500 Hm'),
+        3: ('14,7 km', 'Piz Duleda', 'ca. 1,3 km, ca. +160 Hm'),
+        7: ('15,7 km', 'Punta Alochet', 'ca. 2 km, ca. +100 Hm'),
     }
     for tag, (km, ziel, werte) in ABSTECHER.items():
         s = einmal(s, '{km:"' + km + '",', '{note:"* inkl. Abstecher auf ' + ('die ' if ziel.startswith('Punta') else 'den ') + ziel + ' (' + werte + ')",km:"' + km + '*",')
@@ -316,7 +316,7 @@ def main():
             fuss.append(f'Tag {tag}: {ziel} ({werte})')
         f = einmal(f, '<td>ca. 104 km, ca. +6.200 / −5.700 Hm</td>', '<td>ca. 104 km, ca. +6.200 / −5.700 Hm*<br><small>* inkl. Abstecher, siehe „Der Weg, Tag für Tag“</small></td>')
         f = einmal(f, '</tbody></table></div></section>\n<section class="plain"><h2>Packen',
-                   '</tbody></table></div>\n<p class="tabnote"><small>* inkl. Abstecher, die nicht zwingend zur Route gehören. ' + ' · '.join(fuss) + '. Werte für die Abstecher geschätzt.</small></p></section>\n<section class="plain"><h2>Packen')
+                   '</tbody></table></div>\n<p class="tabnote"><small>* inkl. Abstecher, die nicht zwingend zur Route gehören. ' + ' · '.join(fuss) + '. Distanz und Höhenmeter der Abstecher aus dem Track abgeleitet.</small></p></section>\n<section class="plain"><h2>Packen')
         fakten.write_text(f, encoding='utf-8')
     print('✓ Zeitraum 22.–29. August:', fakten.relative_to(ROOT))
 
