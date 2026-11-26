@@ -2,10 +2,12 @@
 // Interaktive Karte (Leaflet + Thunderforest, Einstellungen in src/config.ts). Zeigt Orte als Punkte und
 // GPX-Tracks als Linien; Länge und Höhenmeter werden aus der GPX-Datei berechnet.
 interface Ort { name: string; lat: number; lng: number; link?: string }
-interface Props { orte?: Ort[]; gpx?: string[]; hoehe?: string; linie?: boolean }
-const { orte = [], gpx = [], hoehe, linie = false } = Astro.props;
+// Tour: zusammenhängende Strecke als eine Linie (route = JSON mit [lat, lng]-Paaren).
+interface Tour { titel: string; link: string; route: string; info?: string }
+interface Props { orte?: Ort[]; gpx?: string[]; touren?: Tour[]; hoehe?: string; linie?: boolean }
+const { orte = [], gpx = [], touren = [], hoehe, linie = false } = Astro.props;
 ---
-<div class="map" data-orte={JSON.stringify(orte)} data-gpx={JSON.stringify(gpx)} data-linie={linie ? '1' : ''} style={hoehe ? `height:${hoehe}` : undefined}></div>
+<div class="map" data-orte={JSON.stringify(orte)} data-gpx={JSON.stringify(gpx)} data-touren={JSON.stringify(touren)} data-linie={linie ? '1' : ''} style={hoehe ? `height:${hoehe}` : undefined}></div>
 
 <script>
   import L from 'leaflet';
@@ -41,6 +43,21 @@ const { orte = [], gpx = [], hoehe, linie = false } = Astro.props;
     map.fitBounds(grenzen, { padding: [30, 30] });
   }
 
+  async function ladeTour(map: L.Map, t: { titel: string; link: string; route: string; info?: string }, grenzen: L.LatLngBounds) {
+    const pts: [number, number][] = await (await fetch(t.route)).json();
+    if (!pts.length) return;
+    const popup = `<a href="${t.link}"><strong>${t.titel}</strong></a>` + (t.info ? `<br>${t.info}` : '');
+    L.polyline(pts, { color: '#fff', weight: 9, opacity: .95, interactive: false }).addTo(map);
+    const line = L.polyline(pts, { color: akzent, weight: 4.5, opacity: 1 }).addTo(map).bindPopup(popup);
+    line.on('mouseover', () => line.setStyle({ weight: 7 }));
+    line.on('mouseout', () => line.setStyle({ weight: 4.5 }));
+    // Start und Ziel markieren
+    [pts[0], pts[pts.length - 1]].forEach((p) =>
+      L.circleMarker(p, { radius: 6, color: '#fff', weight: 3, fillColor: akzent, fillOpacity: 1 }).addTo(map).bindPopup(popup));
+    grenzen.extend(line.getBounds());
+    map.fitBounds(grenzen, { padding: [30, 30], maxZoom: 12 });
+  }
+
   document.querySelectorAll<HTMLElement>('.map').forEach((el) => {
     const orte = JSON.parse(el.dataset.orte || '[]');
     const gpx: string[] = JSON.parse(el.dataset.gpx || '[]');
@@ -61,5 +78,7 @@ const { orte = [], gpx = [], hoehe, linie = false } = Astro.props;
     if (grenzen.isValid()) map.fitBounds(grenzen, { padding: [30, 30], maxZoom: 12 });
     else map.setView([47.5, 11], 5);
     gpx.forEach((g) => ladeGpx(map, g, grenzen).catch((err) => console.warn('GPX nicht geladen:', g, err)));
+    const touren = JSON.parse(el.dataset.touren || '[]');
+    touren.forEach((t: any) => ladeTour(map, t, grenzen).catch((err) => console.warn('Tour nicht geladen:', t.route, err)));
   });
 </script>

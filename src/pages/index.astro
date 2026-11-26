@@ -5,7 +5,12 @@ import Karte from '../components/Karte.astro';
 import { berichte, link, reisen, url } from '../lib';
 
 const alle = await berichte();
-const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) })));
+const orte = alle.filter((b) => !b.data.route).flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) })));
+const fmtZahl = (n?: number) => (n === undefined ? '' : n.toLocaleString('de-DE'));
+const touren = alle.filter((b) => b.data.route).map((b) => ({
+  titel: b.data.titel, link: link(b), route: b.data.route!,
+  info: [b.data.statistik.km && `${fmtZahl(b.data.statistik.km)} km`, b.data.statistik.hoehenmeter && `${fmtZahl(b.data.statistik.hoehenmeter)} Hm`].filter(Boolean).join(' · '),
+}));
 ---
 <Basis titel="Reiseblog" beschreibung="Reise- und Outdoor-Berichte mit Karten und Bildern">
   <section class="intro wrap">
@@ -32,10 +37,10 @@ const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) }
                  : <p class="muted">Noch keine Berichte.</p>}
     <p><a href={url('/berichte/')}>Alle Berichte →</a></p>
   </section>
-  {orte.length > 0 && (
+  {(orte.length > 0 || touren.length > 0) && (
     <section class="wrap">
       <h2>Wo wir unterwegs waren</h2>
-      <Karte orte={orte} hoehe="50vh" />
+      <Karte orte={orte} touren={touren} hoehe="50vh" />
     </section>
   )}
 </Basis>
