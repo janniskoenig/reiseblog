@@ -26,3 +26,17 @@ export const reisen = [
     planung: url('/madagaskar/reiseplanung/'),
   },
 ];
+
+// Übersichtskarten: ein Punkt pro Bericht (Region), nicht pro Ort.
+// Position = Mittelpunkt der Orte des Berichts. Berichte mit durchgehender Route werden als Linie gezeichnet.
+export function kartenpunkte(alle: Bericht[]) {
+  return alle.filter((b) => !b.data.route && b.data.orte.length > 0).map((b) => {
+    const o = b.data.orte;
+    return {
+      name: `${b.data.titel}<br><small>${o.map((x) => x.name).join(' · ')}</small>`,
+      lat: o.reduce((s, x) => s + x.lat, 0) / o.length,
+      lng: o.reduce((s, x) => s + x.lng, 0) / o.length,
+      link: link(b),
+    };
+  });
+}

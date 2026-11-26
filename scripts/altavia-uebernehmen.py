@@ -37,9 +37,9 @@ KORREKTUREN = [
     ('Mit italienischen Hüttenflair', 'Mit italienischem Hüttenflair'),
     ('mit Umsteig in München', 'mit Umstieg in München'),
     # Platzhalter: Preis/Höhenmeter fehlen noch → vorerst ohne Zahl
-    ('mit dem Bus zur Seilbahn (<strong>[Preis ergänzen] €</strong>)', 'mit dem Bus zur Seilbahn'),
+    ('mit dem Bus zur Seilbahn (<strong>[Preis ergänzen] €</strong>)', 'mit dem Bus zur Seilbahn (Bus und Einzelfahrt mit der Seilbahn zusammen 26 € pro Person)'),
     ('zu Fuß zurücklegen (<strong>[Höhenmeter ergänzen] Hm</strong>), das war', 'zu Fuß zurücklegen, das war'),
-    ('Anstieg durch die XY-Scharte  bot', 'Anstieg durch eine Scharte bot'),
+    ('Anstieg durch die XY-Scharte  bot', 'Anstieg durch die Roascharte bot'),
     ('Auch Busstops und -routen sind</blockquote>',
      'Auch Bushaltestellen und Busverbindungen sollte man vorher kennen.</blockquote>'),
     ('vom Essenstisch wahnsinnsblicke in das Tal', 'vom Essenstisch Wahnsinnsblicke ins Tal'),
