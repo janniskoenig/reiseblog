@@ -37,11 +37,13 @@ TAGE = {
     2: dict(sticky=[k(12), k(63), k(88), k(90)], reihe=[], danach=k(66)),
     3: dict(sticky=[k(102), k(128), k(146)], reihe=[], danach=k(137)),
     4: dict(sticky=[k(189), k(201)], reihe=[], danach=k(177)),
-    5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[f'{ALT}handy-piz-boe-gipfel.jpg', k(219), k(229), k(251), k(282), k(297)], danach=None),
+    5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[f'{ALT}handy-piz-boe-gipfel.jpg', k(282)], danach=None),
     6: dict(sticky=[k(304), k(311)], reihe=[], danach=None),
-    7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), k(333), k(354), k(365), f'{ALT}handy-gulasch-selle.jpg'], danach=None),
+    7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), f'{ALT}handy-gulasch-selle.jpg'], danach=None),
 }
 TITELBILD = f'{ALT}kamera-251.jpg'
+# „Weitere Eindrücke“: nur Kamerafotos (Jannis 26.11.: Handyfotos wirken daneben flau), entlastet die Bildreihen
+GALERIE = [k(219), k(229), k(297), k(333), k(354), k(365)]
 HUETTEN = {  # Kartenmarker → Foto
     'Schlüterhütte': (k(92), 'Die Schlüterhütte am Morgen'),
     'Pisciadùhütte': (k(186), 'Die Pisciadùhütte am Abend'),
@@ -298,6 +300,12 @@ def main():
         s = einmal(s, '{km:"' + km + '",', '{note:"* inkl. Abstecher auf ' + ('die ' if ziel.startswith('Punta') else 'den ') + ziel + ' (' + werte + ')",km:"' + km + '*",')
     s = einmal(s, "</svg>' + s.hm + '</div>' +\n",
                "</svg>' + s.hm + '</div>' +\n        (s.note ? '<div class=\"segnote\"><small>' + s.note + '</small></div>' : '') +\n")
+    g0 = s.index('<section class="plain sub"><h3>Weitere Eindrücke</h3><div class="gallery-grid">')
+    g1 = s.index('</div>', g0)
+    kopf = '<section class="plain sub"><h3>Weitere Eindrücke</h3><div class="gallery-grid">'
+    for src in GALERIE:
+        assert (ROOT / 'public' / src.lstrip('/')).exists(), src
+    s = s[:g0] + kopf + ''.join(f'<img class="gallery-img lightbox-img" src="{src}" alt="Weitere Impression" loading="lazy">' for src in GALERIE) + s[g1:]
     # Titelbild (Wunsch Jannis 26.11.2026): Kamerafoto statt Handyfoto mit Personen im Fokus
     s = s.replace('/bilder/alta-via-2/titel-2af9ad.jpg', TITELBILD)
     SEITE.write_text(s, encoding='utf-8')
