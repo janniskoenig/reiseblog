@@ -221,9 +221,9 @@ def main():
                "    if (window.__routemapAbstieg) {\n"
                "      L.polyline(window.__routemapAbstieg, { color: '#fff', weight: 8, opacity: 0.9, interactive: false }).addTo(map);\n"
                "      var ab = L.polyline(window.__routemapAbstieg, { color: '#d9480f', weight: 4, opacity: 1, dashArray: '2 8', lineCap: 'round' }).addTo(map);\n"
-               "      ab.bindPopup('<div class=\"title\">Abstieg · 29. August</div>Rifugio Passo delle Selle \u2192 Bushaltestelle Passo San Pellegrino<br><small>ca. 3,8 km über Weg 604 · nicht aufgezeichnet, Verlauf nach Wanderwegkarte</small>', { maxWidth: 230 });\n"
+               "      ab.bindPopup('<div class=\"title\">Abstieg · 29. August</div>Rifugio Passo delle Selle \u2192 Bushaltestelle Passo San Pellegrino Costabella<br><small>ca. 3,8 km über Weg 604 · nicht aufgezeichnet, Verlauf nach Wanderwegkarte</small>', { maxWidth: 230 });\n"
                "      L.circleMarker(window.__routemapAbstieg[window.__routemapAbstieg.length - 1], { radius: 5, color: '#fff', weight: 2, fillColor: '#555', fillOpacity: 1 })\n"
-               "        .bindPopup('<div class=\"title\">Bushaltestelle</div>Passo San Pellegrino').addTo(map);\n"
+               "        .bindPopup('<div class=\"title\">Bushaltestelle</div>Passo San Pellegrino Costabella').addTo(map);\n"
                "    }\n"
                "    (window.__routemapHuts || []).forEach(function(s){\n")
     s = einmal(s, "      segLatLon.forEach(function(seg){ seg.forEach(function(p){ allPts.push(p); }); });\n",
