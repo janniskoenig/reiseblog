@@ -41,7 +41,7 @@ TAGE = {
     6: dict(sticky=[k(304), k(311)], reihe=[], danach=None),
     7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), k(333), k(354), k(365), f'{ALT}handy-gulasch-selle.jpg'], danach=None),
 }
-TITELBILD = f'{ALT}kamera-189.jpg'
+TITELBILD = f'{ALT}kamera-251.jpg'
 HUETTEN = {  # Kartenmarker → Foto
     'Schlüterhütte': (k(92), 'Die Schlüterhütte am Morgen'),
     'Pisciadùhütte': (k(186), 'Die Pisciadùhütte am Abend'),
