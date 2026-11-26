@@ -49,9 +49,9 @@ HUETTEN = {  # Kartenmarker → Foto
 }
 # Hütten unterwegs (kein Etappenziel): Koordinaten am Track geprüft (Boè 30 m, San Nicolò 12 m Abstand)
 UNTERWEGS = [
-    dict(name='Rifugio Boè', elev='2873 m', day='Tag 5, unterwegs', lat=46.514416, lon=11.823517,
+    dict(name='Rifugio Boè', elev='2873 m', day='Tag 5', lat=46.514416, lon=11.823517,
          img=f'{ALT}huette-boe.jpg', imgAlt='Das Rifugio Boè'),
-    dict(name='Rifugio Passo San Nicolò', elev='', day='Tag 7, unterwegs', lat=46.42161, lon=11.79317,
+    dict(name='Rifugio Passo San Nicolò', elev='', day='Tag 7', lat=46.42161, lon=11.79317,
          img=f'{ALT}huette-san-nicolo.jpg', imgAlt='Das Rifugio Passo San Nicolò'),
 ]
 
@@ -181,30 +181,33 @@ def main():
     s = einmal(s, "var html = '<div class=\"title\">' + s.day + '</div>' + s.name + ' (' + s.elev + ')';",
                "var html = (s.img ? '<img class=\"huette-img\" src=\"' + s.img + '\" alt=\"' + s.imgAlt + '\">' : '') +\n"
                "        '<div class=\"title\">' + s.day + '</div>' + s.name + ' (' + s.elev + ')';")
+    # Kartenmarker: Übernachtung = Häuschen mit Tageszahl, Einkehrmöglichkeit = kleine graue Tasse (Wunsch Jannis 26.11.)
+    HAUS = ('<svg viewBox="0 0 24 24" width="28" height="28"><path d="M12 2.5 1.8 11.2h3v10h14.4v-10h3z" fill="#d9480f" '
+            'stroke="#fff" stroke-width="1.6" stroke-linejoin="round"/><text x="12" y="18.6" text-anchor="middle" '
+            'font-size="9.5" font-weight="700" fill="#fff" font-family="system-ui,sans-serif">N</text></svg>')
+    TASSE = ('<svg viewBox="0 0 24 24" width="18" height="18"><circle cx="12" cy="12" r="11" fill="#fff" stroke="#8a8a8a" stroke-width="1.2"/>'
+             '<path d="M6.5 9h8.5v4.2a3.6 3.6 0 0 1-3.6 3.6h-1.3a3.6 3.6 0 0 1-3.6-3.6z M15 10h1.2a1.9 1.9 0 0 1 0 3.8H15" '
+             'fill="none" stroke="#6f6f6f" stroke-width="1.7" stroke-linejoin="round"/></svg>')
     s = einmal(s, 'window.__routemapSegs = [', 'window.__routemapHuts = ' + json.dumps(UNTERWEGS, ensure_ascii=False) + ';\nwindow.__routemapSegs = [')
     s = einmal(s, "      marker.bindPopup(html, { maxWidth: 220 });\n    });\n",
                "      marker.bindPopup(html, { maxWidth: 220 });\n    });\n"
                "    (window.__routemapHuts || []).forEach(function(s){\n"
-               "      var m = L.circleMarker([s.lat, s.lon], { radius: 5, color: '#d9480f', fillColor: '#fff', fillOpacity: 1, weight: 2.5 }).addTo(map);\n"
+               "      var m = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: 'mk-einkehr', html: " + json.dumps(TASSE) + ",\n"
+               "        iconSize: [18, 18], iconAnchor: [9, 9] }) }).addTo(map);\n"
                "      m.bindPopup('<img class=\"huette-img\" src=\"' + s.img + '\" alt=\"' + s.imgAlt + '\">' +\n"
-               "        '<div class=\"title\">' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : ''), { maxWidth: 220 });\n"
+               "        '<div class=\"title\">Einkehrmöglichkeit · ' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : ''), { maxWidth: 220 });\n"
                "    });\n")
-    # Übernachtungen als nummerierte Kreise (Variante A)
     s = einmal(s, """      var marker = L.circleMarker([s.lat, s.lon], {
         radius: 7, color: "#fff", fillColor: "#d9480f", fillOpacity: 1, weight: 3
-      }).addTo(map);""", """      var marker = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "stop-nr",
-        html: "<span>" + s.tag + "</span>", iconSize: [26, 26], iconAnchor: [13, 13] }) }).addTo(map);""")
-    s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
-               '.stop-nr span{display:grid;place-items:center;width:26px;height:26px;box-sizing:border-box;border-radius:50%;'
-               'background:#d9480f;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35);color:#fff;font:700 12.5px/1 system-ui,sans-serif}\n'
-               '</style><script src="/vendor/leaflet-1.9.4.js">')
+      }).addTo(map);""", """      var marker = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "mk-haus",
+        html: """ + json.dumps(HAUS).replace('>N<', '>" + s.tag + "<') + """, iconSize: [28, 28], iconAnchor: [14, 20] }) }).addTo(map);""")
     s = einmal(s, 'Hütten antippen für Name und Höhe,', 'Hütten antippen für Name, Höhe und Foto,')
     s = einmal(s, '<span><span class="dot"></span> Hütte antippen → Name und Höhe</span>',
-               '<span><span class="lg-nr">1</span> Übernachtung</span>\n'
-               '    <span><span class="lg-hut"></span> Hütte unterwegs (antippen → Foto)</span>')
+               '<span>' + HAUS.replace('width="28" height="28"', 'width="20" height="20"').replace('>N<', '>1<') + ' Übernachtung</span>\n'
+               '    <span>' + TASSE.replace('width="18" height="18"', 'width="15" height="15"') + ' Einkehrmöglichkeit</span>\n'
+               '    <span>Hütte antippen → Foto</span>')
     s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
-               '.routemap-wrap .legend .lg-nr{display:inline-flex;justify-content:center;align-items:center;flex:none;width:18px;height:18px;border-radius:50%;background:#d9480f;color:#fff;font:700 10px/1 system-ui,sans-serif;vertical-align:middle}'
-               '.routemap-wrap .legend .lg-hut{display:inline-block;flex:none;width:8px;height:8px;border-radius:50%;background:#fff;border:2.5px solid #d9480f;vertical-align:middle}\n'
+               '.mk-haus svg,.mk-einkehr svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}\n'
                '</style><script src="/vendor/leaflet-1.9.4.js">')
     SEITE.write_text(s, encoding='utf-8')
     print('✓ Fotos eingebaut:', SEITE.relative_to(ROOT))
