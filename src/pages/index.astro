@@ -2,10 +2,10 @@
 import Basis from '../layouts/Basis.astro';
 import BerichtKarte from '../components/BerichtKarte.astro';
 import Karte from '../components/Karte.astro';
-import { berichte, link, reisen, url } from '../lib';
+import { berichte, kartenpunkte, link, reisen, url } from '../lib';
 
 const alle = await berichte();
-const orte = alle.filter((b) => !b.data.route).flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) })));
+const orte = kartenpunkte(alle);
 const fmtZahl = (n?: number) => (n === undefined ? '' : n.toLocaleString('de-DE'));
 const touren = alle.filter((b) => b.data.route).map((b) => ({
   titel: b.data.titel, link: link(b), route: b.data.route!,

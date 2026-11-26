@@ -1,10 +1,10 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import Karte from '../components/Karte.astro';
-import { berichte, link } from '../lib';
+import { berichte, kartenpunkte, link } from '../lib';
 
 const alle = await berichte();
-const orte = alle.filter((b) => !b.data.route).flatMap((b) => b.data.orte.map((o) => ({ ...o, name: `${o.name} · ${b.data.titel}`, link: link(b) })));
+const orte = kartenpunkte(alle);
 const gpx = alle.flatMap((b) => b.data.gpx);
 const fmtZahl = (n?: number) => (n === undefined ? '' : n.toLocaleString('de-DE'));
 const touren = alle.filter((b) => b.data.route).map((b) => ({
