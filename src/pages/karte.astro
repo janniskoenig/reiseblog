@@ -1,16 +1,21 @@
 ---
 import Basis from '../layouts/Basis.astro';
 import Karte from '../components/Karte.astro';
-import { berichte, link } from '../lib';
+import { berichte, kartenpunkte, link } from '../lib';
 
 const alle = await berichte();
-const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, name: `${o.name} · ${b.data.titel}`, link: link(b) })));
+const orte = kartenpunkte(alle);
 const gpx = alle.flatMap((b) => b.data.gpx);
+const fmtZahl = (n?: number) => (n === undefined ? '' : n.toLocaleString('de-DE'));
+const touren = alle.filter((b) => b.data.route).map((b) => ({
+  titel: b.data.titel, link: link(b), route: b.data.route!,
+  info: [b.data.statistik.km && `${fmtZahl(b.data.statistik.km)} km`, b.data.statistik.hoehenmeter && `${fmtZahl(b.data.statistik.hoehenmeter)} Hm`].filter(Boolean).join(' · '),
+}));
 ---
 <Basis titel="Karte" beschreibung="Alle Orte und Touren auf einer Karte">
   <div class="wrap">
     <h1>Karte</h1>
-    <p class="muted">Alle Orte und GPX-Touren. Klick auf einen Punkt öffnet den Bericht, Klick auf eine Linie zeigt Länge und Höhenmeter.</p>
-    <Karte orte={orte} gpx={gpx} hoehe="70vh" />
+    <p class="muted">Alle Orte und GPX-Touren. Klick auf einen Punkt oder eine Tour öffnet den Bericht.</p>
+    <Karte orte={orte} gpx={gpx} touren={touren} hoehe="70vh" />
   </div>
 </Basis>

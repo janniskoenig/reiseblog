@@ -24,6 +24,9 @@ const berichte = defineCollection({
     highlights: z.array(z.object({ bild: z.string(), text: z.string() })).max(4).default([]),
     orte: z.array(ort).default([]),            // für Übersichtskarte und Dashboard
     gpx: z.array(z.string()).default([]),      // Pfade unter /gpx/…
+    // Zusammenhängende Tour: JSON unter /routen/… – Liste von [lat, lng] oder { linie, ergaenzt } (ergaenzt = nachgezeichnet, gestrichelt).
+    // Dann zeigt die Übersichtskarte eine Linie statt einzelner Orte.
+    route: z.string().optional(),
     // Nur eigene, gemessene Werte eintragen. Leer lassen, wenn unbekannt.
     statistik: z.object({
       km: z.number().optional(),

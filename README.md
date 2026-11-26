@@ -52,12 +52,12 @@ Ab dann geht jede Änderung, die auf GitHub landet, automatisch online.
 
 - [x] Impressum und Datenschutzerklärung ausgefüllt (Angaben zentral in `src/config.ts`).
 - [x] Web3Forms: Access Key holen, Auftragsverarbeitungsvertrag (https://web3forms.com/dpa) akzeptieren, Key in `src/config.ts` (`web3formsKey`) eintragen.
-- [x] Datenschutzerklärung vervollständigt (Cloudflare, OpenTopoMap, Web3Forms, E-Mail). Zur Absicherung mit einem Generator (eRecht24 oder Dr. Schwenke) abgleichen; keine Rechtsberatung.
+- [x] Datenschutzerklärung vervollständigt (Cloudflare, Thunderforest, Web3Forms, E-Mail). Zur Absicherung mit einem Generator (eRecht24 oder Dr. Schwenke) abgleichen; keine Rechtsberatung.
 - [ ] Blognamen in `src/layouts/Basis.astro` (`seitenname`) und Text auf der Startseite anpassen.
 - [ ] Beispielbericht, Beispielbilder (`public/bilder/beispiel/`) und `public/gpx/beispiel.gpx` löschen.
 
 ## Hinweise
 
-- Die Karten nutzen Kacheln von [OpenTopoMap](https://opentopomap.org) (kostenlos, Namensnennung ist eingebaut). Beim Öffnen einer Karte lädt der Browser die Kacheln von deren Servern; das gehört in die Datenschutzerklärung.
+- Die Karten nutzen Kacheln von [Thunderforest](https://www.thunderforest.com), Stil „Landscape“ (Gratis-Tarif 150.000 Kacheln/Monat, kommerzielle Nutzung erlaubt). Stil, Schlüssel und Trackfarbe stehen in `src/config.ts`. Beim Öffnen einer Karte lädt der Browser die Kacheln von deren Servern; das steht in der Datenschutzerklärung.
 - Längen und Höhenmeter auf der Karte werden aus den GPX-Dateien berechnet (Höhenmeter mit 5-m-Schwelle gegen GPS-Rauschen). Sie können von Komoot/Strava abweichen.
 - Alles, was auf der Seite liegt, ist öffentlich. Private „Nützliche Reiseinfos“ gehören nicht in ein öffentliches Repository bzw. auf die Seite, oder brauchen einen Zugangsschutz (z. B. Cloudflare Access, für bis zu 50 Personen kostenlos).
