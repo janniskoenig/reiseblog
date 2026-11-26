@@ -174,6 +174,13 @@ def main():
     s = einmal(s, 'Hütte antippen → Name und Höhe', 'Hütte antippen → Name, Höhe, Foto')
     SEITE.write_text(s, encoding='utf-8')
     print('✓ Fotos eingebaut:', SEITE.relative_to(ROOT))
+    # Zahlen & Fakten: Abstieg am 29.08. gehört noch zur Tour (Wunsch Jannis, 26.11.2026)
+    fakten = SEITE.parent / 'zahlen-fakten' / 'index.html'
+    f = fakten.read_text(encoding='utf-8')
+    if '22.–29. August 2026' not in f:
+        f = einmal(f, '<td>22.–28. August 2026</td>', '<td>22.–29. August 2026</td>')
+        fakten.write_text(f, encoding='utf-8')
+    print('✓ Zeitraum 22.–29. August:', fakten.relative_to(ROOT))
 
 if __name__ == '__main__':
     main()
