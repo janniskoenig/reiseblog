@@ -14,3 +14,12 @@ export const betreiber = {
 export const web3formsKey = '9de9e5c5-588b-4237-950b-c40f4b455ad3';
 
 export const datenschutzStand = 'November 2026';
+
+// Karten: Thunderforest (https://www.thunderforest.com). Kommerzielle Nutzung erlaubt,
+// Gratis-Tarif 150.000 Kacheln pro Monat. Der Schlüssel ist im Seitenquelltext sichtbar,
+// das ist bei Kartendiensten so vorgesehen. Gleicher Schlüssel steht in scripts/altavia-uebernehmen.py.
+export const karte = {
+  stil: 'landscape',
+  schluessel: 'c4727ce21bbf4fbd8633df99582a9e88',
+  trackFarbe: '#d9480f',
+};

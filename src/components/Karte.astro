@@ -1,5 +1,5 @@
 ---
-// Interaktive Karte (Leaflet + OpenTopoMap). Zeigt Orte als Punkte und
+// Interaktive Karte (Leaflet + Thunderforest, Einstellungen in src/config.ts). Zeigt Orte als Punkte und
 // GPX-Tracks als Linien; Länge und Höhenmeter werden aus der GPX-Datei berechnet.
 interface Ort { name: string; lat: number; lng: number; link?: string }
 interface Props { orte?: Ort[]; gpx?: string[]; hoehe?: string; linie?: boolean }
@@ -10,8 +10,9 @@ const { orte = [], gpx = [], hoehe, linie = false } = Astro.props;
 <script>
   import L from 'leaflet';
   import 'leaflet/dist/leaflet.css';
+  import { karte } from '../config';
 
-  const akzent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim() || '#b5651d';
+  const akzent = karte.trackFarbe;
 
   function distanz(a: L.LatLng, b: L.LatLng) { return a.distanceTo(b); }
 
@@ -32,9 +33,10 @@ const { orte = [], gpx = [], hoehe, linie = false } = Astro.props;
     const name = xml.querySelector('trk > name, rte > name')?.textContent ?? pfad.split('/').pop();
     const info = `<strong>${name}</strong><br>${(m / 1000).toFixed(1).replace('.', ',')} km` +
       (letzteHoehe !== undefined ? ` · ${Math.round(auf)} Hm` : '');
-    const line = L.polyline(ll, { color: akzent, weight: 4, opacity: .9 }).addTo(map).bindPopup(info);
+    L.polyline(ll, { color: '#fff', weight: 9, opacity: .95, interactive: false }).addTo(map);
+    const line = L.polyline(ll, { color: akzent, weight: 4.5, opacity: 1 }).addTo(map).bindPopup(info);
     line.on('mouseover', () => line.setStyle({ weight: 7 }));
-    line.on('mouseout', () => line.setStyle({ weight: 4 }));
+    line.on('mouseout', () => line.setStyle({ weight: 4.5 }));
     grenzen.extend(line.getBounds());
     map.fitBounds(grenzen, { padding: [30, 30] });
   }
@@ -43,16 +45,16 @@ const { orte = [], gpx = [], hoehe, linie = false } = Astro.props;
     const orte = JSON.parse(el.dataset.orte || '[]');
     const gpx: string[] = JSON.parse(el.dataset.gpx || '[]');
     const map = L.map(el, { scrollWheelZoom: false });
-    L.tileLayer('https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png', {
-      maxZoom: 17,
-      attribution: 'Karte: © <a href="https://opentopomap.org">OpenTopoMap</a> (CC-BY-SA), Daten: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende',
+    L.tileLayer(`https://tile.thunderforest.com/${karte.stil}/{z}/{x}/{y}{r}.png?apikey=${karte.schluessel}`, {
+      maxZoom: 18,
+      attribution: 'Karten: © <a href="https://www.thunderforest.com">Thunderforest</a>, Daten: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende',
     }).addTo(map);
     L.control.scale({ imperial: false }).addTo(map);
     const grenzen = L.latLngBounds([]);
     const pts = orte.map((o: any) => {
       const p = L.latLng(o.lat, o.lng); grenzen.extend(p);
       const label = o.link ? `<a href="${o.link}">${o.name}</a>` : o.name;
-      L.circleMarker(p, { radius: 6, color: '#fff', weight: 2, fillColor: akzent, fillOpacity: 1 }).addTo(map).bindPopup(label);
+      L.circleMarker(p, { radius: 7, color: '#fff', weight: 3, fillColor: akzent, fillOpacity: 1 }).addTo(map).bindPopup(label);
       return p;
     });
     if (el.dataset.linie && pts.length > 1) L.polyline(pts, { color: akzent, weight: 2, dashArray: '4 6' }).addTo(map);
