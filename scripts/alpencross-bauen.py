@@ -5,8 +5,11 @@
   /mtb-alpencross/zahlen-fakten/  Zahlen & Fakten (Etappen, Unterkünfte, Einkehr)
 
 Quellen (nur Jannis' eigene Daten, nichts geschätzt):
-- scripts/daten/alpencross-track.json       vereinfachter Komoot-Track, 9 Tage à 72 Punkte
+- scripts/daten/alpencross-track.json       Track je Tag aus den vollständigen GPX-Dateien (Second Brain,
+                                            raw/reisen/AlpenCross-Albrecht-2026-GPX), Douglas-Peucker 12 m
+- scripts/daten/alpencross-hoechste-punkte.json  höchster Punkt je Tag aus denselben GPX-Dateien
 - scripts/daten/alpencross-hoehenprofil.json Höhenprofil je Tag ([km, h0, h1, …], 90 Stützstellen)
+- Jannis' Notizen (Second Brain, AlpenCross-Albrecht-Erfahrungsbericht-2026.md) für die Texte
 - ETAPPEN unten: Distanz, Höhenmeter, Fahrzeit aus den Komoot-Aufzeichnungen (Artifact „Meine Touren“)
 
 Layout, CSS und Story-/Lightbox-Skript kommen 1:1 aus public/alta-via-2/index.html, damit beide
@@ -26,6 +29,7 @@ PFAD_BERICHT, PFAD_FAKTEN = f'/{SLUG}/', f'/{SLUG}/zahlen-fakten/'
 VORLAGE = ROOT / 'public' / 'alta-via-2' / 'index.html'
 TRACK = json.loads((ROOT / 'scripts' / 'daten' / 'alpencross-track.json').read_text())
 PROFIL = json.loads((ROOT / 'scripts' / 'daten' / 'alpencross-hoehenprofil.json').read_text())
+HOECHSTE = json.loads((ROOT / 'scripts' / 'daten' / 'alpencross-hoechste-punkte.json').read_text())
 THUNDERFOREST_KEY = 'c4727ce21bbf4fbd8633df99582a9e88'
 KARTENSTIL = 'landscape'
 PLATZHALTER = f'/bilder/{SLUG}/platzhalter.svg'
@@ -58,25 +62,52 @@ UNTERKUENFTE = [
     dict(tag=5, name='La Baita', ort='Grosio'),
     dict(tag=6, name='Ristorante Da Giusy', ort='Pezzo'),
     dict(tag=7, name='Vallesinella', ort='Madonna di Campiglio'),
-    dict(tag=8, name='Unterkunft in Riva del Garda', ort='', naechte='Tag 8 und 9', offen=True),
+    dict(tag=8, name='Unterkunft am Gardasee', ort='', naechte='Tag 8 und 9', offen=True),
 ]
 # Einkehrmöglichkeiten unterwegs (graue Tasse): erst eintragen, wenn Jannis sie bestätigt hat.
 # Format wie Alta Via: dict(name=…, elev='… m', day='Tag N', lat=…, lon=…, info='…', img='', imgAlt='')
 EINKEHR = []
 
+# Texte nur aus Jannis' Notizen (Second Brain: Erfahrungsbericht + Antworten vom 17.11. und 26.11.2026).
+# Nichts ergänzen, was dort nicht steht; Lücken bleiben Platzhalter.
+EINLEITUNG = ('Mein erster Alpencross, zusammen mit meinem Freund Kai: in acht Etappen mit dem Mountainbike '
+              'von Füssen an den Gardasee, in Anlehnung an die Albrecht-Route. Unterwegs gab es viele schöne '
+              'Trails und eine schöne Abwechslung bei Unterkünften und Regionen – am Ende wäre ich gerne noch '
+              'weitergefahren.')
+TEXTE = {
+    1: ['Mit dem Zug ging es nach Füssen. Weil wir erst spät ankamen und am Nachmittag losfuhren, haben wir '
+        'die erste Etappe auf zwei Tage aufgeteilt. Gleich am ersten Tag gab es ein Highlight: Baden im Plansee '
+        'und die Fahrt auf dem Uferweg.'],
+    2: ['Ein Highlight des Tages war der Blindseetrail.'],
+    3: ['Ein Highlight des Tages war der Fimbachtrail.'],
+    4: ['Ein Highlight des Tages war die Fahrt entlang eines Flusses.'],
+    5: ['Unterkunft war die entlegene Hütte La Baita in einer pittoresken Landschaft.'],
+    8: ['Auf dem Weg zum Gardasee und am See selbst war das mediterrane Flair deutlich zu spüren.'],
+    10: ['Der letzte Tag war keine richtige Etappe mehr, nur noch die Fahrt vom Gardasee zum Bahnhof in '
+         'Rovereto. Von dort ging es mit dem Fernverkehrszug samt Rad nach Hause.'],
+}
+GESAMTEINDRUCK = [
+    'Vor einigen Trails gab es Schiebepassagen, und manche Trails waren für mich zu anspruchsvoll. Wir sind '
+    'aber immer auf Nummer sicher gefahren und haben nichts riskiert. Pannen hatte ich keine – bei Kai ging '
+    'auf den letzten Kilometern die Bremse kaputt, zum Glück konnten wir sicher ausrollen.',
+    'Die Regeneration war super: Dank der Vorbereitung konnte ich alles gut genießen, war nie so richtig k.o. '
+    'und hatte auch nach langen Fahrtagen noch Kraftpuffer.',
+    'Zum Gepäck: Die Kombination aus einem Cyclite-Touring-Rucksack (23 l) und der Cyclite-Lenkerrolle war '
+    'super und stabil.',
+]
+FAZIT = 'Eine tolle Tour und Erfahrung mit schönen Trails. Ich wäre gerne noch weitergefahren.'
+
 # Offene Fragen (erscheinen unten in Zahlen & Fakten unter „Noch zu ergänzen“)
 OFFEN = [
-    'Start: Der Track beginnt in Füssen, in „Meine Touren“ steht „Albrecht-Route von Garmisch“. Seid ihr in Füssen gestartet?',
-    'Tag 5: Das Etappenende liegt auf etwa 1.860 m Höhe östlich von Grosio, nicht im Ort selbst. Wie heißt bzw. wo genau liegt „La Baita“?',
-    'Tag 7: Ist mit „Vallesinella“ das Rifugio Vallesinella gemeint?',
-    'Tag 8/9: Wo habt ihr in Riva del Garda übernachtet, und war der 9. August ein Ruhetag am See?',
-    'Pässe: Laut Track liegen die höchsten Punkte bei ca. 2.560 m (Tag 4), 2.230 m (Tag 5), 2.620 m (Tag 6) und 2.590 m (Tag 7). Wie heißen die Pässe?',
+    'Tag 8/9: Wie hieß eure Unterkunft am Gardasee?',
     'Einkehr: Wo habt ihr unterwegs eingekehrt (Hütten, Almen, Cafés)? Die kommen als graue Tasse auf die Karte.',
-    'Anreise nach Füssen und Rückreise ab Rovereto: Zug? Mit Rad im Zug?',
-    'Gruppe, Räder (MTB, E-MTB?), Gepäck (Rucksack, Bikepacking-Taschen?), Schiebe- und Tragepassagen',
-    'Texte: Stichpunkte zu jedem Tag (Erlebnisse, Wetter, Landschaft, Essen, Unterkünfte)',
+    'Tag 2: Der Blindseetrail liegt am Fernpass, also auf der Etappe Heiterwang → Landeck. Passt das?',
+    'Tag 3: Heißt der Trail „Fimbachtrail“ oder „Fimbatrail“ (Fimbatal)?',
+    'Tag 4: Du schreibst „Schweizer Nationalpark Val Müstair“. Der Track führt über S-charl, das Val Müstair selbst gehört nicht zum Nationalpark. Welchen Abschnitt meinst du?',
+    'Pässe: Laut GPS liegen die höchsten Punkte bei ca. 2.600 m (Tag 4), 2.240 m (Tag 5), 2.620 m (Tag 6) und 2.610 m (Tag 7). Wie heißen die Pässe?',
+    'Kais Bremse: auf den letzten Kilometern welcher Etappe?',
+    'Texte: Stichpunkte zu Tag 6 und 7 und gern mehr zu jedem Tag (Landschaft, Wetter, Essen, Unterkünfte)',
     'Fotos: Titelbild und Bilder je Tag',
-    'GPX: Der Karten-Track hat nur 72 Punkte pro Tag und schneidet Kurven ab. Ein vollständiger Komoot-Export pro Tag würde die Karte genauer machen.',
 ]
 
 # ---------------------------------------------------------------------------
@@ -92,8 +123,7 @@ def fahrzeit(h):
     return f'{m // 60}:{m % 60:02d} h'
 
 def hoechster(tag):
-    e = PROFIL[tag - 1][1:]
-    return round(max(e), -1)
+    return round(HOECHSTE[tag - 1], -1)
 
 def ende_hoehe(tag):
     return round(PROFIL[tag - 1][-1], -1)
@@ -261,11 +291,14 @@ def etappe_zahlen(km, up, dn):
     return (f'<p class="etappe-zahlen"><span>↔ {zahl(km)} km</span>'
             f'<span>↑ {tsd(up)} Hm</span><span>↓ {tsd(dn)} Hm</span></p>')
 
+def absaetze(tag):
+    return ''.join('<p>' + esc(t) + '</p>' for t in TEXTE.get(tag, []))
+
 def bericht():
     s = kopf(TITEL, BESCHREIBUNG, PFAD_BERICHT, True)
     s += f'<h1 class="posttitle">{esc(TITEL)}</h1>\n'
     s += (f'<section class="hero"><img class="hero-img" src="{PLATZHALTER}" alt="Titelbild folgt">'
-          f'<div class="hero-inner">{luecke("Einleitung zur Tour: Wer war dabei, warum dieser Alpencross, was hat ihn ausgemacht? Fehlt noch, bitte Stichpunkte schicken.")}</div></section>\n')
+          f'<div class="hero-inner">{'<p>' + esc(EINLEITUNG) + '</p>'}</div></section>\n')
     s += f"""
 <section class="plain routemap-wrap">
   <h2>Die Route</h2>
@@ -279,14 +312,14 @@ def bericht():
 """
     for (tag, datum, von, nach, km, up, dn, h) in ETAPPEN:
         s += tag_story(tag, f'Tag {tag}: {von} → {nach}', etappe_zahlen(km, up, dn),
-                       luecke('Text und Fotos zu diesem Tag folgen.'))
-    s += tag_story(9, 'Tag 9: Am Gardasee', '', luecke('Ruhetag in Riva? Was habt ihr gemacht?'))
+                       absaetze(tag) + luecke('Fotos folgen.' if tag in TEXTE else 'Text und Fotos zu diesem Tag folgen.'))
+    s += tag_story(9, 'Tag 9: Am Gardasee', '', '<p>Ruhetag am Gardasee.</p>' + luecke('Was habt ihr am Ruhetag gemacht?'))
     tag, datum, von, nach, km, up, dn, h = RUECKFAHRT
     s += tag_story(10, f'Tag 10: {von} → {nach}', etappe_zahlen(km, up, dn),
-                   luecke('Rückfahrt zum Bahnhof, dann Heimreise: Zug, Fahrradmitnahme?'))
-    s += f"""<section class="plain"><h2>Gesamteindruck</h2>{luecke('Folgt aus deinen Stichpunkten.')}</section>
+                   absaetze(10))
+    s += f"""<section class="plain"><h2>Gesamteindruck</h2>{''.join('<p>' + esc(t) + '</p>' for t in GESAMTEINDRUCK)}</section>
 <section class="plain sub"><h3>Weitere Eindrücke</h3>{luecke('Galerie: Fotos folgen.')}</section>
-<section class="plain"><h2>Fazit</h2>{luecke('Folgt.')}</section>
+<section class="plain"><h2>Fazit</h2><p>{esc(FAZIT)}</p></section>
 
 <section class="plain crosslink">
   <h3>Alle Zahlen und Fakten zur Tour</h3>
@@ -309,13 +342,14 @@ def fakten():
 <thead><tr><th></th><th></th></tr></thead>
 <tbody>
 <tr><td><strong>Zeitraum</strong></td><td>1.–10. August 2026</td></tr>
-<tr><td><strong>Dauer</strong></td><td>8 Etappen, dazu ein Tag am Gardasee und die Rückfahrt nach Rovereto</td></tr>
+<tr><td><strong>Dauer</strong></td><td>8 Etappen, dazu ein Ruhetag am Gardasee und die Rückfahrt zum Bahnhof Rovereto</td></tr>
 <tr><td><strong>Strecke</strong></td><td>{esc(route)}</td></tr>
 <tr><td><strong>Distanz / Höhenmeter</strong></td><td>{zahl(km, 0)} km, +{tsd(up)} / −{tsd(dn)} Hm<br><small>ohne Rückfahrt nach Rovereto ({zahl(RUECKFAHRT[4])} km)</small></td></tr>
 <tr><td><strong>Höchster Punkt</strong></td><td>ca. {tsd(max(hoechster(e[0]) for e in ETAPPEN))} m (Tag 6)</td></tr>
-<tr><td><strong>Rad und Gepäck</strong></td><td>{luecke('MTB oder E-MTB, Rucksack oder Taschen?')}</td></tr>
-<tr><td><strong>Unterkunft</strong></td><td>{luecke('Pensionen, Gasthöfe, Hütten – mit Halbpension?')}</td></tr>
-<tr><td><strong>Gruppengröße</strong></td><td>{luecke('Wie viele wart ihr?')}</td></tr>
+<tr><td><strong>Rad und Gepäck</strong></td><td>Fully; Cyclite-Touring-Rucksack (23 l) und Cyclite-Lenkerrolle</td></tr>
+<tr><td><strong>Unterkunft</strong></td><td>Jede Nacht woanders, siehe Unterkünfte unten</td></tr>
+<tr><td><strong>Gruppengröße</strong></td><td>2 Personen</td></tr>
+<tr><td><strong>An- und Abreise</strong></td><td>Mit dem Zug nach Füssen; zurück ab Rovereto mit dem Fernverkehrszug samt Rad</td></tr>
 </tbody></table></div>
 {luecke('Bewertung (Ausdauer, Schwierigkeit, Landschaft jeweils 1–5) wie bei der Alta Via?')}</section>
 """
@@ -331,7 +365,7 @@ def fakten():
     s += (f'<tr><td>{tag}</td><td>{datum}</td><td>{esc(von)} → {esc(nach)}</td><td>{zahl(km_)} km</td>'
           f'<td>+{tsd(up_)}/−{tsd(dn_)}</td><td>{fahrzeit(h)}</td><td>–</td></tr>\n')
     s += ('</tbody></table></div>\n<p class="tabnote"><small>Distanz, Höhenmeter und Fahrzeit aus den Aufzeichnungen, '
-          'höchster Punkt aus dem Höhenprofil des Tracks (gerundet).</small></p></section>\n')
+          'höchster Punkt aus den GPS-Tracks (gerundet).</small></p></section>\n')
     s += """<section class="plain"><h2>Unterkünfte</h2><div class="table-scroll"><table class="factstable">
 <thead><tr><th>Nacht</th><th>Unterkunft</th><th>Ort</th><th>Höhe</th><th>Hinweise</th></tr></thead>
 <tbody>
