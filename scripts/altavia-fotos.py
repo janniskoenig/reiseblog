@@ -289,6 +289,24 @@ def main():
                "      gl.on('mouseout', function(){ gl.setStyle({ weight: 3.5 }); });\n"
                "    });\n"
                "    if (window.__routemapAbstieg) {\n")
+    # Tag 1 (Anreise → Plosehütte) fehlte auf der Karte (Wunsch Jannis 26.11.2026); Track aus Komoot (Artifact „Meine Touren“)
+    tag1 = json.loads((ROOT / 'scripts' / 'daten' / 'altavia-tag1.json').read_text(encoding='utf-8'))
+    s = einmal(s, 'window.__routemapSegs = [', 'window.__routemapTag1 = ' + json.dumps(tag1) + ';\nwindow.__routemapSegs = [')
+    s = einmal(s, "    stops.forEach(function(s){\n",
+               "    if (window.__routemapTag1) {\n"
+               "      L.polyline(window.__routemapTag1, { color: '#fff', weight: 9, opacity: 0.95, interactive: false }).addTo(map);\n"
+               "      var t1 = L.polyline(window.__routemapTag1, { color: '#d9480f', weight: 4.5, opacity: 1 }).addTo(map);\n"
+               "      t1.bindPopup('<div class=\"title\">Tag 1: Anreise \\u2192 Plosehütte</div>' +\n"
+               "        '<div class=\"segstat\"><span class=\"ic\">\\u2194</span>2,7 km</div>' +\n"
+               "        '<div class=\"segstat\"><svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M3 20 L9 8 L13 14 L16 9 L21 20 Z\"/></svg>+370 / \\u22120 m</div>' +\n"
+               "        '<a href=\"#tag1\">Tagesbeschreibung lesen \\u2192</a>', { maxWidth: 220 });\n"
+               "      t1.on('mouseover', function(){ t1.setStyle({ weight: 6 }); });\n"
+               "      t1.on('mouseout', function(){ t1.setStyle({ weight: 4.5 }); });\n"
+               "    }\n"
+               "    stops.forEach(function(s){\n")
+    s = einmal(s, "      (window.__routemapAbstieg || []).forEach(function(p){ allPts.push(p); });\n",
+               "      (window.__routemapAbstieg || []).forEach(function(p){ allPts.push(p); });\n"
+               "      (window.__routemapTag1 || []).forEach(function(p){ allPts.push(p); });\n")
     # Abstecher (Wunsch Jannis 26.11.2026): Tageswerte enthalten freiwillige Abstecher → Stern + Fußnote.
     # Werte aus Track (Hin-und-zurück-Stück) + Komoot-Höhenprofil; keine Zeiten (Track ohne Zeitstempel, Wunsch Jannis: nichts Geschätztes).
     ABSTECHER = {
