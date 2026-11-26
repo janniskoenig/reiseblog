@@ -241,10 +241,30 @@ def main():
                '<span>' + HAUS.replace('width="28" height="28"', 'width="20" height="20"').replace('>N<', '>1<') + ' Übernachtung</span>\n'
                '    <span>' + TASSE.replace('width="18" height="18"', 'width="15" height="15"') + ' Einkehrmöglichkeit</span>\n'
                '    <span><svg viewBox="0 0 24 6" width="22" height="6"><line x1="2" y1="3" x2="22" y2="3" stroke="#d9480f" stroke-width="3" stroke-dasharray="1.5 4" stroke-linecap="round"/></svg> Abstieg (nicht aufgezeichnet)</span>\n'
+               '    <span><svg viewBox="0 0 24 6" width="22" height="6"><line x1="1" y1="3" x2="23" y2="3" stroke="#6f6f6f" stroke-width="2.5" stroke-dasharray="5 4"/></svg> Geplant, nicht gegangen</span>\n'
                '    <span>Hütte antippen → Foto</span>')
     s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
                '.mk-haus svg,.mk-einkehr svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}\n'
                '</style><script src="/vendor/leaflet-1.9.4.js">')
+    # Geplante, nicht gegangene Routen (Wunsch Jannis 26.11.2026): grau gestrichelt, OSM-Routing (Thread „Weitere Reisen“)
+    geplant = []
+    for tag, grund in ((4, 'Wegen glitschiger Bedingungen und Gewitterneigung nicht gegangen – stattdessen Abstieg nach Kolfuschg.'),
+                       (7, 'Nicht gegangen: Laut Hütte war der Klettersteig nicht gut in Schuss und deutlich wilder als die übrigen der Tour.')):
+        g = json.loads((ROOT / 'scripts' / 'daten' / f'altavia-geplant-tag{tag}.json').read_text(encoding='utf-8'))
+        name = g['beschreibung'].split(': ', 1)[1].replace(' – ', ' → ')
+        geplant.append(dict(pts=g['punkte'], html=(
+            f'<div class="title">Geplant, nicht gegangen · Tag {tag}</div>{name}'
+            f'<div class="segstat"><span class="ic">↔</span>ca. {str(g["km"]).replace(".", ",")} km</div>'
+            f'<div class="segstat">ca. +{g["auf_hm"]} / −{g["ab_hm"]} Hm</div><small>{grund}</small>')))
+    s = einmal(s, 'window.__routemapSegs = [', 'window.__routemapGeplant = ' + json.dumps(geplant, ensure_ascii=False) + ';\nwindow.__routemapSegs = [')
+    s = einmal(s, "    if (window.__routemapAbstieg) {\n",
+               "    (window.__routemapGeplant || []).forEach(function(g){\n"
+               "      var gl = L.polyline(g.pts, { color: '#6f6f6f', weight: 3.5, opacity: 0.9, dashArray: '6 7' }).addTo(map);\n"
+               "      gl.bindPopup(g.html, { maxWidth: 240 });\n"
+               "      gl.on('mouseover', function(){ gl.setStyle({ weight: 5 }); });\n"
+               "      gl.on('mouseout', function(){ gl.setStyle({ weight: 3.5 }); });\n"
+               "    });\n"
+               "    if (window.__routemapAbstieg) {\n")
     # Abstecher (Wunsch Jannis 26.11.2026): Tageswerte enthalten freiwillige Abstecher → Stern + Fußnote.
     # Werte geschätzt aus Track (Hin-und-zurück-Stück) + Komoot-Höhenprofil; Dauer = Tagesgehzeit × Anteil nach DAV-Faustformel.
     ABSTECHER = {
