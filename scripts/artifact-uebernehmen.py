@@ -11,6 +11,8 @@ Seiten in den Blog.
 - Jede Seite bekommt Kopfzeile (zurück zum Blog) und Fußzeile (Impressum, Datenschutz).
 
 Aufruf: python3 scripts/artifact-uebernehmen.py <ordner-mit-artifact-html> <ordner-mit-mp4>
+Danach: python3 scripts/madagaskar-anpassungen.py (fixierte Karte, Reiseplanung-Link,
+Tsingy-Abstecher in der Übersicht). Das passiert am Ende dieses Skripts automatisch.
 """
 import base64, hashlib, html, re, subprocess, sys
 from pathlib import Path
@@ -179,4 +181,5 @@ if __name__ == '__main__':
     for aid, (slug, datei) in ARTIFACTS.items():
         uebernehmen(aid, slug, datei)
     verarbeite_videos()
+    subprocess.run([sys.executable, str(ROOT / 'scripts' / 'madagaskar-anpassungen.py')], check=True)
     print(len(bilder), 'Bilder nach', BILD_ORIG.relative_to(ROOT), '– jetzt `npm run bilder` ausführen.')
