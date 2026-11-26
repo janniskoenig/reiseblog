@@ -31,12 +31,12 @@ def k(n):  # Kamerafoto
 # eigene Bildstrecke ohne Text), danach Bildreihe und ein großes Übergangsbild zum nächsten Tag.
 # Bilder ohne „kamera“ stammen aus dem ursprünglichen Bericht.
 TAGE = {
-    1: dict(sticky=[f'{ALT}s1-0-76e40b.jpg', f'{ALT}s1-1-a928bf.jpg'], reihe=[], danach=None),
-    2: dict(sticky=[k(12), k(63), k(88)], reihe=[k(3), k(90)], danach=k(66)),
+    1: dict(sticky=[k(3), f'{ALT}s1-1-a928bf.jpg'], reihe=[], danach=None),
+    2: dict(sticky=[k(12), k(63), k(88), k(90)], reihe=[], danach=k(66)),
     3: dict(sticky=[k(102), k(128), k(146)], reihe=[], danach=k(137)),
     4: dict(sticky=[k(189), k(201)], reihe=[], danach=k(177)),
-    5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[k(219), k(229), k(251), k(282), k(297)], danach=k(304)),
-    6: dict(sticky=[k(311), f'{ALT}s3-3-9ea1e7.jpg'], reihe=[], danach=None),
+    5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[k(219), k(229), k(251), k(282), k(297)], danach=None),
+    6: dict(sticky=[k(304), k(311)], reihe=[], danach=None),
     7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), k(333), k(354), k(365)], danach=None),
 }
 HUETTEN = {  # Kartenmarker → Foto
