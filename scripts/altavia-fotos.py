@@ -50,6 +50,7 @@ HUETTEN = {  # Kartenmarker → Foto
 }
 # Hütten unterwegs (kein Etappenziel): Koordinaten am Track geprüft (Halslhütte 134 m zum nächsten Trackpunkt bei ~170 m Punktabstand, Boè 30 m, Forcella Pordoi 5 m, San Nicolò 12 m, Baita alle Cascate 4 m, Capanna Piz Fassa 32 m, Viel dal Pan 6 m)
 UNTERWEGS = [
+    dict(name='Medalges-Alm', elev='2293 m', day='Tag 3', lat=46.62462, lon=11.79779, img='', imgAlt=''),  # OSM, 31 m vom Track
     dict(name='Halslhütte', elev='1866 m', day='Tag 2', lat=46.66657, lon=11.77067, img='', imgAlt='',
          info='Berggasthaus direkt an der Würzjoch-Straße'),
     dict(name='Tal bei Kolfuschg', elev='', day='Tag 4', lat=46.554543, lon=11.856001, img='', imgAlt='',
@@ -222,7 +223,12 @@ def main():
                "    if (window.__routemapAbstieg) {\n"
                "      L.polyline(window.__routemapAbstieg, { color: '#fff', weight: 8, opacity: 0.9, interactive: false }).addTo(map);\n"
                "      var ab = L.polyline(window.__routemapAbstieg, { color: '#d9480f', weight: 4, opacity: 1, dashArray: '2 8', lineCap: 'round' }).addTo(map);\n"
-               "      ab.bindPopup('<div class=\"title\">Abstieg · 29. August</div>Rifugio Passo delle Selle \u2192 Bushaltestelle Passo San Pellegrino Costabella<br><small>ca. 3,8 km über Weg 604 · nicht aufgezeichnet, Verlauf nach Wanderwegkarte</small>', { maxWidth: 230 });\n"
+               # Dauer: DAV-Faustformel (3,8 km, −610 Hm: Rifugio 2528 m → Pass 1918 m) ≈ 1:40 h; Jannis: „recht flott“ → ca. 1:30 h
+               "      ab.bindPopup('<div class=\"title\">Abstieg am 29. August: Rifugio Passo delle Selle → Bushaltestelle Passo San Pellegrino Costabella</div>' +\n"
+               "        '<div class=\"segstat\"><span class=\"ic\">↔</span>ca. 3,8 km</div>' +\n"
+               "        '<div class=\"segstat\"><svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M3 20 L9 8 L13 14 L16 9 L21 20 Z\"/></svg>ca. −610 Hm</div>' +\n"
+               "        '<div class=\"segstat\"><span class=\"ic\">⏱</span>ca. 1:30 h</div>' +\n"
+               "        '<small>Diesen Abschnitt habe ich nicht mehr aufgezeichnet. Verlauf, Distanz und Dauer sind geschätzt.</small>', { maxWidth: 230 });\n"
                "      L.circleMarker(window.__routemapAbstieg[window.__routemapAbstieg.length - 1], { radius: 5, color: '#fff', weight: 2, fillColor: '#555', fillOpacity: 1 })\n"
                "        .bindPopup('<div class=\"title\">Bushaltestelle</div>Passo San Pellegrino Costabella').addTo(map);\n"
                "    }\n"
