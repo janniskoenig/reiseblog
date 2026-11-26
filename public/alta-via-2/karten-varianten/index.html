@@ -5,8 +5,8 @@
 main{max-width:900px;margin:0 auto}h1{font-size:1.4rem}h2{font-size:1.05rem;margin:2rem 0 .5rem}
 .m{height:60vh;min-height:360px;border-radius:10px;border:1px solid rgba(0,0,0,.15)}
 .m .leaflet-tile-pane{filter:var(--f)}</style></head><body><main>
-<h1>Kartenvarianten für die Alta Via 2</h1><p>Alle drei nutzen dieselbe Karte (OpenTopoMap). Nur die Kartenfarben sind gedämpft und der Track hat einen weißen Rand. Zum Vergleich: die aktuelle Version steht auf der <a href="/alta-via-2/#routemap-leaflet">Berichtsseite</a>.</p>
-<section><h2>Variante A: Grau-Relief</h2><div id="mA" class="m" style="--f:grayscale(1) contrast(1.05) brightness(1.05)"></div></section><section><h2>Variante B: Blass mit dunklem Track</h2><div id="mB" class="m" style="--f:saturate(.3) brightness(1.08)"></div></section><section><h2>Variante C: Warm gedämpft</h2><div id="mC" class="m" style="--f:grayscale(.85) sepia(.25) brightness(1.04)"></div></section></main>
+<h1>Kartenvarianten für die Alta Via 2</h1><p>Alle drei nutzen dieselbe Karte (OpenTopoMap). Die Kartenfarben bleiben natürlich und sind nur etwas zurückgenommen und der Track hat einen weißen Rand. Zum Vergleich: die aktuelle Version steht auf der <a href="/alta-via-2/#routemap-leaflet">Berichtsseite</a>.</p>
+<section><h2>Variante D: Natürlich, leicht gedämpft</h2><div id="mA" class="m" style="--f:saturate(.6) brightness(1.04) contrast(.95)"></div></section><section><h2>Variante E: Natürlich, kaum gedämpft</h2><div id="mB" class="m" style="--f:saturate(.8) brightness(1.03)"></div></section></main>
 <script src="/vendor/leaflet-1.9.4.js"></script><script>
 var stops=[
 {name:"Plosehütte",elev:"2446 m",day:"Tag 1",tag:1,lat:46.694938,lon:11.73239},
@@ -29,5 +29,5 @@ L.tileLayer("https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png",{maxZoom:17,attri
 var all=[];segs.forEach(function(p){L.polyline(p,{color:"#fff",weight:9,opacity:.95}).addTo(m);L.polyline(p,{color:farbe,weight:4.5,opacity:1}).addTo(m);all=all.concat(p);});
 stops.forEach(function(s){L.circleMarker([s.lat,s.lon],{radius:7,color:"#fff",weight:3,fillColor:farbe,fillOpacity:1}).addTo(m).bindPopup(s.name);});
 m.fitBounds(all,{padding:[20,20]});}
-karte('mA','#d9480f');karte('mB','#1f3a5f');karte('mC','#c2410c');
+karte('mA','#d9480f');karte('mB','#d9480f');
 </script></body></html>
