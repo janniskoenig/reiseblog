@@ -226,12 +226,11 @@ def main():
                "    if (window.__routemapAbstieg) {\n"
                "      L.polyline(window.__routemapAbstieg, { color: '#fff', weight: 8, opacity: 0.9, interactive: false }).addTo(map);\n"
                "      var ab = L.polyline(window.__routemapAbstieg, { color: '#d9480f', weight: 4, opacity: 1, dashArray: '2 8', lineCap: 'round' }).addTo(map);\n"
-               # Dauer: DAV-Faustformel (3,8 km, −610 Hm: Rifugio 2528 m → Pass 1918 m) ≈ 1:40 h; Jannis: „recht flott“ → ca. 1:30 h
+               # Keine Dauer (Jannis 26.11.: nichts Geschätztes). −610 Hm: Rifugio 2528 m → Pass 1918 m
                "      ab.bindPopup('<div class=\"title\">Abstieg am 29. August: Rifugio Passo delle Selle → Bushaltestelle Passo San Pellegrino Costabella</div>' +\n"
                "        '<div class=\"segstat\"><span class=\"ic\">↔</span>ca. 3,8 km</div>' +\n"
                "        '<div class=\"segstat\"><svg class=\"ic\" viewBox=\"0 0 24 24\" fill=\"currentColor\"><path d=\"M3 20 L9 8 L13 14 L16 9 L21 20 Z\"/></svg>ca. −610 Hm</div>' +\n"
-               "        '<div class=\"segstat\"><span class=\"ic\">⏱</span>ca. 1:30 h</div>' +\n"
-               "        '<small>Diesen Abschnitt habe ich nicht mehr aufgezeichnet. Verlauf, Distanz und Dauer sind geschätzt.</small>', { maxWidth: 230 });\n"
+               "        '<small>Diesen Abschnitt habe ich nicht mehr aufgezeichnet. Verlauf, Distanz und Höhenmeter sind aus der Wanderkarte abgeleitet.</small>', { maxWidth: 230 });\n"
                "      L.circleMarker(window.__routemapAbstieg[window.__routemapAbstieg.length - 1], { radius: 5, color: '#fff', weight: 2, fillColor: '#555', fillOpacity: 1 })\n"
                "        .bindPopup('<div class=\"title\">Bushaltestelle</div>Passo San Pellegrino Costabella').addTo(map);\n"
                "    }\n"
@@ -307,6 +306,22 @@ def main():
     s = einmal(s, "      (window.__routemapAbstieg || []).forEach(function(p){ allPts.push(p); });\n",
                "      (window.__routemapAbstieg || []).forEach(function(p){ allPts.push(p); });\n"
                "      (window.__routemapTag1 || []).forEach(function(p){ allPts.push(p); });\n")
+    # GPS-Ausreißer entfernen (Jannis 26.11.: Schleife vor der Pisciadùhütte an Tag 4 ist ein GPS-Fehler):
+    # einzelne Punkte, die >250 m vom Vorgänger und Nachfolger wegspringen, während diese nah beieinander liegen
+    m = re.search(r'window\.__routemapSegLatLon = (\[.*?\]);', s, re.S)
+    segs = json.loads(m.group(1))
+    def _d(a, b): return math.hypot((a[0]-b[0])*111320, (a[1]-b[1])*111320*math.cos(math.radians(a[0])))
+    raus = 0
+    for t in segs:
+        i = 1
+        while i < len(t) - 1:
+            x, y, z = _d(t[i-1], t[i]), _d(t[i], t[i+1]), _d(t[i-1], t[i+1])
+            if x > 250 and y > 250 and z < 0.4 * min(x, y):
+                del t[i]; raus += 1
+            else:
+                i += 1
+    assert raus == 1, raus
+    s = s[:m.start(1)] + '[\n' + ',\n'.join(json.dumps(t, separators=(',', ':')) for t in segs) + '\n]' + s[m.end(1):]
     # Abstecher (Wunsch Jannis 26.11.2026): Tageswerte enthalten freiwillige Abstecher → Stern + Fußnote.
     # Werte aus Track (Hin-und-zurück-Stück) + Komoot-Höhenprofil; keine Zeiten (Track ohne Zeitstempel, Wunsch Jannis: nichts Geschätztes).
     ABSTECHER = {
