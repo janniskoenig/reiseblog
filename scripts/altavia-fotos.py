@@ -47,11 +47,16 @@ HUETTEN = {  # Kartenmarker → Foto
     'Rifugio Castiglioni (Marmolada)': (f'{ALT}huette-castiglioni.jpg', 'Das Rifugio Castiglioni vor der Marmolada'),
     'Rifugio Contrin': (f'{ALT}huette-contrin.jpg', 'Das Rifugio Contrin'),
 }
-# Hütten unterwegs (kein Etappenziel): Koordinaten am Track geprüft (Boè 30 m, Forcella Pordoi 5 m, San Nicolò 12 m, Baita alle Cascate 4 m)
+# Hütten unterwegs (kein Etappenziel): Koordinaten am Track geprüft (Boè 30 m, Forcella Pordoi 5 m, San Nicolò 12 m, Baita alle Cascate 4 m, Capanna Piz Fassa 32 m, Viel dal Pan 6 m)
 UNTERWEGS = [
+    dict(name='Tal bei Kolfuschg', elev='', day='Tag 4', lat=46.554543, lon=11.856001, img='', imgAlt='',
+         info='Mehrere Cafés und Supermärkte im Tal'),
     dict(name='Rifugio Boè', elev='2873 m', day='Tag 5', lat=46.514416, lon=11.823517,
          img=f'{ALT}huette-boe.jpg', imgAlt='Das Rifugio Boè'),
+    dict(name='Capanna Piz Fassa', elev='3152 m', day='Tag 5', lat=46.508925, lon=11.828067,
+         img=f'{ALT}handy-piz-boe-gipfel.jpg', imgAlt='Die Capanna Piz Fassa auf dem Gipfel des Piz Boè'),
     dict(name='Rifugio Forcella Pordoi', elev='2848 m', day='Tag 5', lat=46.501807, lon=11.812463, img='', imgAlt=''),
+    dict(name='Rifugio Viel dal Pan', elev='2432 m', day='Tag 5', lat=46.474242, lon=11.834336, img='', imgAlt=''),
     dict(name='Rifugio Passo San Nicolò', elev='', day='Tag 7', lat=46.42161, lon=11.79317,
          img=f'{ALT}huette-san-nicolo.jpg', imgAlt='Das Rifugio Passo San Nicolò'),
     dict(name='Baita alle Cascate', elev='', day='Tag 7', lat=46.416182, lon=11.781796, img='', imgAlt=''),
@@ -197,7 +202,7 @@ def main():
                "      var m = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: 'mk-einkehr', html: " + json.dumps(TASSE) + ",\n"
                "        iconSize: [18, 18], iconAnchor: [9, 9] }) }).addTo(map);\n"
                "      m.bindPopup((s.img ? '<img class=\"huette-img\" src=\"' + s.img + '\" alt=\"' + s.imgAlt + '\">' : '') +\n"
-               "        '<div class=\"title\">Einkehrmöglichkeit · ' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : ''), { maxWidth: 220 });\n"
+               "        '<div class=\"title\">Einkehrmöglichkeit · ' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : '') + (s.info ? '<br><small>' + s.info + '</small>' : ''), { maxWidth: 220 });\n"
                "    });\n")
     s = einmal(s, """      var marker = L.circleMarker([s.lat, s.lon], {
         radius: 7, color: "#fff", fillColor: "#d9480f", fillOpacity: 1, weight: 3
