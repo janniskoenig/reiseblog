@@ -189,8 +189,23 @@ def main():
                "      m.bindPopup('<img class=\"huette-img\" src=\"' + s.img + '\" alt=\"' + s.imgAlt + '\">' +\n"
                "        '<div class=\"title\">' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : ''), { maxWidth: 220 });\n"
                "    });\n")
+    # Übernachtungen als nummerierte Kreise (Variante A)
+    s = einmal(s, """      var marker = L.circleMarker([s.lat, s.lon], {
+        radius: 7, color: "#fff", fillColor: "#d9480f", fillOpacity: 1, weight: 3
+      }).addTo(map);""", """      var marker = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "stop-nr",
+        html: "<span>" + s.tag + "</span>", iconSize: [26, 26], iconAnchor: [13, 13] }) }).addTo(map);""")
+    s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
+               '.stop-nr span{display:grid;place-items:center;width:26px;height:26px;box-sizing:border-box;border-radius:50%;'
+               'background:#d9480f;border:3px solid #fff;box-shadow:0 1px 3px rgba(0,0,0,.35);color:#fff;font:700 12.5px/1 system-ui,sans-serif}\n'
+               '</style><script src="/vendor/leaflet-1.9.4.js">')
     s = einmal(s, 'Hütten antippen für Name und Höhe,', 'Hütten antippen für Name, Höhe und Foto,')
-    s = einmal(s, 'Hütte antippen → Name und Höhe', 'Hütte antippen → Name, Höhe, Foto')
+    s = einmal(s, '<span><span class="dot"></span> Hütte antippen → Name und Höhe</span>',
+               '<span><span class="lg-nr">1</span> Übernachtung</span>\n'
+               '    <span><span class="lg-hut"></span> Hütte unterwegs (antippen → Foto)</span>')
+    s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
+               '.routemap-wrap .legend .lg-nr{display:inline-flex;justify-content:center;align-items:center;flex:none;width:18px;height:18px;border-radius:50%;background:#d9480f;color:#fff;font:700 10px/1 system-ui,sans-serif;vertical-align:middle}'
+               '.routemap-wrap .legend .lg-hut{display:inline-block;flex:none;width:8px;height:8px;border-radius:50%;background:#fff;border:2.5px solid #d9480f;vertical-align:middle}\n'
+               '</style><script src="/vendor/leaflet-1.9.4.js">')
     SEITE.write_text(s, encoding='utf-8')
     print('✓ Fotos eingebaut:', SEITE.relative_to(ROOT))
     # Zahlen & Fakten: Abstieg am 29.08. gehört noch zur Tour (Wunsch Jannis, 26.11.2026)
