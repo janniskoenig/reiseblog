@@ -4,7 +4,7 @@ import { url } from '../lib';
 
 interface Props { titel: string; beschreibung?: string; bild?: string; noindex?: boolean; typ?: 'website' | 'article'; jsonld?: object }
 const { titel, beschreibung = 'Reise- und Outdoor-Blog', bild = '/bilder/madagaskar/allee_karren.jpg', noindex = false, typ = 'website', jsonld } = Astro.props;
-const seitenname = 'Reiseblog'; // TODO: Namen deines Blogs eintragen (auch in scripts/seo.py)
+const seitenname = 'Jannis Outdoor-Reisen'; // Blogname (auch in scripts/seo.py ändern)
 const pfad = Astro.url.pathname;
 // Kanonische Adresse: immer mit Hauptdomain, ohne ?-Parameter (verhindert doppelte Treffer)
 const kanonisch = new URL(pfad, Astro.site).href;

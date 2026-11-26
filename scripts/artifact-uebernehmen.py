@@ -67,7 +67,7 @@ def kopf(titel, beschreibung, bild, pfad, slug):
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>{t} · Reiseblog</title>
+<title>{t} · Jannis Outdoor-Reisen</title>
 <meta name="description" content="{d}">
 <link rel="canonical" href="{SITE}{pfad}">
 <meta property="og:title" content="{t}">
@@ -85,11 +85,11 @@ def leiste(slug):
     if slug in REISEINFO:
         rechts += f'<a href="{blogpfad(REISEINFO[slug])}">{"Reiseplanung" if slug == "" else "Reiseinfos"}</a>'
     if ist_info(slug):
-        return f'<nav class="blog-bar hell" aria-label="Blog"><a href="/">← Reiseblog</a><span>{rechts}</span></nav>'
-    return f'<nav class="blog-bar" aria-label="Blog"><a href="/">← Reiseblog</a><span>{rechts}</span></nav>'
+        return f'<nav class="blog-bar hell" aria-label="Blog"><a href="/">← Jannis Outdoor-Reisen</a><span>{rechts}</span></nav>'
+    return f'<nav class="blog-bar" aria-label="Blog"><a href="/">← Jannis Outdoor-Reisen</a><span>{rechts}</span></nav>'
 
 FUSS = """
-<footer class="blog-foot"><a href="/">Reiseblog</a> · <a href="/impressum/">Impressum</a> · <a href="/datenschutz/">Datenschutz</a></footer>
+<footer class="blog-foot"><a href="/">Jannis Outdoor-Reisen</a> · <a href="/impressum/">Impressum</a> · <a href="/datenschutz/">Datenschutz</a></footer>
 </body>
 </html>
 """

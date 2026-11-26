@@ -7,8 +7,8 @@ import { berichte, link, reisen, url } from '../lib';
 const alle = await berichte();
 const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) })));
 ---
-<Basis titel="Reiseblog" beschreibung="Reise- und Outdoor-Blog mit ausführlichen Berichten, Karten, Fotos und praktischen Reiseinfos, aktuell zur Madagaskar-Rundreise 2026."
-  jsonld={{ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Reiseblog', url: new URL('/', Astro.site).href, inLanguage: 'de-DE' }}>
+<Basis titel="Jannis Outdoor-Reisen" beschreibung="Reise- und Outdoor-Blog mit ausführlichen Berichten, Karten, Fotos und praktischen Reiseinfos, aktuell zur Madagaskar-Rundreise 2026."
+  jsonld={{ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Jannis Outdoor-Reisen', url: new URL('/', Astro.site).href, inLanguage: 'de-DE' }}>
   <section class="intro wrap">
     <h1>Unterwegs</h1>
     <!-- TODO: ein, zwei Sätze über dich und den Blog -->

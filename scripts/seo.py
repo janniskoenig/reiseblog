@@ -8,14 +8,15 @@ Nähe scrollt (Lazy Loading). Das Skript kann beliebig oft laufen.
 Aufruf:  python3 scripts/seo.py
 Nach jedem erneuten `artifact-uebernehmen.py` wieder ausführen.
 
-Faustregeln: Titel höchstens ca. 60 Zeichen (inkl. „ · Reiseblog“),
+Faustregeln: Titel höchstens ca. 60 Zeichen (der Blogname wird nur angehängt,
+wenn er noch passt; Google zeigt ihn ohnehin über jedem Treffer an),
 Beschreibung ca. 120–155 Zeichen. Google kürzt längere Texte in der Trefferliste.
 """
 import html, json, re
 from pathlib import Path
 
 SITE = 'https://reiseblog-dln.pages.dev'   # bei eigener Domain hier und in astro.config.mjs ändern
-SEITENNAME = 'Reiseblog'                   # wie `seitenname` in src/layouts/Basis.astro
+SEITENNAME = 'Jannis Outdoor-Reisen'       # wie `seitenname` in src/layouts/Basis.astro
 AUTOR = 'Jannis König'
 VEROEFFENTLICHT = '2026-11-24'             # erstmals online
 REISE = ('Madagaskar 2026', '/madagaskar/')
@@ -115,7 +116,7 @@ def jsonld(pfad, titel, beschreibung, art, bild):
 
 def kopf(pfad, alt):
     titel, beschreibung, art = SEITEN[pfad]
-    assert len(titel) + len(SEITENNAME) + 3 <= 62, f'Titel zu lang: {titel}'
+    assert len(titel) <= 60, f'Titel zu lang: {titel}'
     assert 110 <= len(beschreibung) <= 160, f'Beschreibung {len(beschreibung)} Zeichen: {pfad}'
     m = re.search(r'<meta property="og:image" content="([^"]+)"', alt)
     bild = m.group(1) if m else None
@@ -128,7 +129,7 @@ def kopf(pfad, alt):
         bild = m.group(1) if m else None
     t, d = html.escape(titel), html.escape(beschreibung)
     zeilen = [
-        f'<title>{t} · {SEITENNAME}</title>',
+        f'<title>{t} · {SEITENNAME}</title>' if len(titel) + len(SEITENNAME) + 3 <= 65 else f'<title>{t}</title>',
         f'<meta name="description" content="{d}">',
         f'<link rel="canonical" href="{SITE}{pfad}">',
         f'<meta property="og:type" content="{"article" if art != "reise" else "website"}">',
@@ -167,6 +168,9 @@ for pfad in SEITEN:
     # Alles von <title> bis vor das Favicon ist der SEO-Block und wird neu geschrieben.
     m = re.search(r'<title>.*?(?=<link rel="icon")', s, re.S)
     s = s[:m.start()] + kopf(pfad, m.group(0)) + s[m.end():]
+    # Blogname in Kopfleiste und Fußzeile (aus dem Import-Skript)
+    s = re.sub(r'(<nav class="blog-bar[^"]*" aria-label="Blog"><a href="/">← )[^<]*(</a>)', r'\g<1>' + SEITENNAME + r'\2', s)
+    s = re.sub(r'(<footer class="blog-foot"><a href="/">)[^<]*(</a>)', r'\g<1>' + SEITENNAME + r'\2', s)
     if SEITEN[pfad][2] == 'bericht':
         s = lazy(s)
     datei.write_text(s, encoding='utf-8')
