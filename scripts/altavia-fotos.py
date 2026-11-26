@@ -47,8 +47,10 @@ HUETTEN = {  # Kartenmarker → Foto
     'Rifugio Castiglioni (Marmolada)': (f'{ALT}huette-castiglioni.jpg', 'Das Rifugio Castiglioni vor der Marmolada'),
     'Rifugio Contrin': (f'{ALT}huette-contrin.jpg', 'Das Rifugio Contrin'),
 }
-# Hütten unterwegs (kein Etappenziel): Koordinaten am Track geprüft (Boè 30 m, Forcella Pordoi 5 m, San Nicolò 12 m, Baita alle Cascate 4 m, Capanna Piz Fassa 32 m, Viel dal Pan 6 m)
+# Hütten unterwegs (kein Etappenziel): Koordinaten am Track geprüft (Halslhütte 134 m zum nächsten Trackpunkt bei ~170 m Punktabstand, Boè 30 m, Forcella Pordoi 5 m, San Nicolò 12 m, Baita alle Cascate 4 m, Capanna Piz Fassa 32 m, Viel dal Pan 6 m)
 UNTERWEGS = [
+    dict(name='Halslhütte', elev='1866 m', day='Tag 2', lat=46.66657, lon=11.77067, img='', imgAlt='',
+         info='Berggasthaus direkt an der Würzjoch-Straße'),
     dict(name='Tal bei Kolfuschg', elev='', day='Tag 4', lat=46.554543, lon=11.856001, img='', imgAlt='',
          info='Mehrere Cafés und Supermärkte im Tal'),
     dict(name='Rifugio Boè', elev='2873 m', day='Tag 5', lat=46.514416, lon=11.823517,
