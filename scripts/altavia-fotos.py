@@ -41,7 +41,8 @@ TAGE = {
 }
 HUETTEN = {  # Kartenmarker → Foto
     'Schlüterhütte': (k(92), 'Die Schlüterhütte am Morgen'),
-    'Pisciadùhütte': (k(193), 'Die Pisciadùhütte am Abend'),
+    'Pisciadùhütte': (k(186), 'Die Pisciadùhütte am Abend'),
+    'Rifugio Passo delle Selle': (f'{ALT}kamera-354-huette.jpg', 'Das Rifugio Passo delle Selle auf dem Grat'),
 }
 
 CSS = """
