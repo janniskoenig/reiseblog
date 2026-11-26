@@ -213,10 +213,27 @@ def main():
         radius: 7, color: "#fff", fillColor: "#d9480f", fillOpacity: 1, weight: 3
       }).addTo(map);""", """      var marker = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: "mk-haus",
         html: """ + json.dumps(HAUS).replace('>N<', '>" + s.tag + "<') + """, iconSize: [28, 28], iconAnchor: [14, 20] }) }).addTo(map);""")
+    # Abstieg zur Bushaltestelle Passo San Pellegrino (29.08.): nicht aufgezeichnet, Verlauf nach OSM-Wegen
+    # (Sentiero 604, aus public/routen/alta-via-2.json → ergaenzt), gestrichelt (Wunsch Jannis 26.11.2026)
+    abstieg = json.loads((ROOT / 'public' / 'routen' / 'alta-via-2.json').read_text(encoding='utf-8'))['ergaenzt'][0]
+    s = einmal(s, 'window.__routemapSegs = [', 'window.__routemapAbstieg = ' + json.dumps(abstieg) + ';\nwindow.__routemapSegs = [')
+    s = einmal(s, "    (window.__routemapHuts || []).forEach(function(s){\n",
+               "    if (window.__routemapAbstieg) {\n"
+               "      L.polyline(window.__routemapAbstieg, { color: '#fff', weight: 8, opacity: 0.9, interactive: false }).addTo(map);\n"
+               "      var ab = L.polyline(window.__routemapAbstieg, { color: '#d9480f', weight: 4, opacity: 1, dashArray: '2 8', lineCap: 'round' }).addTo(map);\n"
+               "      ab.bindPopup('<div class=\"title\">Abstieg · 29. August</div>Rifugio Passo delle Selle \u2192 Bushaltestelle Passo San Pellegrino<br><small>ca. 3,8 km über Weg 604 · nicht aufgezeichnet, Verlauf nach Wanderwegkarte</small>', { maxWidth: 230 });\n"
+               "      L.circleMarker(window.__routemapAbstieg[window.__routemapAbstieg.length - 1], { radius: 5, color: '#fff', weight: 2, fillColor: '#555', fillOpacity: 1 })\n"
+               "        .bindPopup('<div class=\"title\">Bushaltestelle</div>Passo San Pellegrino').addTo(map);\n"
+               "    }\n"
+               "    (window.__routemapHuts || []).forEach(function(s){\n")
+    s = einmal(s, "      segLatLon.forEach(function(seg){ seg.forEach(function(p){ allPts.push(p); }); });\n",
+               "      segLatLon.forEach(function(seg){ seg.forEach(function(p){ allPts.push(p); }); });\n"
+               "      (window.__routemapAbstieg || []).forEach(function(p){ allPts.push(p); });\n")
     s = einmal(s, 'Hütten antippen für Name und Höhe,', 'Hütten antippen für Name, Höhe und Foto,')
     s = einmal(s, '<span><span class="dot"></span> Hütte antippen → Name und Höhe</span>',
                '<span>' + HAUS.replace('width="28" height="28"', 'width="20" height="20"').replace('>N<', '>1<') + ' Übernachtung</span>\n'
                '    <span>' + TASSE.replace('width="18" height="18"', 'width="15" height="15"') + ' Einkehrmöglichkeit</span>\n'
+               '    <span><svg viewBox="0 0 24 6" width="22" height="6"><line x1="2" y1="3" x2="22" y2="3" stroke="#d9480f" stroke-width="3" stroke-dasharray="1.5 4" stroke-linecap="round"/></svg> Abstieg (nicht aufgezeichnet)</span>\n'
                '    <span>Hütte antippen → Foto</span>')
     s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">',
                '.mk-haus svg,.mk-einkehr svg{display:block;filter:drop-shadow(0 1px 2px rgba(0,0,0,.4))}\n'
