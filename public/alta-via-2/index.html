@@ -184,7 +184,7 @@ window.__routemapStops = [
 {name:"Rifugio Contrin",img:"/bilder/alta-via-2/huette-contrin.jpg",imgAlt:"Das Rifugio Contrin",elev:"2046 m",day:"Tag 6",tag:6,lat:46.429912,lon:11.815782},
 {name:"Rifugio Passo delle Selle",img:"/bilder/alta-via-2/kamera-354-huette.jpg",imgAlt:"Das Rifugio Passo delle Selle auf dem Grat",elev:"2530 m",day:"Tag 7",tag:7,lat:46.396667,lon:11.762576}
 ];
-window.__routemapHuts = [{"name": "Rifugio Boè", "elev": "2873 m", "day": "Tag 5", "lat": 46.514416, "lon": 11.823517, "img": "/bilder/alta-via-2/huette-boe.jpg", "imgAlt": "Das Rifugio Boè"}, {"name": "Rifugio Passo San Nicolò", "elev": "", "day": "Tag 7", "lat": 46.42161, "lon": 11.79317, "img": "/bilder/alta-via-2/huette-san-nicolo.jpg", "imgAlt": "Das Rifugio Passo San Nicolò"}];
+window.__routemapHuts = [{"name": "Rifugio Boè", "elev": "2873 m", "day": "Tag 5", "lat": 46.514416, "lon": 11.823517, "img": "/bilder/alta-via-2/huette-boe.jpg", "imgAlt": "Das Rifugio Boè"}, {"name": "Rifugio Forcella Pordoi", "elev": "2848 m", "day": "Tag 5", "lat": 46.501807, "lon": 11.812463, "img": "", "imgAlt": ""}, {"name": "Rifugio Passo San Nicolò", "elev": "", "day": "Tag 7", "lat": 46.42161, "lon": 11.79317, "img": "/bilder/alta-via-2/huette-san-nicolo.jpg", "imgAlt": "Das Rifugio Passo San Nicolò"}, {"name": "Baita alle Cascate", "elev": "", "day": "Tag 7", "lat": 46.416182, "lon": 11.781796, "img": "", "imgAlt": ""}];
 window.__routemapSegs = [
 {km:"20,7 km",hm:"+1029 / −1141 m"},
 {km:"14,7 km",hm:"+866 / −705 m"},
@@ -568,7 +568,7 @@ window.__routemapSegLatLon = [
     (window.__routemapHuts || []).forEach(function(s){
       var m = L.marker([s.lat, s.lon], { icon: L.divIcon({ className: 'mk-einkehr', html: "<svg viewBox=\"0 0 24 24\" width=\"18\" height=\"18\"><circle cx=\"12\" cy=\"12\" r=\"11\" fill=\"#fff\" stroke=\"#8a8a8a\" stroke-width=\"1.2\"/><path d=\"M6.5 9h8.5v4.2a3.6 3.6 0 0 1-3.6 3.6h-1.3a3.6 3.6 0 0 1-3.6-3.6z M15 10h1.2a1.9 1.9 0 0 1 0 3.8H15\" fill=\"none\" stroke=\"#6f6f6f\" stroke-width=\"1.7\" stroke-linejoin=\"round\"/></svg>",
         iconSize: [18, 18], iconAnchor: [9, 9] }) }).addTo(map);
-      m.bindPopup('<img class="huette-img" src="' + s.img + '" alt="' + s.imgAlt + '">' +
+      m.bindPopup((s.img ? '<img class="huette-img" src="' + s.img + '" alt="' + s.imgAlt + '">' : '') +
         '<div class="title">Einkehrmöglichkeit · ' + s.day + '</div>' + s.name + (s.elev ? ' (' + s.elev + ')' : ''), { maxWidth: 220 });
     });
 
