@@ -34,7 +34,7 @@ def k(n):  # Kamerafoto
 # Bilder ohne „kamera“ stammen aus dem ursprünglichen Bericht.
 TAGE = {
     1: dict(sticky=[k(3), f'{ALT}s1-1-a928bf.jpg'], reihe=[], danach=None),
-    2: dict(sticky=[k(12), k(63), k(88), k(90)], reihe=[], danach=k(66)),
+    2: dict(sticky=[k(12), k(63), k(88), k(90)], reihe=[], danach=k(66), teilen=2),  # Panorama nach dem Peitlerkofel-Absatz (Jannis 27.11.)
     3: dict(sticky=[k(102), k(128), k(146)], reihe=[], danach=k(137)),
     4: dict(sticky=[k(189), k(201)], reihe=[], danach=k(177)),
     5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[f'{ALT}handy-piz-boe-gipfel.jpg', k(282)], danach=None),
@@ -158,25 +158,34 @@ def tag_html(nr, d, text):
         secs.append(f'<section class="story-section"{kopf} data-unit="{unit}" data-caption="{titel}">{h}{a}</section>')
     for i in range(len(abschn), len(bilder)):  # mehr Bilder als Absätze: Bildstrecke
         secs.append(f'<section class="story-section pic" data-unit="t{nr}-{i}" data-caption="{titel}"></section>')
-    out = [f'''<div class="story tagstory">
+    def story(im, se):
+        im = [re.sub(r' active"', '"', x) for x in im]
+        im[0] = im[0].replace('class="story-img ' + art(re.search(r'src="([^"]+)"', im[0]).group(1)),
+                              'class="story-img ' + art(re.search(r'src="([^"]+)"', im[0]).group(1)) + ' active', 1)
+        return f'''<div class="story tagstory">
   <div class="story-media lightbox-container">
-    {"".join(imgs)}
+    {"".join(im)}
     <div class="story-caption">{titel}</div>
   </div>
   <div class="story-text">
-    {"".join(secs)}
+    {"".join(se)}
   </div>
-</div>''']
+</div>'''
+    def danach_html(s):
+        if art(s) == 'pano':
+            return (f'<div class="pano"><img class="lightbox-img" src="{s}" alt="Panorama, {titel}" loading="lazy">'
+                    f'<span class="wisch">← Panorama: zur Seite wischen →</span></div>')
+        return f'<div class="uebergang"><img class="lightbox-img" src="{s}" alt="{titel}" loading="lazy"></div>'
+    k = d.get('teilen')
+    if k:  # Story nach Abschnitt k teilen, Panorama/Übergangsbild dazwischen
+        out = [story(imgs[:k], secs[:k]), danach_html(d['danach']), story(imgs[k:], secs[k:])]
+    else:
+        out = [story(imgs, secs)]
     if d['reihe']:
         out.append('<div class="bildreihe">' + ''.join(
             f'<img class="lightbox-img" style="--ar:{ar(s):.3f}" src="{s}" alt="{titel}" loading="lazy">' for s in d['reihe']) + '</div>')
-    if d['danach']:
-        s = d['danach']
-        if art(s) == 'pano':
-            out.append(f'<div class="pano"><img class="lightbox-img" src="{s}" alt="Panorama, {titel}" loading="lazy">'
-                       f'<span class="wisch">← Panorama: zur Seite wischen →</span></div>')
-        else:
-            out.append(f'<div class="uebergang"><img class="lightbox-img" src="{s}" alt="{titel}" loading="lazy"></div>')
+    if d['danach'] and not k:
+        out.append(danach_html(d['danach']))
     return '\n'.join(out)
 
 def main():
@@ -341,6 +350,9 @@ def main():
     s = s[:g0] + kopf + ''.join(f'<img class="gallery-img lightbox-img" src="{src}" alt="Weitere Impression" loading="lazy">' for src in GALERIE) + s[g1:]
     # Titelbild (Wunsch Jannis 26.11.2026): Kamerafoto statt Handyfoto mit Personen im Fokus
     s = s.replace('/bilder/alta-via-2/titel-2af9ad.jpg', TITELBILD)
+    # Praktisches gehört nach Zahlen & Fakten, nicht in den Bericht (Jannis 27.11.2026)
+    s = einmal(s, ' (Bus und Einzelfahrt mit der Seilbahn zusammen 26 € pro Person)', '')
+    s = einmal(s, ' Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte übrigens sehr modern und gepflegt – kann früh losgehen und noch vor der ersten Gondel oben sein; das lohnt sich definitiv.', '')
     SEITE.write_text(s, encoding='utf-8')
     print('✓ Fotos eingebaut:', SEITE.relative_to(ROOT))
     # Zahlen & Fakten: Abstieg am 29.08. gehört noch zur Tour (Wunsch Jannis, 26.11.2026)
@@ -358,6 +370,13 @@ def main():
         f = einmal(f, '<td>ca. 104 km, ca. +6.200 / −5.700 Hm</td>', '<td>ca. 104 km, ca. +6.200 / −5.700 Hm*<br><small>* inkl. Abstecher, siehe „Der Weg, Tag für Tag“</small></td>')
         f = einmal(f, '</tbody></table></div></section>\n<section class="plain"><h2>Packen',
                    '</tbody></table></div>\n<p class="tabnote"><small>* inkl. Abstecher, die nicht zwingend zur Route gehören. ' + ' · '.join(fuss) + '. Distanz und Höhenmeter der Abstecher aus dem Track abgeleitet.</small></p></section>\n<section class="plain"><h2>Packen')
+        fakten.write_text(f, encoding='utf-8')
+    f = fakten.read_text(encoding='utf-8')
+    if 'Nützliche Hinweise' not in f:
+        f = einmal(f, '</small></p></section>\n<section class="plain"><h2>Packen',
+                   '</small></p></section>\n<section class="plain"><h2>Nützliche Hinweise</h2>'
+                   '<p><strong>Anreise zur Plosehütte:</strong> Bus vom Bahnhof Brixen zur Talstation der Plosebahn und Einzelfahrt mit der Seilbahn kosteten zusammen 26 € pro Person (August 2026).</p>'
+                   '<p><strong>Piz Boè ohne Seilbahn-Andrang:</strong> Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte sehr modern und gepflegt –, kann früh losgehen und noch vor der ersten Gondel oben sein. Das lohnt sich definitiv.</p></section>\n<section class="plain"><h2>Packen')
         fakten.write_text(f, encoding='utf-8')
     print('✓ Zeitraum 22.–29. August:', fakten.relative_to(ROOT))
 
