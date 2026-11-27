@@ -1,0 +1,299 @@
+---
+// Touren-Dashboard für die Startseite (Vorbild: Artifact „Meine Touren“).
+// Kennzahlen, Filter (Art, Region, Jahr, nur mit Bericht), Leaflet-Karte mit allen Touren und Zeitleiste.
+// Daten: src/data/touren.json und public/touren/spuren.json, erzeugt mit scripts/touren-dashboard.py.
+// Elemente außerhalb der Komponente mit data-tour="<id>" (z. B. Berichtskarten) werden mitgefiltert.
+import daten from '../data/touren.json';
+import { url, zeigeEntwuerfe } from '../lib';
+
+type Tour = (typeof daten.touren)[number];
+// Bericht-Entwürfe nur in Vorschauen verlinken; live erscheint die Tour ohne Bericht
+const touren: Tour[] = daten.touren.map((t) => (t.entwurf && !zeigeEntwuerfe ? { ...t, bericht: null } : t));
+const arten = daten.arten as Record<string, string>;
+const regionen = daten.regionen as Record<string, string>;
+const jahre = [...new Set(touren.map((t) => t.start.slice(0, 4)))].sort();
+const regionenDa = Object.keys(regionen).filter((r) => touren.some((t) => t.region === r));
+
+// Zeitleiste (SVG, statisch erzeugt; Filter blenden per Klasse aus)
+const W = 1000, x0 = 8, x1 = W - 8;
+const d0 = Date.UTC(+jahre[0], 0, 1), d1 = Date.UTC(+jahre[jahre.length - 1] + 1, 0, 1);
+const X = (iso: string, plusTag = 0) => x0 + (Date.parse(iso) + plusTag * 864e5 - d0) / (d1 - d0) * (x1 - x0);
+// Beschriftung rechts neben dem Balken; läuft sie aus der Zeitleiste, links davor.
+// Jede Tour bekommt die oberste Bahn, in der Balken und Beschriftung frei sind.
+const spuren: { t: Tour; a: number; w: number; links: boolean; bahn: number }[] = [];
+const bahnen: [number, number][][] = [];
+for (const t of touren) {
+  const a = X(t.start), w = Math.max(X(t.ende, 1) - a, 8), text = 6 + t.name.length * 5.8;
+  const links = a + w + text > x1;
+  const von = links ? a - text : a, bis = links ? a + w : a + w + text;
+  let i = 0; while (bahnen[i]?.some(([v, b]) => von < b + 6 && bis > v - 6)) i++;
+  (bahnen[i] ??= []).push([von, bis]);
+  spuren.push({ t, a, w, links, bahn: i });
+}
+const oben = 26, bh = 22, H = oben + bahnen.length * bh + 22;
+const MON = ['Jan', 'Apr', 'Jul', 'Okt'];
+const tage = (t: Tour) => Math.round((Date.parse(t.ende) - Date.parse(t.start)) / 864e5) + 1;
+const datum = (t: Tour) => {
+  const [a, b] = [new Date(t.start), new Date(t.ende)];
+  return `${a.getUTCDate()}.${a.getUTCMonth() + 1}.–${b.getUTCDate()}.${b.getUTCMonth() + 1}.${b.getUTCFullYear()}`;
+};
+const clientTouren = touren.map((t) => ({ ...t, tage: tage(t), datum: datum(t), bericht: t.bericht ? url(t.bericht) : null }));
+---
+<section class="td" data-touren={JSON.stringify(clientTouren)} data-arten={JSON.stringify(arten)} data-regionen={JSON.stringify(regionen)} data-spuren={url('/touren/spuren.json')}>
+  <div class="td-kpis" aria-live="polite">
+    <div><b data-k="touren">–</b><span>Touren</span></div>
+    <div><b data-k="tage">–</b><span>Tage unterwegs</span></div>
+    <div><b data-k="km">–</b><span>Kilometer</span></div>
+    <div><b data-k="hm">–</b><span>Höhenmeter</span></div>
+  </div>
+
+  <div class="td-filter" role="group" aria-label="Touren filtern">
+    <div class="fg"><span class="fl">Art</span>
+      <button class="chip" data-f="art" data-v="alle" aria-pressed="true">Alle</button>
+      {Object.entries(arten).map(([k, v]) => <button class="chip" data-f="art" data-v={k} aria-pressed="false"><i class={`dot a-${k}`}></i>{v}</button>)}
+    </div>
+    <div class="fg"><span class="fl">Region</span>
+      <button class="chip" data-f="region" data-v="alle" aria-pressed="true">Alle</button>
+      {regionenDa.map((k) => <button class="chip" data-f="region" data-v={k} aria-pressed="false">{regionen[k]}</button>)}
+    </div>
+    <div class="fg"><span class="fl">Jahr</span>
+      <button class="chip" data-f="jahr" data-v="alle" aria-pressed="true">Alle</button>
+      {jahre.map((j) => <button class="chip" data-f="jahr" data-v={j} aria-pressed="false">{j}</button>)}
+      <button class="chip chip-bericht" data-f="bericht" aria-pressed="false">Nur mit Bericht</button>
+    </div>
+    <span class="td-count muted" aria-live="polite"></span>
+  </div>
+
+  <div class="td-main">
+    <div class="td-mapbox">
+      <div class="td-map" aria-label="Karte aller Touren"></div>
+      <button class="td-reset" type="button" title="Ansicht zurücksetzen" aria-label="Ansicht zurücksetzen">⟲</button>
+      <p class="td-weit muted" hidden></p>
+    </div>
+    <aside class="td-detail">
+      <p class="muted td-hinweis">Tour auf der Karte oder in der Zeitleiste antippen, um Details zu sehen.</p>
+    </aside>
+  </div>
+
+  <div class="td-tl">
+    <div class="td-tlhead">
+      <h2>Zeitleiste</h2>
+      <div class="legend">{Object.entries(arten).map(([k, v]) => <span><i class={`dot a-${k}`}></i>{v}</span>)}</div>
+    </div>
+    <div class="td-tlwrap">
+      <svg viewBox={`0 0 ${W} ${H}`} role="img" aria-label={`Zeitleiste aller Touren ${jahre[0]} bis ${jahre[jahre.length - 1]}`}>
+        {jahre.map((j, i) => {
+          const xs = X(`${j}-01-01`), xe = X(`${+j + 1}-01-01`);
+          return (
+            <g>
+              {i % 2 === 0 && <rect class="tl-jahr" x={xs} y={oben - 8} width={xe - xs} height={H - oben - 6} />}
+              <text class="tl-jahrtext" x={xs + 6} y="15">{j}</text>
+              {MON.map((m, k) => <text class="tl-mon" x={X(`${j}-${String(k * 3 + 1).padStart(2, '0')}-01`) + 2} y={H - 4}>{m}</text>)}
+            </g>
+          );
+        })}
+        {spuren.map(({ t, a, w, links, bahn }) => {
+          const y = oben + bahn * bh;
+          return (
+            <g class="tl-tour" data-tour={t.id} tabindex="0" role="button" aria-label={`${t.name}, ${datum(t)}`}>
+              <title>{`${t.name} · ${datum(t)}`}</title>
+              <rect class={`a-${t.art}`} x={a} y={y} width={w} height="14" rx="4" />
+              <text x={links ? a - 5 : a + w + 5} y={y + 11} text-anchor={links ? 'end' : 'start'}>{t.name}</text>
+            </g>
+          );
+        })}
+      </svg>
+    </div>
+  </div>
+</section>
+
+<script>
+  import L from 'leaflet';
+  import 'leaflet/dist/leaflet.css';
+  import { karte } from '../config';
+
+  // Linienfarben je Art (gleich wie in der Legende)
+  const FARBE: Record<string, string> = { wandern: '#2f7d5b', rad: '#2a6fc9', schnee: '#7a5cc9', reise: '#c0821a' };
+  // Weit entfernte Touren: zählen beim automatischen Zoomen nur, wenn sonst nichts sichtbar ist
+  const WEIT = new Set(['madagaskar']);
+
+  document.querySelectorAll<HTMLElement>('.td').forEach(async (el) => {
+    const touren: any[] = JSON.parse(el.dataset.touren!);
+    const arten = JSON.parse(el.dataset.arten!);
+    const regionen = JSON.parse(el.dataset.regionen!);
+    const nf = (n: number) => n.toLocaleString('de-DE');
+    const st = { art: 'alle', region: 'alle', jahr: 'alle', bericht: false, sel: null as string | null };
+
+    const map = L.map(el.querySelector<HTMLElement>('.td-map')!, { scrollWheelZoom: false, zoomSnap: 0.25 });
+    L.tileLayer(`https://tile.thunderforest.com/${karte.stil}/{z}/{x}/{y}{r}.png?apikey=${karte.schluessel}`, {
+      maxZoom: 18,
+      attribution: 'Karten: © <a href="https://www.thunderforest.com">Thunderforest</a>, Daten: © <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>-Mitwirkende',
+    }).addTo(map);
+    L.control.scale({ imperial: false }).addTo(map);
+    map.setView([48, 10], 5);
+
+    const spuren: Record<string, [number, number][][]> = await (await fetch(el.dataset.spuren!)).json();
+    const lagen: Record<string, { rand: L.Polyline[]; linie: L.Polyline[]; punkt?: L.CircleMarker; grenzen: L.LatLngBounds }> = {};
+    const popup = (t: any) => `<strong>${t.name}</strong><br>${t.datum}` +
+      (t.km ? `<br>${nf(t.km)} km · ${nf(t.hm)} Hm` : '') +
+      (t.bericht ? `<br><a href="${t.bericht}">Zum Bericht →</a>${t.entwurf ? ' <em>(Entwurf)</em>' : ''}` : '');
+    for (const t of touren) {
+      const teile = spuren[t.id] || [];
+      const grenzen = L.latLngBounds([]);
+      const rand = teile.map((l) => L.polyline(l, { color: '#fff', weight: 7, opacity: .9, interactive: false }));
+      const linie = teile.map((l) => L.polyline(l, { color: FARBE[t.art], weight: 3.5, opacity: 1 }));
+      linie.forEach((l) => { grenzen.extend(l.getBounds()); l.bindPopup(popup(t)).on('click', () => waehle(t.id, false)); });
+      // Ein Punkt am Anfang der Tour, damit auch kleine Touren in der Übersicht auffallen
+      const punkt = teile.length ? L.circleMarker(teile[0][0], { radius: 5, color: '#fff', weight: 2, fillColor: FARBE[t.art], fillOpacity: 1 })
+        .bindPopup(popup(t)).on('click', () => waehle(t.id, false)) : undefined;
+      lagen[t.id] = { rand, linie, punkt, grenzen };
+    }
+
+    const passt = (t: any) => (st.art === 'alle' || t.art === st.art) && (st.region === 'alle' || t.region === st.region)
+      && (st.jahr === 'alle' || t.start.startsWith(st.jahr)) && (!st.bericht || !!t.bericht);
+
+    function zoomeAuf(ids: string[]) {
+      const nah = ids.filter((id) => !WEIT.has(id));
+      const g = L.latLngBounds([]);
+      (nah.length ? nah : ids).forEach((id) => lagen[id].grenzen.isValid() && g.extend(lagen[id].grenzen));
+      if (g.isValid()) map.fitBounds(g, { padding: [24, 24], maxZoom: 12 });
+      const weit = el.querySelector<HTMLElement>('.td-weit')!;
+      const fehlt = nah.length ? ids.filter((id) => WEIT.has(id)) : [];
+      weit.hidden = !fehlt.length;
+      if (fehlt.length) {
+        weit.innerHTML = fehlt.map((id) => `<button type="button" data-zu="${id}">${touren.find((t) => t.id === id).name} anzeigen →</button>`).join(' ')
+          + ' <span>(außerhalb des Ausschnitts)</span>';
+        weit.querySelectorAll<HTMLButtonElement>('[data-zu]').forEach((b) => b.onclick = () => waehle(b.dataset.zu!, true));
+      }
+    }
+
+    function aktualisiere(zoom = true) {
+      const sicht = touren.filter(passt);
+      const ids = new Set(sicht.map((t) => t.id));
+      if (st.sel && !ids.has(st.sel)) st.sel = null;
+      for (const t of touren) {
+        const l = lagen[t.id], an = ids.has(t.id);
+        [...l.rand, ...l.linie, ...(l.punkt ? [l.punkt] : [])].forEach((x) => an ? x.addTo(map) : x.remove());
+        const sel = st.sel === t.id;
+        l.linie.forEach((x) => { x.setStyle({ weight: sel ? 6 : 3.5, opacity: st.sel && !sel ? .45 : 1 }); if (sel) x.bringToFront(); });
+      }
+      el.querySelectorAll<SVGGElement>('.tl-tour').forEach((g) => {
+        g.classList.toggle('aus', !ids.has(g.dataset.tour!));
+        g.classList.toggle('sel', g.dataset.tour === st.sel);
+      });
+      document.querySelectorAll<HTMLElement>('[data-tour]:not(.tl-tour)').forEach((x) => x.hidden = !ids.has(x.dataset.tour!));
+      const leer = document.querySelector<HTMLElement>('[data-tour-leer]');
+      if (leer) leer.hidden = [...document.querySelectorAll<HTMLElement>('[data-tour]:not(.tl-tour)')].some((x) => !x.hidden);
+      // Kennzahlen
+      const k = (n: string, v: string) => el.querySelector(`[data-k="${n}"]`)!.textContent = v;
+      k('touren', nf(sicht.length));
+      k('tage', nf(sicht.reduce((s, t) => s + t.tage, 0)));
+      k('km', nf(sicht.reduce((s, t) => s + (t.km || 0), 0)));
+      k('hm', nf(sicht.reduce((s, t) => s + (t.hm || 0), 0)));
+      el.querySelector('.td-count')!.textContent = `${sicht.length} von ${touren.length} Touren`;
+      zeigeDetail();
+      if (zoom) zoomeAuf(st.sel ? [st.sel] : [...ids]);
+    }
+
+    function zeigeDetail() {
+      const box = el.querySelector<HTMLElement>('.td-detail')!;
+      const t = touren.find((x) => x.id === st.sel);
+      if (!t) { box.innerHTML = '<p class="muted td-hinweis">Tour auf der Karte oder in der Zeitleiste antippen, um Details zu sehen.</p>'; return; }
+      box.innerHTML = `
+        <div class="badge a-${t.art}">${arten[t.art]}</div>
+        <h3>${t.name}</h3>
+        <p class="muted">${t.gebiet} · ${regionen[t.region]}<br>${t.datum}</p>
+        <div class="facts">
+          <div><b>${t.km ? nf(t.km) : '–'}</b><span>km</span></div>
+          <div><b>${t.hm ? nf(t.hm) : '–'}</b><span>Hm hoch</span></div>
+          <div><b>${t.tage}</b><span>${t.tage === 1 ? 'Tag' : 'Tage'}</span></div>
+        </div>
+        ${t.bericht ? `<a class="td-link" href="${t.bericht}">Zum Bericht →</a>${t.entwurf ? '<p class="muted">Entwurf, nur in der Vorschau sichtbar</p>' : ''}` : '<p class="muted">Ein Bericht folgt noch.</p>'}
+        <button type="button" class="td-zurueck">Alle Touren zeigen</button>`;
+      box.querySelector<HTMLButtonElement>('.td-zurueck')!.onclick = () => { st.sel = null; aktualisiere(); };
+    }
+
+    function waehle(id: string, zoom = true) {
+      st.sel = st.sel === id && zoom ? null : id;
+      aktualisiere(zoom);
+      if (!zoom) return;
+      if (window.matchMedia('(max-width: 760px)').matches) el.querySelector('.td-map')!.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    el.querySelectorAll<HTMLButtonElement>('.chip').forEach((b) => b.addEventListener('click', () => {
+      const f = b.dataset.f as 'art' | 'region' | 'jahr' | 'bericht';
+      if (f === 'bericht') { st.bericht = !st.bericht; b.setAttribute('aria-pressed', String(st.bericht)); }
+      else {
+        (st as any)[f] = b.dataset.v;
+        el.querySelectorAll(`.chip[data-f="${f}"]`).forEach((c) => c.setAttribute('aria-pressed', String(c === b)));
+      }
+      aktualisiere();
+    }));
+    el.querySelectorAll<SVGGElement>('.tl-tour').forEach((g) => {
+      g.addEventListener('click', () => waehle(g.dataset.tour!));
+      g.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); waehle(g.dataset.tour!); } });
+    });
+    el.querySelector<HTMLButtonElement>('.td-reset')!.onclick = () => { st.sel = null; aktualisiere(); };
+    aktualisiere();
+  });
+</script>
+
+<style is:global>
+  .td { --wandern: #2f7d5b; --rad: #2a6fc9; --schnee: #7a5cc9; --reise: #c0821a; display: flex; flex-direction: column; gap: 1rem; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .td { --wandern: #58c493; --rad: #6aa7f0; --schnee: #a48cf0; --reise: #e4ab4a; } }
+  :root[data-theme="dark"] .td { --wandern: #58c493; --rad: #6aa7f0; --schnee: #a48cf0; --reise: #e4ab4a; }
+  .td .a-wandern { --c: var(--wandern); } .td .a-rad { --c: var(--rad); } .td .a-schnee { --c: var(--schnee); } .td .a-reise { --c: var(--reise); }
+  .td .dot { display: inline-block; width: .6rem; height: .6rem; border-radius: 2px; background: var(--c); margin-right: .35rem; vertical-align: 0; }
+
+  .td-kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .6rem; }
+  .td-kpis div { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem .8rem; min-width: 0; }
+  .td-kpis b { display: block; font-size: 1.5rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+  .td-kpis span { color: var(--muted); font-size: .8rem; }
+  @media (max-width: 520px) { .td-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  .td-filter { display: flex; flex-wrap: wrap; gap: .5rem 1.25rem; align-items: center; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: .6rem .8rem; }
+  @media (min-width: 761px) { .td-filter { position: sticky; top: .5rem; z-index: 1100; box-shadow: var(--shadow); } }
+  .td .fg { display: flex; flex-wrap: wrap; gap: .35rem; align-items: center; }
+  .td .fl { font-size: .78rem; color: var(--muted); margin-right: .15rem; }
+  .td .chip { font: inherit; font-size: .82rem; cursor: pointer; padding: .2rem .7rem; border-radius: 1rem; border: 1px solid var(--line); background: var(--bg); color: var(--fg); }
+  .td .chip:hover { border-color: var(--muted); }
+  .td .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+  .td .chip[aria-pressed="true"] .dot { outline: 1px solid var(--accent-fg); }
+  .td .chip:focus-visible, .tl-tour:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .td-count { font-size: .82rem; margin-left: auto; }
+
+  .td-main { display: grid; grid-template-columns: minmax(0, 1fr) 17rem; gap: 1rem; }
+  @media (max-width: 760px) { .td-main { grid-template-columns: minmax(0, 1fr); } }
+  .td-mapbox { position: relative; }
+  .td-map { height: min(62vh, 34rem); min-height: 20rem; border-radius: var(--radius); border: 1px solid var(--line); }
+  .td-reset { position: absolute; top: 80px; left: 10px; z-index: 500; width: 34px; height: 34px; border-radius: 4px; border: 2px solid rgba(0,0,0,.2); background: #fff; color: #333; font-size: 17px; cursor: pointer; }
+  .td-weit { font-size: .85rem; margin: .4rem 0 0; }
+  .td-weit button { font: inherit; color: var(--accent); background: none; border: 0; padding: 0; cursor: pointer; text-decoration: underline; }
+  .td-detail { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: .9rem 1rem; display: flex; flex-direction: column; gap: .5rem; align-self: start; }
+  .td-detail h3 { margin: 0; font-size: 1.2rem; }
+  .td-detail p { margin: 0; font-size: .9rem; }
+  .td-detail .badge { align-self: flex-start; font-size: .75rem; font-weight: 600; padding: .1rem .55rem; border-radius: 1rem; color: var(--c); border: 1px solid var(--c); }
+  .td-detail .facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: .4rem; }
+  .td-detail .facts div { background: var(--bg); border-radius: 8px; padding: .4rem .5rem; }
+  .td-detail .facts b { display: block; font-size: 1.05rem; font-variant-numeric: tabular-nums; }
+  .td-detail .facts span { font-size: .72rem; color: var(--muted); }
+  .td-link { font-weight: 600; }
+  .td-zurueck { font: inherit; font-size: .85rem; align-self: flex-start; background: none; border: 0; padding: 0; color: var(--muted); text-decoration: underline; cursor: pointer; }
+
+  .td-tl { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: .8rem 1rem; }
+  .td-tlhead { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: .5rem 1rem; margin-bottom: .4rem; }
+  .td-tlhead h2 { margin: 0; font-size: 1.15rem; }
+  .td .legend { display: flex; flex-wrap: wrap; gap: .3rem 1rem; font-size: .8rem; color: var(--muted); }
+  .td-tlwrap { overflow-x: auto; }
+  .td-tlwrap svg { display: block; width: 100%; min-width: 760px; height: auto; }
+  .tl-jahr { fill: var(--bg); }
+  .tl-jahrtext { font-size: 12px; font-weight: 600; fill: var(--muted); }
+  .tl-mon { font-size: 9px; fill: var(--muted); }
+  .tl-tour { cursor: pointer; transition: opacity .15s; }
+  .tl-tour rect { fill: var(--c); }
+  .tl-tour text { font-size: 11px; fill: var(--fg); }
+  .tl-tour:hover text { text-decoration: underline; }
+  .tl-tour.sel rect { stroke: var(--fg); stroke-width: 2; }
+  .tl-tour.sel text { font-weight: 700; }
+  .tl-tour.aus { opacity: .18; }
+</style>
