@@ -79,8 +79,9 @@ TEXTE = {
         'die erste Etappe auf zwei Tage aufgeteilt. Gleich am ersten Tag gab es ein Highlight: Baden im Plansee '
         'und die Fahrt auf dem Uferweg.'],
     2: ['Ein Highlight des Tages war der Blindseetrail.'],
-    3: ['Ein Highlight des Tages war der Fimbachtrail.'],
-    4: ['Ein Highlight des Tages war die Fahrt entlang eines Flusses durch die UNESCO-Biosfera Engiadina Val Müstair, '
+    4: ['Von der Heidelberger Hütte ging es über den Fimbapass und dann auf dem Fimbapass Trail bergab, '
+        'eines der Highlights der Tour.',
+        'Ein weiteres Highlight war die Fahrt entlang eines Flusses durch die UNESCO-Biosfera Engiadina Val Müstair, '
         'zu der auch der Schweizerische Nationalpark gehört.'],
     5: ['Unterkunft war die entlegene Hütte La Baita in einer pittoresken Landschaft.'],
     8: ['Auf dem Weg zum Gardasee und am See selbst war das mediterrane Flair deutlich zu spüren.'],
@@ -101,7 +102,6 @@ FAZIT = 'Eine tolle Tour und Erfahrung mit schönen Trails. Ich wäre gerne noch
 # Offene Fragen (erscheinen unten in Zahlen & Fakten unter „Noch zu ergänzen“)
 OFFEN = [
     'Tag 2: Der Blindseetrail liegt am Fernpass, also auf der Etappe Heiterwang → Landeck. Passt das?',
-    'Tag 3: Heißt der Trail „Fimbachtrail“ oder „Fimbatrail“ (Fimbatal)?',
     'Tag 8: Ging es über den Passo Bregn de l’Ors? Der höchste Punkt liegt laut GPS bei ca. 1.860 m.',
     'Kais Bremse: auf den letzten Kilometern welcher Etappe?',
     'Texte: Stichpunkte zu Tag 6 und 7 und gern mehr zu jedem Tag (Landschaft, Wetter, Essen, Unterkünfte)',
