@@ -367,7 +367,9 @@ def main():
         for tag, (km, ziel, werte) in ABSTECHER.items():
             f = einmal(f, '<td>' + km + '</td>', '<td>' + km + '*</td>')
             fuss.append(f'Tag {tag}: {ziel} ({werte})')
-        f = einmal(f, '<td>ca. 104 km, ca. +6.200 / −5.700 Hm</td>', '<td>ca. 104 km, ca. +6.200 / −5.700 Hm*<br><small>* inkl. Abstecher, siehe „Der Weg, Tag für Tag“</small></td>')
+        # Summe inkl. Abstieg 29.08. (Jannis 28.11.): Tage 103,7 km + 3,8 km; +6.212 / −5.674−610 Hm
+        f = einmal(f, '<td>ca. 104 km, ca. +6.200 / −5.700 Hm</td>', '<td>ca. 108 km, ca. +6.200 / −6.300 Hm*<br><small>* inkl. Abstecher und Abstieg am 29.08. (Abstieg nicht aufgezeichnet, aus der Wanderkarte), siehe „Der Weg, Tag für Tag“</small></td>')
+        f = einmal(f, '<td>7 Wandertage</td>', '<td>7 Wandertage und ein Abstieg am Morgen des 8. Tages</td>')
         f = einmal(f, '</tbody></table></div></section>\n<section class="plain"><h2>Packen',
                    '</tbody></table></div>\n<p class="tabnote"><small>* inkl. Abstecher, die nicht zwingend zur Route gehören. ' + ' · '.join(fuss) + '. Distanz und Höhenmeter der Abstecher aus dem Track abgeleitet.</small></p></section>\n<section class="plain"><h2>Packen')
         fakten.write_text(f, encoding='utf-8')
