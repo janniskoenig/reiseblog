@@ -42,6 +42,48 @@ TAGE = {
     7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), f'{ALT}handy-gulasch-selle.jpg'], danach=None),
 }
 TITELBILD = f'{ALT}kamera-251.jpg'
+# Bildunterschriften (Wunsch Jannis 28.11.2026: knapp, was man sieht). Nach Ansicht der Fotos formuliert;
+# Orts- und Gipfelnamen nur, wo sie sicher sind (Schild im Bild, Fotoauswahl-Notizen oder eindeutige Ansicht).
+BU = {
+    # Überarbeitet nach Wunsch Jannis 28.11.2026: Ort und Kontext statt Bildbeschreibung.
+    # Verortung über Tag (Aufnahmedatum), Reihenfolge der Dateinummern, Berichtstext und Ansicht.
+    TITELBILD: 'Sellagruppe: Tiefblick zwischen den Felstürmen',
+    k(3): 'Morgens an der Plose, kurz nach dem Aufbruch',
+    f'{ALT}s1-1-a928bf.jpg': 'Vorspeisenteller am ersten Abend auf der Plosehütte',
+    k(12): 'Weidenröschen auf dem Weg Richtung Peitlerkofel',
+    k(63): 'Aussicht beim Abstecher auf den Peitlerkofel',
+    k(66): 'Panorama beim Abstecher auf den Peitlerkofel',
+    k(88): 'Sonnenuntergang an der Schlüterhütte',
+    k(90): 'Abendlicht über den Almen an der Schlüterhütte',
+    k(102): 'Morgennebel nach dem Start an der Schlüterhütte',
+    k(128): 'Unterwegs von der Schlüterhütte Richtung Roascharte',
+    k(133): 'Unsere Gruppe auf dem Weg Richtung Roascharte',
+    k(137): 'Panorama auf dem Weg Richtung Roascharte',
+    k(146): 'Ausblick bei der Roascharte',
+    k(189): 'Abendstimmung an der Pisciadùhütte: Wolken ziehen durchs Tal',
+    k(201): 'Blaue Stunde: Blick von der Pisciadùhütte hinunter nach Kolfuschg',
+    k(177): 'Abendpanorama von der Pisciadùhütte ins Gadertal',
+    k(216): 'Sonnenaufgang an der Pisciadùhütte',
+    k(257): 'Felstürme der Sellagruppe auf dem Weg zum Piz Boè',
+    k(284): 'Abstieg durch die Forcella Pordoi',
+    k(291): 'Vom Bindelweg auf Marmolada und Fedaia-Stausee',
+    f'{ALT}handy-piz-boe-gipfel.jpg': 'Andrang an der Capanna Piz Fassa auf dem Gipfel des Piz Boè',
+    k(282): 'Blick zur Marmolada, darunter die Serpentinen am Pordoijoch',
+    k(304): 'Aufbruch am Fedaia-Stausee beim Rifugio Castiglioni',
+    k(311): 'Schmelzwassersee am Marmoladagletscher',
+    k(320): 'Morgens im Contrintal: Kühe auf der Alm',
+    k(326): 'Holzbrücke im Contrintal',
+    k(353): 'Letzter Morgen am Passo delle Selle',
+    k(356): 'Morgenlicht am Passo delle Selle vor dem Abstieg',
+    k(327): 'Bachbett und Holzsteg im Contrintal',
+    f'{ALT}handy-gulasch-selle.jpg': 'Gulasch zum Abschluss im Rifugio Passo delle Selle',
+    k(219): 'Sonnenaufgang über dem Gadertal, oberhalb der Pisciadùhütte',
+    k(229): 'Rückblick auf die Pisciadùhütte und ihren See',
+    k(297): 'Abendlicht am Bindelweg',
+    k(333): 'Pfad durch die Lärchen Richtung Passo San Nicolò',
+    k(354): 'Das Rifugio Passo delle Selle auf dem Grat',
+    k(365): 'Kuh am Passo delle Selle am letzten Morgen',
+}
 # „Weitere Eindrücke“: nur Kamerafotos (Jannis 26.11.: Handyfotos wirken daneben flau), entlastet die Bildreihen
 GALERIE = [k(219), k(229), k(297), k(333), k(354), k(365)]
 HUETTEN = {  # Kartenmarker → Foto
@@ -85,9 +127,7 @@ CSS = """
 .tagstory .story-section.pic { min-height: 55vh; }
 .tagstory .story-section:last-child { padding-bottom: 8vh; }
 .bildreihe { display: flex; flex-wrap: wrap; gap: .4rem; padding: .4rem; background: #000; }
-.bildreihe img { display: block; height: auto; min-width: 0; cursor: zoom-in; object-fit: cover;
-  flex-grow: var(--ar); flex-basis: calc(var(--ar) * 9rem); aspect-ratio: var(--ar); }
-@media (min-width: 800px) { .bildreihe img { flex-basis: calc(var(--ar) * 15rem); } }
+.bildreihe img { display: block; height: auto; min-width: 0; cursor: zoom-in; object-fit: cover; aspect-ratio: var(--ar); }
 .uebergang { background: #000; }
 .uebergang img { display: block; width: 100%; max-height: 90vh; object-fit: cover; cursor: zoom-in; }
 .pano { background: #000; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; }
@@ -96,6 +136,48 @@ CSS = """
 @media (max-width: 799px) {
   .pano img { width: auto; height: 62vh; max-width: none; }
   .pano .wisch { display: block; position: sticky; left: 0; color: #ddd; font-size: .78rem; padding: .4rem 1rem .6rem; }
+}
+/* Bildunterschriften */
+.bu-unter { margin: .45rem 0 0; font-size: .82rem; line-height: 1.45; color: var(--muted); text-align: left; }
+figure.foto { margin: 0; }
+.hero figure.foto { margin-bottom: 1.5rem; }
+.hero figure.foto .hero-img { margin-bottom: 0; }
+.plain figure.foto { margin: 1rem 0; }
+.plain figure.foto .inline-img { margin: 0; }
+.gallery-grid figure.foto .bu-unter { font-size: .76rem; margin-top: .3rem; }
+.bildreihe figure { position: relative; margin: 0; min-width: 0;
+  flex-grow: var(--ar); flex-basis: calc(var(--ar) * 9rem); }
+@media (min-width: 800px) { .bildreihe figure { flex-basis: calc(var(--ar) * 15rem); } }
+.bildreihe figure img { width: 100%; }
+.bu-drauf { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.6rem .8rem .55rem; color: #fff;
+  font-size: .78rem; line-height: 1.4; background: linear-gradient(transparent, rgba(0,0,0,.6));
+  text-shadow: 0 1px 3px rgba(0,0,0,.6); pointer-events: none; }
+.uebergang { position: relative; }
+.pano figcaption { color: #ddd; font-size: .78rem; padding: .45rem 1rem .6rem; }
+.lightbox-overlay { flex-direction: column; gap: .6rem; }
+.lightbox-full { max-height: calc(100% - 3rem); }
+.lightbox-bu { color: #ddd; font-size: .85rem; text-align: center; max-width: 40rem; }
+/* Hochformat (Wunsch Jannis 28.11.2026): am Handy nicht im Sticky-Streifen, sondern als Vollbild –
+   mit Text darüber oder (ohne Text) als Atempause. Am Desktop bleibt es in der linken Spalte. */
+.vollbild, .vollbild-luft { display: none; }
+@media (max-width: 799px) {
+  .tagstory .story-img.hoch { display: none; }
+  /* Bild läuft einmal allein herein, bleibt dann stehen (sticky) und nur der Textkasten scrollt darüber.
+     Der Text beginnt erst unterhalb des Bildes, damit Bild und Kasten nie zusammen hochfahren.
+     Bewusst nur position: sticky (kein fixed/clip-path, kein background-attachment) – läuft so auch in iOS Safari. */
+  .tagstory .story-section.hochbild { position: relative; z-index: 4; padding: 0; background: #000; min-height: 0; }
+  .hochbild .vollbild { display: block; position: -webkit-sticky; position: sticky; top: 0; height: 100vh; height: 100svh; margin: 0; }
+  .hochbild .vollbild img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+  .hochbild .vollbild .bu-drauf { padding-bottom: max(.8rem, env(safe-area-inset-bottom, 0px)); }
+  .story-section.pic.hochbild .vollbild-luft { height: 35vh; height: 35svh; }
+  .hochbild .vollbild-text { position: relative; margin: 0 1rem; padding: 1.1rem 1.25rem 1.2rem;
+    background: rgba(18,17,15,.78); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+    border-radius: 12px; color: #f3f1ec; }
+  .hochbild .vollbild-luft { display: block; height: 55vh; height: 55svh; }
+  .hochbild .vollbild-text h3 { color: #f2b47a; }
+  .hochbild .vollbild-text p { color: #f3f1ec; }
+  .hochbild .vollbild-text blockquote { color: #d8d4cc; }
+  .hochbild .vollbild-text > :last-child { margin-bottom: 0; }
 }
 .leaflet-popup-content .huette-img { display: block; width: 100%; height: 110px; object-fit: cover; border-radius: 6px; margin-bottom: .4rem; }
 """
@@ -148,16 +230,40 @@ def tag_html(nr, d, text):
     abschn = abschnitte(text['teile'])
     bilder = d['sticky']
     imgs, secs = [], []
+    for src in bilder:
+        assert src in BU, f'Bildunterschrift fehlt: {src}'
+    k_ = d.get('teilen') or len(bilder)
+    def mobil_ersatz(i):
+        # Querformat derselben Story, das am Handy im Streifen stehen bleibt, solange das Hochformat als Vollbild läuft
+        teil = range(0, k_) if i < k_ else range(k_, len(bilder))
+        vor = [j for j in teil if j < i and art(bilder[j]) != 'hoch']
+        nach = [j for j in teil if j > i and art(bilder[j]) != 'hoch']
+        return (vor[-1:] or nach[:1] or [None])[0]
     for i, src in enumerate(bilder):
         aktiv = ' active' if i == 0 else ''
-        imgs.append(f'<img class="story-img {art(src)}{aktiv}" data-unit="t{nr}-{i}" src="{src}" alt="{titel}" loading="lazy">')
+        imgs.append(f'<img class="story-img {art(src)}{aktiv}" data-unit="t{nr}-{i}" src="{src}" alt="{BU[src]}" loading="lazy">')
+    gesehen = set()
+    def section(i_bild, kopf, cls, inhalt):
+        src = bilder[i_bild]
+        attr = f'{kopf} data-unit="t{nr}-{i_bild}" data-caption="{BU[src]}"'
+        if art(src) != 'hoch':
+            return f'<section class="story-section{cls}"{attr}>{inhalt}</section>'
+        ers = mobil_ersatz(i_bild)
+        if ers is not None:
+            attr += f' data-unit-mobil="t{nr}-{ers}"'
+        if i_bild in gesehen:  # weiterer Absatz zum selben Hochformat: nur Text
+            return f'<section class="story-section{cls}"{attr}>{inhalt}</section>'
+        gesehen.add(i_bild)
+        voll = (f'<figure class="vollbild"><img class="lightbox-img" src="{src}" alt="{BU[src]}" loading="lazy">'
+                f'<figcaption class="bu-drauf">{BU[src]}</figcaption></figure>')
+        text_ = (f'<div class="vollbild-text">{inhalt}</div>' if inhalt else '') + '<div class="vollbild-luft"></div>'
+        return f'<section class="story-section{cls} hochbild"{attr}>{voll}{text_}</section>'
     for i, a in enumerate(abschn):
-        unit = f't{nr}-{min(i, len(bilder) - 1)}'
         kopf = (f' id="tag{nr}"' if i == 0 else '')
         h = text['titel'] if i == 0 else ''
-        secs.append(f'<section class="story-section"{kopf} data-unit="{unit}" data-caption="{titel}">{h}{a}</section>')
+        secs.append(section(min(i, len(bilder) - 1), kopf, '', h + a))
     for i in range(len(abschn), len(bilder)):  # mehr Bilder als Absätze: Bildstrecke
-        secs.append(f'<section class="story-section pic" data-unit="t{nr}-{i}" data-caption="{titel}"></section>')
+        secs.append(section(i, '', ' pic', ''))
     def story(im, se):
         im = [re.sub(r' active"', '"', x) for x in im]
         im[0] = im[0].replace('class="story-img ' + art(re.search(r'src="([^"]+)"', im[0]).group(1)),
@@ -165,7 +271,7 @@ def tag_html(nr, d, text):
         return f'''<div class="story tagstory">
   <div class="story-media lightbox-container">
     {"".join(im)}
-    <div class="story-caption">{titel}</div>
+    <div class="story-caption">{BU[re.search(r'src="([^"]+)"', im[0]).group(1)]}</div>
   </div>
   <div class="story-text">
     {"".join(se)}
@@ -173,9 +279,10 @@ def tag_html(nr, d, text):
 </div>'''
     def danach_html(s):
         if art(s) == 'pano':
-            return (f'<div class="pano"><img class="lightbox-img" src="{s}" alt="Panorama, {titel}" loading="lazy">'
-                    f'<span class="wisch">← Panorama: zur Seite wischen →</span></div>')
-        return f'<div class="uebergang"><img class="lightbox-img" src="{s}" alt="{titel}" loading="lazy"></div>'
+            return (f'<figure class="pano" style="margin:0"><img class="lightbox-img" src="{s}" alt="{BU[s]}" loading="lazy">'
+                    f'<span class="wisch">← Panorama: zur Seite wischen →</span><figcaption>{BU[s]}</figcaption></figure>')
+        return (f'<figure class="uebergang" style="margin:0"><img class="lightbox-img" src="{s}" alt="{BU[s]}" loading="lazy">'
+                f'<figcaption class="bu-drauf">{BU[s]}</figcaption></figure>')
     k = d.get('teilen')
     if k:  # Story nach Abschnitt k teilen, Panorama/Übergangsbild dazwischen
         out = [story(imgs[:k], secs[:k]), danach_html(d['danach']), story(imgs[k:], secs[k:])]
@@ -183,7 +290,8 @@ def tag_html(nr, d, text):
         out = [story(imgs, secs)]
     if d['reihe']:
         out.append('<div class="bildreihe">' + ''.join(
-            f'<img class="lightbox-img" style="--ar:{ar(s):.3f}" src="{s}" alt="{titel}" loading="lazy">' for s in d['reihe']) + '</div>')
+            f'<figure style="--ar:{ar(s):.3f}"><img class="lightbox-img" src="{s}" alt="{BU[s]}" loading="lazy">'
+            f'<figcaption class="bu-drauf">{BU[s]}</figcaption></figure>' for s in d['reihe']) + '</div>')
     if d['danach'] and not k:
         out.append(danach_html(d['danach']))
     return '\n'.join(out)
@@ -347,12 +455,32 @@ def main():
     kopf = '<section class="plain sub"><h3>Weitere Eindrücke</h3><div class="gallery-grid">'
     for src in GALERIE:
         assert (ROOT / 'public' / src.lstrip('/')).exists(), src
-    s = s[:g0] + kopf + ''.join(f'<img class="gallery-img lightbox-img" src="{src}" alt="Weitere Impression" loading="lazy">' for src in GALERIE) + s[g1:]
+    s = s[:g0] + kopf + ''.join(f'<figure class="foto"><img class="gallery-img lightbox-img" src="{src}" alt="{BU[src]}" loading="lazy">'
+                                f'<figcaption class="bu-unter">{BU[src]}</figcaption></figure>' for src in GALERIE) + s[g1:]
     # Titelbild (Wunsch Jannis 26.11.2026): Kamerafoto statt Handyfoto mit Personen im Fokus
     s = s.replace('/bilder/alta-via-2/titel-2af9ad.jpg', TITELBILD)
+    s = einmal(s, f'<img class="hero-img lightbox-img" src="{TITELBILD}" alt="Alta Via 2 in den Dolomiten: 7 Tage über Klettersteige und einen Gletscher">',
+               f'<figure class="foto"><img class="hero-img lightbox-img" src="{TITELBILD}" alt="{BU[TITELBILD]}">'
+               f'<figcaption class="bu-unter">{BU[TITELBILD]}</figcaption></figure>')
     # „Begegnungen am Weg“: Kamerafoto 133 statt flauem Handyfoto (Jannis 28.11.2026)
-    s = einmal(s, '<img loading="lazy" class="inline-img lightbox-img" src="/bilder/alta-via-2/bild-1f9f89.jpg" alt="Begegnungen am Weg">',
-               '<img loading="lazy" class="inline-img lightbox-img" src="/bilder/alta-via-2/kamera-133.jpg" alt="Begegnungen am Weg">')
+    b = f'{ALT}kamera-133.jpg'
+    s = einmal(s, f'<img loading="lazy" class="inline-img lightbox-img" src="{ALT}bild-1f9f89.jpg" alt="Begegnungen am Weg">',
+               f'<figure class="foto"><img loading="lazy" class="inline-img lightbox-img" src="{b}" alt="{BU[b]}">'
+               f'<figcaption class="bu-unter">{BU[b]}</figcaption></figure>')
+    # Story-Skript: am Handy bleibt bei Hochformat-Abschnitten das Querformat im Streifen (data-unit-mobil)
+    s = einmal(s, '      var unit = activeSection.getAttribute("data-unit");\n',
+               '      var unit = (window.innerWidth < 800 && activeSection.getAttribute("data-unit-mobil")) || activeSection.getAttribute("data-unit");\n')
+    s = einmal(s, '        var capText = activeSection.getAttribute("data-caption");\n',
+               '        var aktivBild = story.querySelector(\'.story-img[data-unit="\' + unit + \'"]\');\n'
+               '        var capText = aktivBild ? aktivBild.getAttribute("alt") : activeSection.getAttribute("data-caption");\n')
+    # Lightbox zeigt die Bildunterschrift mit an
+    s = einmal(s, "overlay.innerHTML = '<img loading=\"lazy\" class=\"lightbox-full\">';",
+               "overlay.innerHTML = '<img loading=\"lazy\" class=\"lightbox-full\"><div class=\"lightbox-bu\"></div>';")
+    s = einmal(s, "      full.src = img.tagName === \"IMG\" ? img.src : img.getAttribute(\"data-full\");\n",
+               "      full.src = img.tagName === \"IMG\" ? img.src : img.getAttribute(\"data-full\");\n"
+               "      overlay.querySelector(\".lightbox-bu\").textContent = img.getAttribute(\"alt\") || \"\";\n")
+    s = einmal(s, "      if (best) { full.src = best.src; overlay.classList.add(\"open\"); }",
+               "      if (best) { full.src = best.src; overlay.querySelector(\".lightbox-bu\").textContent = best.getAttribute(\"alt\") || \"\"; overlay.classList.add(\"open\"); }")
     # Persönliche Verbindung zum Traumpfad (Jannis 28.11.2026)
     s = einmal(s, 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt.', 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt. Spannend für uns: Im Vorjahr waren wir mit derselben Gruppe schon im Karwendel auf einem Abschnitt des Traumpfads unterwegs.')
     # Praktisches gehört nach Zahlen & Fakten, nicht in den Bericht (Jannis 27.11.2026)
