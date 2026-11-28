@@ -175,11 +175,15 @@ figure.foto { margin: 0; }
 .vollbild { display: none; }
 @media (max-width: 799px) {
   .tagstory .story-img.hoch { display: none; }
-  .tagstory .story-section.hochbild { position: relative; z-index: 4; padding: 0; background: #000; min-height: 0; }
-  .hochbild .vollbild { display: block; position: sticky; top: 0; height: 100vh; height: 100svh; margin: 0; }
+  /* Bild steht fest im Hintergrund (position: fixed), der Abschnitt ist nur das Fenster darauf (clip-path).
+     So scrollt allein der Text; funktioniert auch in iOS Safari, wo background-attachment: fixed nicht greift. */
+  .tagstory .story-section.hochbild { position: relative; z-index: 4; padding: 1px 0; background: #000; min-height: 0;
+    clip-path: inset(0); -webkit-clip-path: inset(0); }
+  .hochbild .vollbild { display: block; position: fixed; inset: 0; height: 100vh; height: 100lvh; margin: 0; }
   .hochbild .vollbild img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
   .hochbild .vollbild .bu-drauf { padding-bottom: max(.8rem, env(safe-area-inset-bottom, 0px)); }
-  .hochbild .vollbild-text { position: relative; margin: -50svh 1rem 42svh; padding: 1.1rem 1.25rem;
+  .story-section.pic.hochbild { min-height: 125vh; min-height: 125svh; }
+  .hochbild .vollbild-text { position: relative; margin: 55svh 1rem 45svh; padding: 1.1rem 1.25rem;
     background: rgba(18,17,15,.74); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
     border-radius: 12px; color: #f3f1ec; }
   .hochbild .vollbild-text h3 { color: #f2b47a; }
