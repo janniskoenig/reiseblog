@@ -350,6 +350,9 @@ def main():
     s = s[:g0] + kopf + ''.join(f'<img class="gallery-img lightbox-img" src="{src}" alt="Weitere Impression" loading="lazy">' for src in GALERIE) + s[g1:]
     # Titelbild (Wunsch Jannis 26.11.2026): Kamerafoto statt Handyfoto mit Personen im Fokus
     s = s.replace('/bilder/alta-via-2/titel-2af9ad.jpg', TITELBILD)
+    # „Begegnungen am Weg“: Kamerafoto 133 statt flauem Handyfoto (Jannis 28.11.2026)
+    s = einmal(s, '<img loading="lazy" class="inline-img lightbox-img" src="/bilder/alta-via-2/bild-1f9f89.jpg" alt="Begegnungen am Weg">',
+               '<img loading="lazy" class="inline-img lightbox-img" src="/bilder/alta-via-2/kamera-133.jpg" alt="Begegnungen am Weg">')
     # Persönliche Verbindung zum Traumpfad (Jannis 28.11.2026)
     s = einmal(s, 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt.', 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt. Spannend für uns: Im Vorjahr waren wir mit derselben Gruppe schon im Karwendel auf einem Abschnitt des Traumpfads unterwegs.')
     # Praktisches gehört nach Zahlen & Fakten, nicht in den Bericht (Jannis 27.11.2026)
