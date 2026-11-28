@@ -109,6 +109,8 @@ OFFEN = [
 
 # --------------------------------------------------------------------------- Fotos
 # Auswahl und Bildunterschriften von Jannis (28.11.2026), je Tag in Aufnahme-Reihenfolge.
+# Zweite Auswahl (28.11. abends): bearbeitete iPhone-Fassungen. Foto 44fb5825 (Abschied vom Ristorante Da Giusy)
+# bewusst noch nicht drin: Einverständnis der Wirtin ungeklärt.
 # Dateien: bilder-original/mtb-alpencross/ (nicht im Repo) → npm run bilder → public/bilder/mtb-alpencross/
 # (verkleinert, ohne EXIF/GPS). „geteilt-…“ = von Kai geteilte Fotos. Kai ist mit erkennbaren Fotos einverstanden.
 # Eintrag: (Datei, Bildunterschrift, Absatz) – Absatz = Index in TEXTE[tag], der neben diesem Foto steht.
@@ -145,21 +147,29 @@ FOTOS = {
         ('img-4403', 'Trail hinunter Richtung Pezzo', None),
         ('img-4404', 'Trail hinunter Richtung Pezzo', None),
         ('img-4406', 'Alm auf dem Weg nach Pezzo', None),
-        ('geteilt-3f14a706', 'Trail hinunter Richtung Pezzo', None)],
+        ('geteilt-3f14a706', 'Trail hinunter Richtung Pezzo', None),
+        ('geteilt-07575dc2', 'Aperitif am Abend in Pezzo', None)],
     7: [('img-4425', 'Rückblick ins Tal oberhalb von Pezzo', None),
         ('img-4431', 'Steinmänner am Montozzo', None),
         ('img-4432', 'Abfahrt mit Blick auf den Stausee', None),
         ('img-4435', 'Trail hinunter zum Stausee', None),
         ('img-4442', 'Erster Blick auf die Brenta', None),
         ('img-4443', 'Hinweis auf Braunbären', None),
-        ('img-4466', 'Abend am Rifugio Vallesinella', None)],
+        ('img-4466', 'Abend am Rifugio Vallesinella', None),
+        ('img-4467', 'Ein Brenta Bräu am Rifugio Vallesinella', None),
+        ('geteilt-1f369e19', 'Feierabendbier am Rifugio Vallesinella', None),
+        ('img-4468', 'Abend am Rifugio Vallesinella', None)],
     8: [('img-4477', 'Wasserfall bei Vallesinella', None),
         ('img-4478', 'Morgens in den Brenta-Dolomiten', None),
         ('img-4487', 'Pause am Lago di Valagola', None),
+        ('img-4497', 'Schiebestück kurz vor dem höchsten Punkt der Etappe', None),
         ('img-4513', 'Lago di Tenno', 0),
+        ('img-4517', 'Erster Blick auf den Gardasee', None),
         ('img-4524', 'Angekommen: am Hafen von Riva del Garda', None),
-        ('img-4532', 'Abend mit Blick auf den Gardasee', None),
-        ('geteilt-1703fca4', 'Angekommen im Gardasee', None)],
+        ('img-4526', 'Eis zur Ankunft in Riva del Garda', None),
+        ('geteilt-1703fca4', 'Angekommen im Gardasee', None),
+        ('img-4536', 'Abend mit Blick auf den Gardasee', None),
+        ('img-4538', 'Abendessen oberhalb von Torbole', None)],
     9: [('img-4597', 'Pizza am Ufer in Torbole', 0)],
 }
 # Unterkunft auf der Karte → Foto (nur wo eins von der Unterkunft dabei ist)
