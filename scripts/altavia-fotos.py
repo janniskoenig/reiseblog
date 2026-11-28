@@ -74,7 +74,7 @@ BU = {
     k(356): 'Gegenlicht über dem Tal, Sonnenstrahlen brechen durch die Wolken',
     k(327): 'Holzsteg über das steinige Bachbett, Lärchen und Felswände dahinter',
     f'{ALT}handy-gulasch-selle.jpg': 'Gulasch mit Kartoffelpüree am Rifugio Passo delle Selle',
-    f'{ALT}bild-1f9f89.jpg': 'Wandernde auf dem Höhenweg, dahinter Gipfel in den Wolken',
+    k(133): 'Kleine Wandergruppe auf dem Pfad über grüne Hänge, dahinter Felszacken',
     k(219): 'Sonnenaufgang über den Bergen, unten im Tal Nebel und ein Dorf',
     k(229): 'Türkiser Bergsee mit Hütte zwischen hohen Felswänden',
     k(297): 'Grashänge, links eine helle Felswand, in der Ferne ein spitzer Gipfel',
@@ -455,8 +455,9 @@ def main():
     s = einmal(s, f'<img class="hero-img lightbox-img" src="{TITELBILD}" alt="Alta Via 2 in den Dolomiten: 7 Tage über Klettersteige und einen Gletscher">',
                f'<figure class="foto"><img class="hero-img lightbox-img" src="{TITELBILD}" alt="{BU[TITELBILD]}">'
                f'<figcaption class="bu-unter">{BU[TITELBILD]}</figcaption></figure>')
-    b = f'{ALT}bild-1f9f89.jpg'
-    s = einmal(s, f'<img loading="lazy" class="inline-img lightbox-img" src="{b}" alt="Begegnungen am Weg">',
+    # „Begegnungen am Weg“: Kamerafoto 133 statt flauem Handyfoto (Jannis 28.11.2026)
+    b = f'{ALT}kamera-133.jpg'
+    s = einmal(s, f'<img loading="lazy" class="inline-img lightbox-img" src="{ALT}bild-1f9f89.jpg" alt="Begegnungen am Weg">',
                f'<figure class="foto"><img loading="lazy" class="inline-img lightbox-img" src="{b}" alt="{BU[b]}">'
                f'<figcaption class="bu-unter">{BU[b]}</figcaption></figure>')
     # Story-Skript: am Handy bleibt bei Hochformat-Abschnitten das Querformat im Streifen (data-unit-mobil)
@@ -473,6 +474,8 @@ def main():
                "      overlay.querySelector(\".lightbox-bu\").textContent = img.getAttribute(\"alt\") || \"\";\n")
     s = einmal(s, "      if (best) { full.src = best.src; overlay.classList.add(\"open\"); }",
                "      if (best) { full.src = best.src; overlay.querySelector(\".lightbox-bu\").textContent = best.getAttribute(\"alt\") || \"\"; overlay.classList.add(\"open\"); }")
+    # Persönliche Verbindung zum Traumpfad (Jannis 28.11.2026)
+    s = einmal(s, 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt.', 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt. Spannend für uns: Im Vorjahr waren wir mit derselben Gruppe schon im Karwendel auf einem Abschnitt des Traumpfads unterwegs.')
     # Praktisches gehört nach Zahlen & Fakten, nicht in den Bericht (Jannis 27.11.2026)
     s = einmal(s, ' (Bus und Einzelfahrt mit der Seilbahn zusammen 26 € pro Person)', '')
     s = einmal(s, ' Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte übrigens sehr modern und gepflegt – kann früh losgehen und noch vor der ersten Gondel oben sein; das lohnt sich definitiv.', '')
@@ -490,7 +493,9 @@ def main():
         for tag, (km, ziel, werte) in ABSTECHER.items():
             f = einmal(f, '<td>' + km + '</td>', '<td>' + km + '*</td>')
             fuss.append(f'Tag {tag}: {ziel} ({werte})')
-        f = einmal(f, '<td>ca. 104 km, ca. +6.200 / −5.700 Hm</td>', '<td>ca. 104 km, ca. +6.200 / −5.700 Hm*<br><small>* inkl. Abstecher, siehe „Der Weg, Tag für Tag“</small></td>')
+        # Summe inkl. Abstieg 29.08. (Jannis 28.11.): Tage 103,7 km + 3,8 km; +6.212 / −5.674−610 Hm
+        f = einmal(f, '<td>ca. 104 km, ca. +6.200 / −5.700 Hm</td>', '<td>ca. 108 km, ca. +6.200 / −6.300 Hm*<br><small>* inkl. Abstecher und Abstieg am 29.08. (Abstieg nicht aufgezeichnet, aus der Wanderkarte), siehe „Der Weg, Tag für Tag“</small></td>')
+        f = einmal(f, '<td>7 Wandertage</td>', '<td>7 Wandertage und ein Abstieg am Morgen des 8. Tages</td>')
         f = einmal(f, '</tbody></table></div></section>\n<section class="plain"><h2>Packen',
                    '</tbody></table></div>\n<p class="tabnote"><small>* inkl. Abstecher, die nicht zwingend zur Route gehören. ' + ' · '.join(fuss) + '. Distanz und Höhenmeter der Abstecher aus dem Track abgeleitet.</small></p></section>\n<section class="plain"><h2>Packen')
         fakten.write_text(f, encoding='utf-8')
@@ -499,7 +504,13 @@ def main():
         f = einmal(f, '</small></p></section>\n<section class="plain"><h2>Packen',
                    '</small></p></section>\n<section class="plain"><h2>Nützliche Hinweise</h2>'
                    '<p><strong>Anreise zur Plosehütte:</strong> Bus vom Bahnhof Brixen zur Talstation der Plosebahn und Einzelfahrt mit der Seilbahn kosteten zusammen 26 € pro Person (August 2026).</p>'
-                   '<p><strong>Piz Boè ohne Seilbahn-Andrang:</strong> Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte sehr modern und gepflegt –, kann früh losgehen und noch vor der ersten Gondel oben sein. Das lohnt sich definitiv.</p></section>\n<section class="plain"><h2>Packen')
+                   '<p><strong>Piz Boè ohne Seilbahn-Andrang:</strong> Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte sehr modern und gepflegt –, kann früh losgehen und noch vor der ersten Gondel oben sein. Das lohnt sich definitiv.</p>'
+                   '<p><strong>Steigeisen leihen:</strong> Am Rifugio Castiglioni Marmolada konnten wir uns für die Gletscherquerung zum Rifugio Contrin Steigeisen leihen (ca. 15 €) und sie dort unkompliziert wieder abgeben. So muss man sie nicht die ganze Tour mitschleppen. Am besten vorher bei der Hütte abklären, ob das möglich ist, und auf steigeisenfeste Schuhe achten. Unsere Grödel hätten wir dafür daheim lassen können.</p></section>\n<section class="plain"><h2>Packen')
+        fakten.write_text(f, encoding='utf-8')
+    f = fakten.read_text(encoding='utf-8')
+    if '<td>29.08.</td>' not in f:  # Abstieg als eigene Zeile (Jannis 28.11.2026), keine Gehzeit: nicht aufgezeichnet
+        f = einmal(f, '<td>8:42 h</td></tr>\n', '<td>8:42 h</td></tr>\n<tr><td>8</td><td>29.08.</td><td>Rifugio Passo delle Selle → Bushaltestelle Passo San Pellegrino (Abstieg)</td><td>ca. 3,8 km**</td><td>ca. −610</td><td>–</td></tr>\n')
+        f = einmal(f, 'aus dem Track abgeleitet.</small></p>', 'aus dem Track abgeleitet.<br>** Abstieg nicht aufgezeichnet; Distanz und Höhenmeter aus der Wanderkarte abgeleitet, daher ohne Gehzeit.</small></p>')
         fakten.write_text(f, encoding='utf-8')
     print('✓ Zeitraum 22.–29. August:', fakten.relative_to(ROOT))
 
