@@ -2,6 +2,7 @@
 import Basis from '../layouts/Basis.astro';
 import BerichtKarte from '../components/BerichtKarte.astro';
 import Karte from '../components/Karte.astro';
+import Kopfbild from '../components/Kopfbild.astro';
 import { berichte, link, reisen, url } from '../lib';
 
 const alle = await berichte();
@@ -10,7 +11,8 @@ const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) }
 <Basis titel="Jannis Outdoor-Reisen" beschreibung="Reise- und Outdoor-Blog mit ausführlichen Berichten, Karten, Fotos und praktischen Reiseinfos, aktuell zur Madagaskar-Rundreise 2026."
   jsonld={{ '@context': 'https://schema.org', '@type': 'WebSite', name: 'Jannis Outdoor-Reisen', url: new URL('/', Astro.site).href, inLanguage: 'de-DE' }}>
   <section class="intro wrap">
-    <h1>Unterwegs</h1>
+    <h1 class="sr-only">Jannis Outdoor-Reisen</h1>
+    <Kopfbild />
     <!-- TODO: ein, zwei Sätze über dich und den Blog -->
     <p class="muted">Berichte, Karten und Bilder von Reisen und Touren.</p>
   </section>
@@ -41,7 +43,7 @@ const orte = alle.flatMap((b) => b.data.orte.map((o) => ({ ...o, link: link(b) }
   )}
 </Basis>
 <style>
-  .intro { padding-block: 3rem 1rem; }
+  .intro { padding-block: 1rem 1rem; }
   .intro h1 { font-size: clamp(2rem, 6vw, 3.2rem); margin: 0 0 .5rem; }
   section { margin-bottom: 2.5rem; }
   .reise { display: grid; gap: 1rem; align-items: center; border: 1px solid var(--border, rgba(120,120,110,.22)); border-radius: 12px; overflow: hidden; }

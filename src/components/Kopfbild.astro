@@ -1,0 +1,48 @@
+---
+// Kopf der Startseite: Höhenlinie mit Tal, das Logo lehnt links im Tal,
+// rechts ein Wanderer vor dem Anstieg und ein Zelt auf einer Schulter.
+// Zwei Fassungen: breit (Desktop) und schmal (Handy), per CSS umgeschaltet.
+// Rein dekorativ (aria-hidden); der Name steht für Suchmaschinen und
+// Screenreader in der unsichtbaren <h1> auf der Startseite.
+const rad = 'M30 86 L52 40 L64 58 L76 30 L92 86';
+const breit = 'M0 46 L30 30 L62 62 L92 52 L135 104 L160 118 L180 124 L740 124 L775 116 L800 111 L815 110 L855 108 L895 66 L930 76 L962 26 L996 40 L1030 70 L1062 52 L1100 62';
+const schmal = 'M0 40 L18 26 L40 58 L62 108 L76 124 L400 124 L420 114 L440 112 L470 110 L500 62 L520 72 L540 30 L560 44 L580 38 L600 50';
+---
+<div class="kopfbild" aria-hidden="true">
+  <svg class="kb-breit" viewBox="0 0 1100 140">
+    <path class="kb-flaeche" d={`${breit} L1100 140 L0 140 Z`} />
+    <path class="kb-linie" d={breit} />
+    <g class="kb-gruen"><path d="M823 109.6 L835 86 L847 108.6 Z" /><path class="kb-tuer" d="M835 109 L835 96 L840 108.8 Z" /><path class="kb-strich" d="M835 86 L831 80 M835 86 L839 80" /></g>
+    <g transform="translate(786 114.5) scale(1.25)" class="kb-wanderer"><circle cx="0.5" cy="-17.5" r="2.6" /><path d="M0 -14 L1 -6 M1 -6 L-3 0 M1 -6 L4.5 0 M0 -12 L5 -8.5 M5.5 -9 L7.5 0" /><rect x="-4.2" y="-14" width="3.4" height="6.5" rx="1" /></g>
+    <g transform="translate(196 47) scale(.72)" class="kb-rad"><circle cx="30" cy="86" r="20" /><circle cx="92" cy="86" r="20" /><path d={rad} /></g>
+    <text x="296" y="94" class="kb-name">Jannis Outdoor-Reisen</text>
+    <text x="297" y="114" class="kb-zeile">ZU FUSS · MIT DEM RAD · UNTERWEGS</text>
+  </svg>
+  <svg class="kb-schmal" viewBox="0 0 600 140">
+    <path class="kb-flaeche" d={`${schmal} L600 140 L0 140 Z`} />
+    <path class="kb-linie" d={schmal} />
+    <g class="kb-gruen"><path d="M443 111.8 L455 88 L467 110.6 Z" /><path class="kb-tuer" d="M455 111 L455 98 L460 110.8 Z" /><path class="kb-strich" d="M455 88 L451 82 M455 88 L459 82" /></g>
+    <g transform="translate(405 117) scale(1.25)" class="kb-wanderer"><circle cx="0.5" cy="-17.5" r="2.6" /><path d="M0 -14 L1 -6 M1 -6 L-3 0 M1 -6 L4.5 0 M0 -12 L5 -8.5 M5.5 -9 L7.5 0" /><rect x="-4.2" y="-14" width="3.4" height="6.5" rx="1" /></g>
+    <g transform="translate(80 51) scale(.68)" class="kb-rad"><circle cx="30" cy="86" r="20" /><circle cx="92" cy="86" r="20" /><path d={rad} /></g>
+    <text x="172" y="95" class="kb-name" style="font-size:25px">Jannis</text>
+    <text x="172" y="117" class="kb-name" style="font-size:19px;font-weight:400">Outdoor-Reisen</text>
+  </svg>
+</div>
+<style>
+  .kopfbild { margin-block: 1.5rem .5rem; }
+  .kopfbild svg { display: block; width: 100%; height: auto; }
+  .kb-schmal { display: none !important; }
+  @media (max-width: 640px) { .kb-breit { display: none !important; } .kb-schmal { display: block !important; } }
+  .kb-flaeche { fill: var(--logo-sand); opacity: .3; }
+  .kb-linie { fill: none; stroke: var(--logo-rot); stroke-width: 3; stroke-linejoin: round; stroke-linecap: round; }
+  .kb-gruen path { fill: var(--logo-gruen); }
+  .kb-gruen .kb-tuer { fill: var(--bg); }
+  .kb-gruen .kb-strich { fill: none; stroke: var(--logo-gruen); stroke-width: 2; stroke-linecap: round; }
+  .kb-wanderer { fill: none; stroke: var(--logo-gruen); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+  .kb-wanderer circle, .kb-wanderer rect { fill: var(--logo-gruen); }
+  .kb-rad { fill: none; stroke-width: 5; stroke-linecap: round; stroke-linejoin: round; }
+  .kb-rad circle { stroke: var(--logo-gruen); }
+  .kb-rad path { stroke: var(--logo-rot); }
+  .kb-name { font: 700 24px Outfit, system-ui, sans-serif; fill: var(--fg); }
+  .kb-zeile { font: 400 11px Outfit, system-ui, sans-serif; letter-spacing: 2.2px; fill: var(--muted); }
+</style>

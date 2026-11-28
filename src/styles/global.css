@@ -12,20 +12,27 @@
   --maxw: 70rem;
   --textw: 38rem;
   --vh: 1vh;
+  --logo-rot: #b0482a; --logo-gruen: #2e5641; --logo-sand: #d9a441;
   color-scheme: light;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     --bg: #151412; --fg: #ece8e2; --muted: #a39b90; --card: #1f1d1a; --line: #34302b;
     --accent: #e0975a; --accent-fg: #151412; --shadow: 0 1px 3px rgb(0 0 0 / .4);
+    --logo-rot: #e0714f; --logo-gruen: #7fb595; --logo-sand: #e6b85c;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
   --bg: #151412; --fg: #ece8e2; --muted: #a39b90; --card: #1f1d1a; --line: #34302b;
   --accent: #e0975a; --accent-fg: #151412; --shadow: 0 1px 3px rgb(0 0 0 / .4);
+  --logo-rot: #e0714f; --logo-gruen: #7fb595; --logo-sand: #e6b85c;
   color-scheme: dark;
 }
+
+/* Logo-Schrift Outfit (SIL Open Font License), vom eigenen Server, kein Google-Abruf */
+@font-face { font-family: Outfit; font-weight: 400; font-display: swap; src: url('/fonts/outfit-400.woff2') format('woff2'); }
+@font-face { font-family: Outfit; font-weight: 700; font-display: swap; src: url('/fonts/outfit-700.woff2') format('woff2'); }
 
 *, *::before, *::after { box-sizing: border-box; }
 /* overflow-x: clip statt hidden, sonst bricht position: sticky */
@@ -47,8 +54,10 @@ p { hyphens: auto; }
 
 /* Kopf und Fuß */
 .site-head { border-bottom: 1px solid var(--line); background: var(--bg); }
-.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: 1rem; min-height: 3.5rem; flex-wrap: wrap; }
-.logo { font-weight: 700; text-decoration: none; color: var(--fg); letter-spacing: .01em; }
+.site-head .wrap { display: flex; align-items: center; justify-content: space-between; gap: .4rem 1rem; min-height: 3.5rem; flex-wrap: wrap; padding-block: .5rem; }
+.logo { display: inline-flex; align-items: center; gap: .55rem; font: 700 1.15rem/1 Outfit, system-ui, sans-serif; text-decoration: none; color: var(--fg); }
+.logo-zeichen { width: 2.6rem; height: auto; flex: none; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 .nav { display: flex; gap: 1rem; flex-wrap: wrap; }
 .nav a { color: var(--fg); text-decoration: none; font-size: .95rem; }
 .nav a[aria-current="page"] { color: var(--accent); font-weight: 600; }

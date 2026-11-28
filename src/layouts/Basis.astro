@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import { url } from '../lib';
+import Bergrad from '../components/Bergrad.astro';
 
 interface Props { titel: string; beschreibung?: string; bild?: string; noindex?: boolean; typ?: 'website' | 'article'; jsonld?: object }
 const { titel, beschreibung = 'Reise- und Outdoor-Blog', bild = '/bilder/madagaskar/allee_karren.jpg', noindex = false, typ = 'website', jsonld } = Astro.props;
@@ -34,6 +35,7 @@ const nav = [
     <meta name="twitter:card" content="summary_large_image" />
     {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preload" href={url('/fonts/outfit-700.woff2')} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
     <script is:inline>
       // Stabile Viewport-Höhe (--vh): wächst mit dem Fenster, ignoriert das
@@ -53,7 +55,7 @@ const nav = [
   <body>
     <header class="site-head">
       <div class="wrap">
-        <a class="logo" href={url('/')}>{seitenname}</a>
+        <a class="logo" href={url('/')}><Bergrad class="logo-zeichen" />{seitenname}</a>
         <nav class="nav" aria-label="Hauptnavigation">
           {nav.map((n) => (
             <a href={n.href} aria-current={(n.href === url('/') ? pfad === n.href : pfad.startsWith(n.href)) ? 'page' : undefined}>{n.text}</a>
