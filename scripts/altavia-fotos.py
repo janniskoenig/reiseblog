@@ -376,7 +376,13 @@ def main():
         f = einmal(f, '</small></p></section>\n<section class="plain"><h2>Packen',
                    '</small></p></section>\n<section class="plain"><h2>Nützliche Hinweise</h2>'
                    '<p><strong>Anreise zur Plosehütte:</strong> Bus vom Bahnhof Brixen zur Talstation der Plosebahn und Einzelfahrt mit der Seilbahn kosteten zusammen 26 € pro Person (August 2026).</p>'
-                   '<p><strong>Piz Boè ohne Seilbahn-Andrang:</strong> Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte sehr modern und gepflegt –, kann früh losgehen und noch vor der ersten Gondel oben sein. Das lohnt sich definitiv.</p></section>\n<section class="plain"><h2>Packen')
+                   '<p><strong>Piz Boè ohne Seilbahn-Andrang:</strong> Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte sehr modern und gepflegt –, kann früh losgehen und noch vor der ersten Gondel oben sein. Das lohnt sich definitiv.</p>'
+                   '<p><strong>Steigeisen leihen:</strong> Am Rifugio Castiglioni Marmolada konnten wir uns für die Gletscherquerung zum Rifugio Contrin Steigeisen leihen (ca. 15 €) und sie dort unkompliziert wieder abgeben. So muss man sie nicht die ganze Tour mitschleppen. Am besten vorher bei der Hütte abklären, ob das möglich ist, und auf steigeisenfeste Schuhe achten. Unsere Grödel hätten wir dafür daheim lassen können.</p></section>\n<section class="plain"><h2>Packen')
+        fakten.write_text(f, encoding='utf-8')
+    f = fakten.read_text(encoding='utf-8')
+    if '<td>29.08.</td>' not in f:  # Abstieg als eigene Zeile (Jannis 28.11.2026), keine Gehzeit: nicht aufgezeichnet
+        f = einmal(f, '<td>8:42 h</td></tr>\n', '<td>8:42 h</td></tr>\n<tr><td>8</td><td>29.08.</td><td>Rifugio Passo delle Selle → Bushaltestelle Passo San Pellegrino (Abstieg)</td><td>ca. 3,8 km**</td><td>ca. −610</td><td>–</td></tr>\n')
+        f = einmal(f, 'aus dem Track abgeleitet.</small></p>', 'aus dem Track abgeleitet.<br>** Abstieg nicht aufgezeichnet; Distanz und Höhenmeter aus der Wanderkarte abgeleitet, daher ohne Gehzeit.</small></p>')
         fakten.write_text(f, encoding='utf-8')
     print('✓ Zeitraum 22.–29. August:', fakten.relative_to(ROOT))
 
