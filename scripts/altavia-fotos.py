@@ -45,42 +45,44 @@ TITELBILD = f'{ALT}kamera-251.jpg'
 # Bildunterschriften (Wunsch Jannis 28.11.2026: knapp, was man sieht). Nach Ansicht der Fotos formuliert;
 # Orts- und Gipfelnamen nur, wo sie sicher sind (Schild im Bild, Fotoauswahl-Notizen oder eindeutige Ansicht).
 BU = {
-    TITELBILD: 'Felstürme der Sellagruppe und Tiefblick ins Tal',
-    k(3): 'Schafe auf der Alm an der Plose, dahinter Gondelbahn und Gipfel in den Wolken',
-    f'{ALT}s1-1-a928bf.jpg': 'Vesperbrett mit Käse, Aufstrichen und eingelegtem Gemüse',
-    k(12): 'Weidenröschen am Waldrand, dahinter schroffe Gipfel mit hellen Schuttfeldern',
-    k(63): 'Grüne Hochflächen mit Wanderwegen, dahinter zerklüftete Gipfel unter Wolken',
-    k(66): 'Wege schlängeln sich über die Almhänge, dahinter die Gipfelkette',
-    k(88): 'Holzhütte mit Brennholzstapel im letzten Abendlicht',
-    k(90): 'Abendlicht an den Felswänden, ein Weg zieht über die Wiese',
-    k(102): 'Nebelschwaden über Wald und Alm, unten eine kleine Hütte',
-    k(128): 'Felsturm mit Kiefern auf der Almwiese, dahinter schroffe Gipfel',
-    k(146): 'Zackiger Felsgrat über weiten Almflächen, hinten das Tal unter Quellwolken',
-    k(137): 'Der Pfad führt über die Wiese auf die Felswände zu',
-    k(189): 'Wolken ziehen zwischen den Felswänden, die Gipfel im letzten Sonnenlicht',
-    k(201): 'Blaue Stunde an der Pisciadùhütte: unten im Tal die Lichter der Dörfer',
-    k(177): 'Abend an der Pisciadùhütte: Wolkenbänder im Tal, Gipfel im letzten Licht',
+    # Überarbeitet nach Wunsch Jannis 28.11.2026: Ort und Kontext statt Bildbeschreibung.
+    # Verortung über Tag (Aufnahmedatum), Reihenfolge der Dateinummern, Berichtstext und Ansicht.
+    TITELBILD: 'Sellagruppe: Tiefblick zwischen den Felstürmen',
+    k(3): 'Morgens an der Plose, kurz nach dem Aufbruch',
+    f'{ALT}s1-1-a928bf.jpg': 'Vorspeisenteller am ersten Abend auf der Plosehütte',
+    k(12): 'Weidenröschen auf dem Weg Richtung Peitlerkofel',
+    k(63): 'Aussicht beim Abstecher auf den Peitlerkofel',
+    k(66): 'Panorama beim Abstecher auf den Peitlerkofel',
+    k(88): 'Sonnenuntergang an der Schlüterhütte',
+    k(90): 'Abendlicht über den Almen an der Schlüterhütte',
+    k(102): 'Morgennebel nach dem Start an der Schlüterhütte',
+    k(128): 'Unterwegs von der Schlüterhütte Richtung Roascharte',
+    k(133): 'Unsere Gruppe auf dem Weg Richtung Roascharte',
+    k(137): 'Panorama auf dem Weg Richtung Roascharte',
+    k(146): 'Ausblick bei der Roascharte',
+    k(189): 'Abendstimmung an der Pisciadùhütte: Wolken ziehen durchs Tal',
+    k(201): 'Blaue Stunde: Blick von der Pisciadùhütte hinunter nach Kolfuschg',
+    k(177): 'Abendpanorama von der Pisciadùhütte ins Gadertal',
     k(216): 'Sonnenaufgang an der Pisciadùhütte',
-    k(257): 'Senkrechte Felstürme, dahinter Bergketten bis zum Horizont',
-    k(284): 'Durchblick zwischen zwei Felswänden auf grüne Almen, ganz klein ein Wanderer im Geröll',
-    k(291): 'Die Marmolada mit Gletscher, links unten der Fedaia-Stausee',
+    k(257): 'Felstürme der Sellagruppe auf dem Weg zum Piz Boè',
+    k(284): 'Abstieg durch die Forcella Pordoi',
+    k(291): 'Vom Bindelweg auf Marmolada und Fedaia-Stausee',
     f'{ALT}handy-piz-boe-gipfel.jpg': 'Andrang an der Capanna Piz Fassa auf dem Gipfel des Piz Boè',
-    k(282): 'Blick auf die Marmolada, darunter die Serpentinen einer Passstraße',
-    k(304): 'Morgenstimmung am Fedaia-Stausee mit Staumauer',
-    k(311): 'Gletschereis und Schmelzwassersee am Rand des Marmoladagletschers',
-    k(320): 'Kühe zwischen Lärchen auf der Alm, dahinter hohe Felswände',
-    k(326): 'Holzbrücke über einen Gebirgsbach, dahinter Felswände',
-    k(353): 'Almwiesen im Morgenlicht, dahinter eine Bergkette',
-    k(356): 'Gegenlicht über dem Tal, Sonnenstrahlen brechen durch die Wolken',
-    k(327): 'Holzsteg über das steinige Bachbett, Lärchen und Felswände dahinter',
-    f'{ALT}handy-gulasch-selle.jpg': 'Gulasch mit Kartoffelpüree am Rifugio Passo delle Selle',
-    k(133): 'Kleine Wandergruppe auf dem Pfad über grüne Hänge, dahinter Felszacken',
-    k(219): 'Sonnenaufgang über den Bergen, unten im Tal Nebel und ein Dorf',
-    k(229): 'Türkiser Bergsee mit Hütte zwischen hohen Felswänden',
-    k(297): 'Grashänge, links eine helle Felswand, in der Ferne ein spitzer Gipfel',
-    k(333): 'Pfad durch Blockgelände und Lärchen, im Gegenlicht die Felswände',
+    k(282): 'Blick zur Marmolada, darunter die Serpentinen am Pordoijoch',
+    k(304): 'Aufbruch am Fedaia-Stausee beim Rifugio Castiglioni',
+    k(311): 'Schmelzwassersee am Marmoladagletscher',
+    k(320): 'Morgens im Contrintal: Kühe auf der Alm',
+    k(326): 'Holzbrücke im Contrintal',
+    k(353): 'Letzter Morgen am Passo delle Selle',
+    k(356): 'Morgenlicht am Passo delle Selle vor dem Abstieg',
+    k(327): 'Bachbett und Holzsteg im Contrintal',
+    f'{ALT}handy-gulasch-selle.jpg': 'Gulasch zum Abschluss im Rifugio Passo delle Selle',
+    k(219): 'Sonnenaufgang über dem Gadertal, oberhalb der Pisciadùhütte',
+    k(229): 'Rückblick auf die Pisciadùhütte und ihren See',
+    k(297): 'Abendlicht am Bindelweg',
+    k(333): 'Pfad durch die Lärchen Richtung Passo San Nicolò',
     k(354): 'Das Rifugio Passo delle Selle auf dem Grat',
-    k(365): 'Kuh auf der Alm vor wolkenverhangenen Gipfeln',
+    k(365): 'Kuh am Passo delle Selle am letzten Morgen',
 }
 # „Weitere Eindrücke“: nur Kamerafotos (Jannis 26.11.: Handyfotos wirken daneben flau), entlastet die Bildreihen
 GALERIE = [k(219), k(229), k(297), k(333), k(354), k(365)]
@@ -157,20 +159,21 @@ figure.foto { margin: 0; }
 .lightbox-bu { color: #ddd; font-size: .85rem; text-align: center; max-width: 40rem; }
 /* Hochformat (Wunsch Jannis 28.11.2026): am Handy nicht im Sticky-Streifen, sondern als Vollbild –
    mit Text darüber oder (ohne Text) als Atempause. Am Desktop bleibt es in der linken Spalte. */
-.vollbild { display: none; }
+.vollbild, .vollbild-luft { display: none; }
 @media (max-width: 799px) {
   .tagstory .story-img.hoch { display: none; }
-  /* Bild steht fest im Hintergrund (position: fixed), der Abschnitt ist nur das Fenster darauf (clip-path).
-     So scrollt allein der Text; funktioniert auch in iOS Safari, wo background-attachment: fixed nicht greift. */
-  .tagstory .story-section.hochbild { position: relative; z-index: 4; padding: 1px 0; background: #000; min-height: 0;
-    clip-path: inset(0); -webkit-clip-path: inset(0); }
-  .hochbild .vollbild { display: block; position: fixed; inset: 0; height: 100vh; height: 100lvh; margin: 0; }
+  /* Bild läuft einmal allein herein, bleibt dann stehen (sticky) und nur der Textkasten scrollt darüber.
+     Der Text beginnt erst unterhalb des Bildes, damit Bild und Kasten nie zusammen hochfahren.
+     Bewusst nur position: sticky (kein fixed/clip-path, kein background-attachment) – läuft so auch in iOS Safari. */
+  .tagstory .story-section.hochbild { position: relative; z-index: 4; padding: 0; background: #000; min-height: 0; }
+  .hochbild .vollbild { display: block; position: -webkit-sticky; position: sticky; top: 0; height: 100vh; height: 100svh; margin: 0; }
   .hochbild .vollbild img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
   .hochbild .vollbild .bu-drauf { padding-bottom: max(.8rem, env(safe-area-inset-bottom, 0px)); }
-  .story-section.pic.hochbild { min-height: 125vh; min-height: 125svh; }
-  .hochbild .vollbild-text { position: relative; margin: 55svh 1rem 45svh; padding: 1.1rem 1.25rem;
-    background: rgba(18,17,15,.74); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+  .story-section.pic.hochbild .vollbild-luft { height: 35vh; height: 35svh; }
+  .hochbild .vollbild-text { position: relative; margin: 0 1rem; padding: 1.1rem 1.25rem 1.2rem;
+    background: rgba(18,17,15,.78); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
     border-radius: 12px; color: #f3f1ec; }
+  .hochbild .vollbild-luft { display: block; height: 55vh; height: 55svh; }
   .hochbild .vollbild-text h3 { color: #f2b47a; }
   .hochbild .vollbild-text p { color: #f3f1ec; }
   .hochbild .vollbild-text blockquote { color: #d8d4cc; }
@@ -253,7 +256,7 @@ def tag_html(nr, d, text):
         gesehen.add(i_bild)
         voll = (f'<figure class="vollbild"><img class="lightbox-img" src="{src}" alt="{BU[src]}" loading="lazy">'
                 f'<figcaption class="bu-drauf">{BU[src]}</figcaption></figure>')
-        text_ = f'<div class="vollbild-text">{inhalt}</div>' if inhalt else ''
+        text_ = (f'<div class="vollbild-text">{inhalt}</div>' if inhalt else '') + '<div class="vollbild-luft"></div>'
         return f'<section class="story-section{cls} hochbild"{attr}>{voll}{text_}</section>'
     for i, a in enumerate(abschn):
         kopf = (f' id="tag{nr}"' if i == 0 else '')
