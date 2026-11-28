@@ -100,7 +100,6 @@ FAZIT = 'Eine tolle Tour und Erfahrung mit schönen Trails. Ich wäre gerne noch
 
 # Offene Fragen (erscheinen unten in Zahlen & Fakten unter „Noch zu ergänzen“)
 OFFEN = [
-    'Tag 8/9: War es das Eco Hotel Garnì Bonapace in Torbole? (Das Ende deines GPS-Tracks liegt genau dort.)',
     'Tag 2: Der Blindseetrail liegt am Fernpass, also auf der Etappe Heiterwang → Landeck. Passt das?',
     'Tag 3: Heißt der Trail „Fimbachtrail“ oder „Fimbatrail“ (Fimbatal)?',
     'Tag 8: Ging es über den Passo Bregn de l’Ors? Der höchste Punkt liegt laut GPS bei ca. 1.860 m.',
