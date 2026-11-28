@@ -32,14 +32,19 @@ def k(n):  # Kamerafoto
 # Pro Tag: Sticky-Bilder (eins je Absatz, in Reihenfolge; überzählige Bilder bekommen eine
 # eigene Bildstrecke ohne Text), danach Bildreihe und ein großes Übergangsbild zum nächsten Tag.
 # Bilder ohne „kamera“ stammen aus dem ursprünglichen Bericht.
+# Bildfolge je Tag in Aufnahme-Reihenfolge (Wunsch Jannis 28.11.2026: Chronologie beachten).
+# ('text', bild) = nächster Textabschnitt mit diesem Sticky-Bild (None = Bild bleibt wie davor),
+# ('bild', bild) = Bildabschnitt ohne Text, ('pano'|'gross', bild) und ('reihe', [bilder]) unterbrechen die Story.
 TAGE = {
-    1: dict(sticky=[k(3), f'{ALT}s1-1-a928bf.jpg'], reihe=[], danach=None),
-    2: dict(sticky=[k(12), k(63), k(88), k(90)], reihe=[], danach=k(66), teilen=2),  # Panorama nach dem Peitlerkofel-Absatz (Jannis 27.11.)
-    3: dict(sticky=[k(102), k(128), k(146)], reihe=[], danach=k(137)),
-    4: dict(sticky=[k(189), k(201)], reihe=[], danach=k(177)),
-    5: dict(sticky=[k(216), k(257), k(284), k(291)], reihe=[f'{ALT}handy-piz-boe-gipfel.jpg', k(282)], danach=None),
-    6: dict(sticky=[k(304), k(311)], reihe=[], danach=None),
-    7: dict(sticky=[k(320), k(326), k(353), k(356)], reihe=[k(327), f'{ALT}handy-gulasch-selle.jpg'], danach=None),
+    1: [('text', k(3)), ('text', f'{ALT}s1-1-a928bf.jpg')],
+    # Hochformat vom Peitlerkofel raus (Jannis 28.11.: das Panorama zeigt dasselbe)
+    2: [('text', k(12)), ('text', None), ('pano', k(66)), ('text', k(88)), ('bild', k(90))],
+    3: [('text', k(102)), ('text', k(128)), ('pano', k(137)), ('text', k(146))],
+    # Alle drei Fotos vom selben Abend an der Pisciadùhütte; Panorama nicht vor die Tagesüberschrift
+    4: [('text', k(189)), ('pano', k(177)), ('text', k(201))],
+    5: [('text', k(216)), ('bild', k(257)), ('reihe', [f'{ALT}handy-piz-boe-gipfel.jpg', k(282)]), ('bild', k(284)), ('bild', k(291))],
+    6: [('text', k(304)), ('text', k(311)), ('text', None)],
+    7: [('text', k(320)), ('bild', k(326)), ('gross', k(327)), ('text', f'{ALT}handy-gulasch-selle.jpg'), ('text', k(353)), ('text', k(356))],
 }
 TITELBILD = f'{ALT}kamera-251.jpg'
 # Bildunterschriften (Wunsch Jannis 28.11.2026: knapp, was man sieht). Nach Ansicht der Fotos formuliert;
@@ -48,7 +53,7 @@ BU = {
     # Überarbeitet nach Wunsch Jannis 28.11.2026: Ort und Kontext statt Bildbeschreibung.
     # Verortung über Tag (Aufnahmedatum), Reihenfolge der Dateinummern, Berichtstext und Ansicht.
     TITELBILD: 'Sellagruppe: Tiefblick zwischen den Felstürmen',
-    k(3): 'Morgens an der Plose, kurz nach dem Aufbruch',
+    k(3): 'Seilbahn und Almen an der Plose, am Morgen nach der Ankunft',
     f'{ALT}s1-1-a928bf.jpg': 'Vorspeisenteller am ersten Abend auf der Plosehütte',
     k(12): 'Weidenröschen auf dem Weg Richtung Peitlerkofel',
     k(63): 'Aussicht beim Abstecher auf den Peitlerkofel',
@@ -225,75 +230,80 @@ def abschnitte(teile):
         out.append(puffer)
     return out
 
-def tag_html(nr, d, text):
+def tag_html(nr, folge, text):
     titel = re.sub(r'<.*?>', '', text['titel'])
-    abschn = abschnitte(text['teile'])
-    bilder = d['sticky']
-    imgs, secs = [], []
-    for src in bilder:
-        assert src in BU, f'Bildunterschrift fehlt: {src}'
-    k_ = d.get('teilen') or len(bilder)
-    def mobil_ersatz(i):
-        # Querformat derselben Story, das am Handy im Streifen stehen bleibt, solange das Hochformat als Vollbild läuft
-        teil = range(0, k_) if i < k_ else range(k_, len(bilder))
-        vor = [j for j in teil if j < i and art(bilder[j]) != 'hoch']
-        nach = [j for j in teil if j > i and art(bilder[j]) != 'hoch']
-        return (vor[-1:] or nach[:1] or [None])[0]
-    for i, src in enumerate(bilder):
-        aktiv = ' active' if i == 0 else ''
-        imgs.append(f'<img class="story-img {art(src)}{aktiv}" data-unit="t{nr}-{i}" src="{src}" alt="{BU[src]}" loading="lazy">')
-    gesehen = set()
-    def section(i_bild, kopf, cls, inhalt):
-        src = bilder[i_bild]
-        attr = f'{kopf} data-unit="t{nr}-{i_bild}" data-caption="{BU[src]}"'
-        if art(src) != 'hoch':
-            return f'<section class="story-section{cls}"{attr}>{inhalt}</section>'
-        ers = mobil_ersatz(i_bild)
-        if ers is not None:
-            attr += f' data-unit-mobil="t{nr}-{ers}"'
-        if i_bild in gesehen:  # weiterer Absatz zum selben Hochformat: nur Text
-            return f'<section class="story-section{cls}"{attr}>{inhalt}</section>'
-        gesehen.add(i_bild)
-        voll = (f'<figure class="vollbild"><img class="lightbox-img" src="{src}" alt="{BU[src]}" loading="lazy">'
-                f'<figcaption class="bu-drauf">{BU[src]}</figcaption></figure>')
-        text_ = (f'<div class="vollbild-text">{inhalt}</div>' if inhalt else '') + '<div class="vollbild-luft"></div>'
-        return f'<section class="story-section{cls} hochbild"{attr}>{voll}{text_}</section>'
-    for i, a in enumerate(abschn):
-        kopf = (f' id="tag{nr}"' if i == 0 else '')
-        h = text['titel'] if i == 0 else ''
-        secs.append(section(min(i, len(bilder) - 1), kopf, '', h + a))
-    for i in range(len(abschn), len(bilder)):  # mehr Bilder als Absätze: Bildstrecke
-        secs.append(section(i, '', ' pic', ''))
-    def story(im, se):
-        im = [re.sub(r' active"', '"', x) for x in im]
-        im[0] = im[0].replace('class="story-img ' + art(re.search(r'src="([^"]+)"', im[0]).group(1)),
-                              'class="story-img ' + art(re.search(r'src="([^"]+)"', im[0]).group(1)) + ' active', 1)
-        return f'''<div class="story tagstory">
+    abschn = list(abschnitte(text['teile']))
+    n_text = sum(1 for art_, _ in folge if art_ == 'text')
+    assert n_text == len(abschn), f'Tag {nr}: {n_text} Textplätze, aber {len(abschn)} Abschnitte'
+    zaehler = [0]  # fortlaufende Bildnummer im Tag (data-unit)
+    out, gruppe = [], []
+    def figur(s, cls='bu-drauf'):
+        return f'<img class="lightbox-img" src="{s}" alt="{BU[s]}" loading="lazy"><figcaption class="{cls}">{BU[s]}</figcaption>'
+    def story_schliessen():
+        if not gruppe:
+            return
+        bilder = []  # (unit, src) in Reihenfolge
+        for _, src, _ in gruppe:
+            if src and src not in [b for _, b in bilder]:
+                bilder.append((f't{nr}-{zaehler[0]}', src)); zaehler[0] += 1
+        unit_von = {b: u for u, b in bilder}
+        def ersatz(src):
+            i = [b for _, b in bilder].index(src)
+            vor = [u for u, b in bilder[:i] if art(b) != 'hoch']
+            nach = [u for u, b in bilder[i+1:] if art(b) != 'hoch']
+            return (vor[-1:] or nach[:1] or [None])[0]
+        imgs = [f'<img class="story-img {art(b)}{" active" if j == 0 else ""}" data-unit="{u}" src="{b}" alt="{BU[b]}" loading="lazy">'
+                for j, (u, b) in enumerate(bilder)]
+        secs, gesehen = [], set()
+        for typ, src, inhalt in gruppe:
+            u = unit_von[src]
+            attr = f'{inhalt[1]} data-unit="{u}" data-caption="{BU[src]}"'
+            cls = '' if typ == 'text' else ' pic'
+            if art(src) == 'hoch':
+                e_ = ersatz(src)
+                if e_:
+                    attr += f' data-unit-mobil="{e_}"'
+            if art(src) != 'hoch' or src in gesehen:
+                secs.append(f'<section class="story-section{cls}"{attr}>{inhalt[0]}</section>')
+                continue
+            gesehen.add(src)
+            voll = f'<figure class="vollbild">{figur(src)}</figure>'
+            text_ = (f'<div class="vollbild-text">{inhalt[0]}</div>' if inhalt[0] else '') + '<div class="vollbild-luft"></div>'
+            secs.append(f'<section class="story-section{cls} hochbild"{attr}>{voll}{text_}</section>')
+        out.append(f'''<div class="story tagstory">
   <div class="story-media lightbox-container">
-    {"".join(im)}
-    <div class="story-caption">{BU[re.search(r'src="([^"]+)"', im[0]).group(1)]}</div>
+    {"".join(imgs)}
+    <div class="story-caption">{BU[bilder[0][1]]}</div>
   </div>
   <div class="story-text">
-    {"".join(se)}
+    {"".join(secs)}
   </div>
-</div>'''
-    def danach_html(s):
-        if art(s) == 'pano':
-            return (f'<figure class="pano" style="margin:0"><img class="lightbox-img" src="{s}" alt="{BU[s]}" loading="lazy">'
-                    f'<span class="wisch">← Panorama: zur Seite wischen →</span><figcaption>{BU[s]}</figcaption></figure>')
-        return (f'<figure class="uebergang" style="margin:0"><img class="lightbox-img" src="{s}" alt="{BU[s]}" loading="lazy">'
-                f'<figcaption class="bu-drauf">{BU[s]}</figcaption></figure>')
-    k = d.get('teilen')
-    if k:  # Story nach Abschnitt k teilen, Panorama/Übergangsbild dazwischen
-        out = [story(imgs[:k], secs[:k]), danach_html(d['danach']), story(imgs[k:], secs[k:])]
-    else:
-        out = [story(imgs, secs)]
-    if d['reihe']:
-        out.append('<div class="bildreihe">' + ''.join(
-            f'<figure style="--ar:{ar(s):.3f}"><img class="lightbox-img" src="{s}" alt="{BU[s]}" loading="lazy">'
-            f'<figcaption class="bu-drauf">{BU[s]}</figcaption></figure>' for s in d['reihe']) + '</div>')
-    if d['danach'] and not k:
-        out.append(danach_html(d['danach']))
+</div>''')
+        gruppe.clear()
+    i_text, letztes = 0, None
+    for typ, x in folge:
+        for b in (x if isinstance(x, list) else [x]):
+            assert b is None or b in BU, f'Bildunterschrift fehlt: {b}'
+            assert b is None or (ROOT / 'public' / b.lstrip('/')).exists(), b
+        if typ in ('text', 'bild'):
+            src = x or letztes
+            letztes = src
+            if typ == 'text':
+                kopf = f' id="tag{nr}"' if i_text == 0 else ''
+                inhalt = ((text['titel'] if i_text == 0 else '') + abschn[i_text], kopf); i_text += 1
+            else:
+                inhalt = ('', '')
+            gruppe.append((typ, src, inhalt))
+            continue
+        story_schliessen(); letztes = None
+        if typ == 'pano':
+            out.append(f'<figure class="pano" style="margin:0"><img class="lightbox-img" src="{x}" alt="{BU[x]}" loading="lazy">'
+                       f'<span class="wisch">← Panorama: zur Seite wischen →</span><figcaption>{BU[x]}</figcaption></figure>')
+        elif typ == 'gross':
+            out.append(f'<figure class="uebergang" style="margin:0">{figur(x)}</figure>')
+        elif typ == 'reihe':
+            out.append('<div class="bildreihe">' + ''.join(f'<figure style="--ar:{ar(b):.3f}">{figur(b)}</figure>' for b in x) + '</div>')
+    story_schliessen()
     return '\n'.join(out)
 
 def main():
@@ -304,8 +314,6 @@ def main():
     block = s[start:ende]
     text = absaetze_je_tag(block)
     assert sorted(text) == list(range(1, 8)), sorted(text)
-    for src in [b for d in TAGE.values() for b in d['sticky'] + d['reihe'] + ([d['danach']] if d['danach'] else [])]:
-        assert (ROOT / 'public' / src.lstrip('/')).exists(), src
     neu = '\n\n'.join(tag_html(n, TAGE[n], text[n]) for n in range(1, 8)) + '\n'
     s = s[:start] + neu + s[ende:]
     s = einmal(s, '</style><script src="/vendor/leaflet-1.9.4.js">', CSS + '</style><script src="/vendor/leaflet-1.9.4.js">')
