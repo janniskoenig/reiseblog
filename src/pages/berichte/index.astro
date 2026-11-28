@@ -6,7 +6,7 @@ import { berichte } from '../../lib';
 const alle = await berichte();
 const reisen = [...new Set(alle.map((b) => b.data.reise))];
 ---
-<Basis titel="Berichte">
+<Basis titel="Berichte" beschreibung="Alle Reise- und Outdoor-Berichte im Überblick, mit Fotos, Karten und praktischen Reiseinfos zu jeder Region.">
   <div class="wrap">
     <h1>Berichte</h1>
     {reisen.map((r) => (

@@ -56,6 +56,13 @@ Ab dann geht jede Änderung, die auf GitHub landet, automatisch online.
 - [ ] Blognamen in `src/layouts/Basis.astro` (`seitenname`) und Text auf der Startseite anpassen.
 - [ ] Beispielbericht, Beispielbilder (`public/bilder/beispiel/`) und `public/gpx/beispiel.gpx` löschen.
 
+## Suchmaschinen (SEO)
+
+- Titel und Beschreibungen der Madagaskar-Seiten stehen in `scripts/seo.py`. Nach Änderungen dort oder nach einem neuen Import aus den Artifacts `python3 scripts/seo.py` ausführen.
+- Für Astro-Seiten (Start, Berichte, Kontakt …) werden die Angaben über `titel`/`beschreibung` an `Basis` gesetzt.
+- `public/robots.txt` und die Sitemap (`/sitemap-index.xml`) verweisen auf die Live-Adresse. Bei eigener Domain auch dort ändern.
+- `public/_headers`: Browser speichern Fotos und Videos 7 Tage zwischen.
+
 ## Hinweise
 
 - Die Karten nutzen Kacheln von [OpenTopoMap](https://opentopomap.org) (kostenlos, Namensnennung ist eingebaut). Beim Öffnen einer Karte lädt der Browser die Kacheln von deren Servern; das gehört in die Datenschutzerklärung.

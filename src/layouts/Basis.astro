@@ -1,11 +1,14 @@
 ---
 import '../styles/global.css';
 import { url } from '../lib';
+import Bergrad from '../components/Bergrad.astro';
 
-interface Props { titel: string; beschreibung?: string; bild?: string; noindex?: boolean }
-const { titel, beschreibung = 'Reise- und Outdoor-Blog', bild, noindex = false } = Astro.props;
-const seitenname = 'Reiseblog'; // TODO: Namen deines Blogs eintragen
+interface Props { titel: string; beschreibung?: string; bild?: string; noindex?: boolean; typ?: 'website' | 'article'; jsonld?: object }
+const { titel, beschreibung = 'Reise- und Outdoor-Blog', bild = '/bilder/madagaskar/allee_karren.jpg', noindex = false, typ = 'website', jsonld } = Astro.props;
+const seitenname = 'Jannis Outdoor-Reisen'; // Blogname (auch in scripts/seo.py ändern)
 const pfad = Astro.url.pathname;
+// Kanonische Adresse: immer mit Hauptdomain, ohne ?-Parameter (verhindert doppelte Treffer)
+const kanonisch = new URL(pfad, Astro.site).href;
 const nav = [
   { href: url('/'), text: 'Start' },
   { href: url('/berichte/'), text: 'Berichte' },
@@ -21,10 +24,18 @@ const nav = [
     <title>{titel === seitenname ? titel : `${titel} · ${seitenname}`}</title>
     <meta name="description" content={beschreibung} />
     {noindex && <meta name="robots" content="noindex" />}
+    {!noindex && <link rel="canonical" href={kanonisch} />}
+    <meta property="og:type" content={typ} />
+    <meta property="og:site_name" content={seitenname} />
+    <meta property="og:locale" content="de_DE" />
+    <meta property="og:url" content={kanonisch} />
     <meta property="og:title" content={titel} />
     <meta property="og:description" content={beschreibung} />
-    {bild && <meta property="og:image" content={new URL(bild, Astro.site)} />}
+    <meta property="og:image" content={new URL(bild, Astro.site)} />
+    <meta name="twitter:card" content="summary_large_image" />
+    {jsonld && <script type="application/ld+json" set:html={JSON.stringify(jsonld)} />}
     <link rel="icon" href={url('/favicon.svg')} type="image/svg+xml" />
+    <link rel="preload" href={url('/fonts/outfit-700.woff2')} as="font" type="font/woff2" crossorigin />
     <link rel="sitemap" href={url('/sitemap-index.xml')} />
     <script is:inline>
       // Stabile Viewport-Höhe (--vh): wächst mit dem Fenster, ignoriert das
@@ -44,7 +55,7 @@ const nav = [
   <body>
     <header class="site-head">
       <div class="wrap">
-        <a class="logo" href={url('/')}>{seitenname}</a>
+        <a class="logo" href={url('/')}><Bergrad class="logo-zeichen" />{seitenname}</a>
         <nav class="nav" aria-label="Hauptnavigation">
           {nav.map((n) => (
             <a href={n.href} aria-current={(n.href === url('/') ? pfad === n.href : pfad.startsWith(n.href)) ? 'page' : undefined}>{n.text}</a>

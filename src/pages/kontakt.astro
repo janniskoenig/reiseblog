@@ -46,7 +46,7 @@ import { url } from '../lib';
       const r = await fetch('https://api.web3forms.com/submit', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
-        body: JSON.stringify({ ...daten, access_key: form.dataset.key, subject: 'Neue Nachricht über den Reiseblog', from_name: 'Reiseblog' }),
+        body: JSON.stringify({ ...daten, access_key: form.dataset.key, subject: 'Neue Nachricht über Jannis Outdoor-Reisen', from_name: 'Jannis Outdoor-Reisen' }),
       });
       const j = await r.json();
       if (!r.ok || !j.success) throw new Error(j.message);

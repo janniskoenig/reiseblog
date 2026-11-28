@@ -1,0 +1,10 @@
+# Cloudflare Pages: Browser dürfen Dateien zwischenspeichern (schnellerer Seitenaufbau beim
+# zweiten Besuch). Fotos und Videos 7 Tage; wer ein Foto unter gleichem Namen ersetzt,
+# sieht die neue Version bei Besuchern also evtl. erst nach einigen Tagen.
+/bilder/*
+  Cache-Control: public, max-age=604800
+/videos/*
+  Cache-Control: public, max-age=604800
+# Von Astro erzeugte Dateien haben eine Prüfsumme im Namen und ändern sich nie.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
