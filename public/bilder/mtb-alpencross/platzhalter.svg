@@ -1,6 +1,0 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1000" width="1500" height="1000">
-<rect width="1500" height="1000" fill="#e9e4dc"/>
-<path d="M0 760 L330 430 L520 610 L780 300 L1080 640 L1250 500 L1500 720 L1500 1000 L0 1000 Z" fill="#d6cdbf"/>
-<path d="M0 860 L420 640 L700 800 L1000 600 L1500 860 L1500 1000 L0 1000 Z" fill="#c9bead"/>
-<text x="750" y="520" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="64" font-weight="600" fill="#8a7b66">Foto folgt</text>
-</svg>

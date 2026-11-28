@@ -173,6 +173,59 @@ td .luecke{margin:0;padding:.3rem .5rem;font-size:.88rem;white-space:normal}
 .etappe-zahlen span{white-space:nowrap}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .luecke{border-color:#a8703c;background:rgba(224,151,90,.08)}}
 :root[data-theme="dark"] .luecke{border-color:#a8703c;background:rgba(224,151,90,.08)}
+/* Fotos: Hoch-/Querformat je Gerät (wie Alta Via) */
+.story-media.lightbox-container { cursor: zoom-in; }
+.story-img.quer { object-fit: cover; }
+.story-img.hoch { object-fit: contain; background: #000; }
+@media (max-width: 799px) { .tagstory .story-media { height: 40vh; } }
+@media (min-width: 800px) {
+  .story-img.hoch { object-fit: cover; }
+  .story-img.quer { object-fit: contain; background: #000; }
+}
+.tagstory .story-section.pic { min-height: 55vh; }
+.tagstory .story-section:last-child { padding-bottom: 8vh; }
+figure.foto { margin: 0; }
+.bu-unter { margin: .45rem 0 0; font-size: .82rem; line-height: 1.45; color: var(--muted); text-align: left; }
+.bu-drauf { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.6rem .8rem .55rem; color: #fff;
+  font-size: .78rem; line-height: 1.4; background: linear-gradient(transparent, rgba(0,0,0,.6));
+  text-shadow: 0 1px 3px rgba(0,0,0,.6); pointer-events: none; }
+.lightbox-overlay { flex-direction: column; gap: .6rem; }
+.lightbox-full { max-height: calc(100% - 3rem); }
+.lightbox-bu { color: #ddd; font-size: .85rem; text-align: center; max-width: 40rem; }
+/* Hochformat am Handy (Wunsch Jannis 28.11.2026): nicht im Streifen, sondern als Vollbild, das stehen bleibt;
+   nur der Textkasten scrollt darüber. Am Desktop bleibt es in der linken Spalte. */
+.vollbild, .vollbild-luft { display: none; }
+@media (max-width: 799px) {
+  .tagstory .story-img.hoch { display: none; }
+  .tagstory.nurhoch .story-media { display: none; }
+  .tagstory .story-section.hochbild { position: relative; z-index: 4; padding: 0; background: #000; min-height: 0; }
+  .hochbild .vollbild { display: block; position: -webkit-sticky; position: sticky; top: 0; height: 100vh; height: 100svh; margin: 0; }
+  .hochbild .vollbild img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+  .hochbild .vollbild .bu-drauf { padding-bottom: max(.8rem, env(safe-area-inset-bottom, 0px)); }
+  .hochbild .vollbild-text { position: relative; margin: 0 1rem; padding: 1.1rem 1.25rem 1.2rem;
+    background: rgba(18,17,15,.78); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+    border-radius: 12px; color: #f3f1ec; }
+  .hochbild .vollbild-luft { display: block; height: 55vh; height: 55svh; }
+  .story-section.pic.hochbild .vollbild-luft { height: 35vh; height: 35svh; }
+  .hochbild .vollbild-text h3 { color: #f2b47a; }
+  .hochbild .vollbild-text p, .hochbild .vollbild-text .etappe-zahlen { color: #f3f1ec; }
+  .hochbild .vollbild-text > :last-child { margin-bottom: 0; }
+}
+/* Titelbild im Hochformat: Desktop Foto neben Titel und Einleitung, Handy Foto als Vollbild, Titel darunter */
+.hero-hoch { max-width: 64rem; padding: 1.5rem 1.5rem 2rem; display: grid; gap: 1rem 2.5rem; align-items: center; }
+.hero-hoch .hero-img { display: block; width: 100%; height: auto; max-height: none; aspect-ratio: var(--ar); object-fit: cover; margin: 0; cursor: zoom-in; }
+.hero-hoch .posttitle { padding: 0; margin: 0 0 1rem; max-width: none; }
+@media (min-width: 800px) {
+  .hero-hoch { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .hero-hoch .hero-img { max-height: 85vh; border-radius: 10px; }
+}
+@media (max-width: 799px) {
+  .hero-hoch { padding: 0 0 1.5rem; }
+  .hero-hoch .hero-img { border-radius: 0; max-height: 100svh; }
+  .hero-hoch .bu-unter { padding: 0 1.5rem; }
+  .hero-hoch .hero-inner { padding: 1rem 1.5rem 0; }
+}
+.leaflet-popup-content .huette-img { display: block; width: 100%; height: 110px; object-fit: cover; border-radius: 6px; margin-bottom: .4rem; }
 </style>
 </head>
 <body>
@@ -224,7 +277,7 @@ td .luecke{margin:0;padding:.3rem .5rem;font-size:.88rem;white-space:normal}
 </tbody></table></div>
 <div class="luecke"><strong>Platzhalter:</strong> Hinweise je Unterkunft: Lage, Zimmer, Essen, Radkeller, was gut oder weniger gut war.</div></section>
 <section class="plain"><h2>Einkehr unterwegs</h2><p>Unterwegs gab es meist genug Möglichkeiten zum Einkehren.</p></section>
-<section class="plain"><h2>Noch zu ergänzen</h2><div class="luecke"><ul><li>Tag 2: Der Blindseetrail liegt am Fernpass, also auf der Etappe Heiterwang → Landeck. Passt das?</li><li>Tag 8: Ging es über den Passo Bregn de l’Ors? Der höchste Punkt liegt laut GPS bei ca. 1.860 m.</li><li>Kais Bremse: auf den letzten Kilometern welcher Etappe?</li><li>Texte: Stichpunkte zu Tag 6 und 7 und gern mehr zu jedem Tag (Landschaft, Wetter, Essen, Unterkünfte)</li><li>Fotos: Titelbild und Bilder je Tag</li></ul></div></section>
+<section class="plain"><h2>Noch zu ergänzen</h2><div class="luecke"><ul><li>Tag 8: Ging es über den Passo Bregn de l’Ors? Der höchste Punkt liegt laut GPS bei ca. 1.860 m.</li><li>Kais Bremse: auf den letzten Kilometern welcher Etappe?</li><li>Texte: Stichpunkte zu Tag 6 und 7 und gern mehr zu jedem Tag (Landschaft, Wetter, Essen, Unterkünfte)</li></ul></div></section>
 </article>
 <footer class="blog-foot"><a href="/">Reiseblog</a> · <a href="/impressum/">Impressum</a> · <a href="/datenschutz/">Datenschutz</a></footer>
 

@@ -21,6 +21,7 @@ Aufruf: python3 scripts/alpencross-bauen.py
 """
 import html, json, re
 from pathlib import Path
+from PIL import Image
 
 ROOT = Path(__file__).resolve().parent.parent
 SLUG = 'mtb-alpencross'
@@ -32,7 +33,6 @@ PROFIL = json.loads((ROOT / 'scripts' / 'daten' / 'alpencross-hoehenprofil.json'
 HOECHSTE = json.loads((ROOT / 'scripts' / 'daten' / 'alpencross-hoechste-punkte.json').read_text())
 THUNDERFOREST_KEY = 'c4727ce21bbf4fbd8633df99582a9e88'
 KARTENSTIL = 'landscape'
-PLATZHALTER = f'/bilder/{SLUG}/platzhalter.svg'
 # Solange Texte und Fotos fehlen: nicht von Suchmaschinen indexieren lassen
 ENTWURF = True
 
@@ -85,6 +85,7 @@ TEXTE = {
         'zu der auch der Schweizerische Nationalpark gehört.'],
     5: ['Unterkunft war die entlegene Hütte La Baita in einer pittoresken Landschaft.'],
     8: ['Auf dem Weg zum Gardasee und am See selbst war das mediterrane Flair deutlich zu spüren.'],
+    9: ['Ruhetag am Gardasee: Mittags waren wir am Lago di Ledro. Am Abend war in der Ferne ein Waldbrand zu sehen.'],
     10: ['Der letzte Tag war keine richtige Etappe mehr, nur noch die Fahrt vom Gardasee zum Bahnhof in '
          'Rovereto. Von dort ging es mit dem Fernverkehrszug samt Rad nach Hause.'],
 }
@@ -101,12 +102,75 @@ FAZIT = 'Eine tolle Tour und Erfahrung mit schönen Trails. Ich wäre gerne noch
 
 # Offene Fragen (erscheinen unten in Zahlen & Fakten unter „Noch zu ergänzen“)
 OFFEN = [
-    'Tag 2: Der Blindseetrail liegt am Fernpass, also auf der Etappe Heiterwang → Landeck. Passt das?',
     'Tag 8: Ging es über den Passo Bregn de l’Ors? Der höchste Punkt liegt laut GPS bei ca. 1.860 m.',
     'Kais Bremse: auf den letzten Kilometern welcher Etappe?',
     'Texte: Stichpunkte zu Tag 6 und 7 und gern mehr zu jedem Tag (Landschaft, Wetter, Essen, Unterkünfte)',
-    'Fotos: Titelbild und Bilder je Tag',
 ]
+
+# --------------------------------------------------------------------------- Fotos
+# Auswahl und Bildunterschriften von Jannis (28.11.2026), je Tag in Aufnahme-Reihenfolge.
+# Dateien: bilder-original/mtb-alpencross/ (nicht im Repo) → npm run bilder → public/bilder/mtb-alpencross/
+# (verkleinert, ohne EXIF/GPS). „geteilt-…“ = von Kai geteilte Fotos. Kai ist mit erkennbaren Fotos einverstanden.
+# Eintrag: (Datei, Bildunterschrift, Absatz) – Absatz = Index in TEXTE[tag], der neben diesem Foto steht.
+# Das erste Foto eines Tages trägt immer die Tagesüberschrift.
+BILD = f'/bilder/{SLUG}/'
+TITELBILD = ('geteilt-1703fca4', 'Angekommen im Gardasee')
+FOTOS = {
+    1: [('img-4141', 'Schloss Neuschwanstein mit der Marienbrücke', None),
+        ('img-4143', 'Auf dem Weg Richtung Plansee', None),
+        ('img-4147', 'Erste Pause am Plansee', 0),
+        ('img-4169', 'Auf dem Uferweg hoch über dem Plansee', None),
+        ('img-4177', 'Auf dem Uferweg am Plansee', None)],
+    2: [('img-4208', 'Morgennebel auf dem Weg Richtung Ehrwald', None),
+        ('img-4217', 'Einstieg in den Blindseetrail', 0),
+        ('img-4224', 'Blick vom Blindseetrail auf den Blindsee', None),
+        ('img-4231', 'Rastbank am Blindseetrail', None)],
+    3: [('img-4264', 'Morgen am Klostergut Kronburg', None),
+        ('img-4268', 'Pause oberhalb des Paznauntals', None),
+        ('img-4270', 'An der Trisanna im Paznaun', None),
+        ('img-4272', 'Die Trisanna bei Ischgl', None)],
+    4: [('img-4279', 'Morgens im Fimbatal', 0),
+        ('img-4286', 'Schiebepassage kurz vor dem Fimbapass', None),
+        ('img-4289', 'Auf dem Fimbapass Trail', None),
+        ('img-4293', 'Scuol mit der Kirche über dem Inn', None),
+        ('img-4298', 'Im Val S-charl', 1)],
+    5: [('img-4321', 'Bach auf dem Weg zum Döss Radond', None),
+        ('img-4336', 'Im Val Mora', None),
+        ('img-4347', 'Die Serpentinen der Scale di Fraele', None),
+        ('img-4358', 'Almsiedlung im Val Grosina', None),
+        ('img-4368', 'Willkommen an der Hütte La Baita', 0),
+        ('img-4378', 'Abendspaziergang an der Hütte La Baita', None),
+        ('img-4390', 'Die Hütte La Baita am Abend', None)],
+    6: [('img-4399', 'See unterhalb des Passo di Gavia', None),
+        ('img-4403', 'Trail hinunter Richtung Pezzo', None),
+        ('img-4404', 'Trail hinunter Richtung Pezzo', None),
+        ('img-4406', 'Alm auf dem Weg nach Pezzo', None),
+        ('geteilt-3f14a706', 'Trail hinunter Richtung Pezzo', None)],
+    7: [('img-4425', 'Rückblick ins Tal oberhalb von Pezzo', None),
+        ('img-4431', 'Steinmänner am Montozzo', None),
+        ('img-4432', 'Abfahrt mit Blick auf den Stausee', None),
+        ('img-4435', 'Trail hinunter zum Stausee', None),
+        ('img-4442', 'Erster Blick auf die Brenta', None),
+        ('img-4443', 'Hinweis auf Braunbären', None),
+        ('img-4466', 'Abend am Rifugio Vallesinella', None)],
+    8: [('img-4477', 'Wasserfall bei Vallesinella', None),
+        ('img-4478', 'Morgens in den Brenta-Dolomiten', None),
+        ('img-4487', 'Pause am Lago di Valagola', None),
+        ('img-4513', 'Lago di Tenno', 0),
+        ('img-4524', 'Angekommen: am Hafen von Riva del Garda', None),
+        ('img-4532', 'Abend mit Blick auf den Gardasee', None),
+        ('geteilt-1703fca4', 'Angekommen im Gardasee', None)],
+    9: [('img-4597', 'Pizza am Ufer in Torbole', 0)],
+}
+# Unterkunft auf der Karte → Foto (nur wo eins von der Unterkunft dabei ist)
+UNTERKUNFT_FOTO = {2: 'img-4264', 5: 'img-4390', 7: 'img-4466'}
+
+def bild(name):
+    return f'{BILD}{name}.jpg'
+
+def art(name):
+    w, h = Image.open(ROOT / 'public' / bild(name).lstrip('/')).size
+    return 'quer' if w / h > 1.05 else 'hoch'
 
 # ---------------------------------------------------------------------------
 
@@ -146,6 +210,27 @@ assert 'lightbox-overlay' in STORY_JS and 'routemap-leaflet' in STORY_JS
 # Kartenteil der Vorlage abschneiden, die Karte baut dieses Skript selbst
 STORY_JS = STORY_JS[:STORY_JS.index('  // interactive route map')] + '})();\n'
 
+def _ersetze(js, alt, neu):
+    if neu in js:  # Vorlage hat es schon (Alta-Via-Fotos eingebaut)
+        return js
+    assert js.count(alt) == 1, alt[:60]
+    return js.replace(alt, neu)
+# Am Handy bleibt bei Hochformat-Abschnitten das Querformat im Streifen (data-unit-mobil)
+STORY_JS = _ersetze(STORY_JS, '      var unit = activeSection.getAttribute("data-unit");\n',
+    '      var unit = (window.innerWidth < 800 && activeSection.getAttribute("data-unit-mobil")) || activeSection.getAttribute("data-unit");\n')
+# Streifen-Unterschrift = Unterschrift des aktiven Bildes
+STORY_JS = _ersetze(STORY_JS, '        var capText = activeSection.getAttribute("data-caption");\n',
+    '        var aktivBild = story.querySelector(\'.story-img[data-unit="\' + unit + \'"]\');\n'
+    '        var capText = aktivBild ? aktivBild.getAttribute("alt") : activeSection.getAttribute("data-caption");\n')
+# Lightbox zeigt die Bildunterschrift
+STORY_JS = _ersetze(STORY_JS, "overlay.innerHTML = '<img loading=\"lazy\" class=\"lightbox-full\">';",
+    "overlay.innerHTML = '<img loading=\"lazy\" class=\"lightbox-full\"><div class=\"lightbox-bu\"></div>';")
+STORY_JS = _ersetze(STORY_JS, '      full.src = img.tagName === "IMG" ? img.src : img.getAttribute("data-full");\n',
+    '      full.src = img.tagName === "IMG" ? img.src : img.getAttribute("data-full");\n'
+    '      overlay.querySelector(".lightbox-bu").textContent = img.getAttribute("alt") || "";\n')
+STORY_JS = _ersetze(STORY_JS, '      if (best) { full.src = best.src; overlay.classList.add("open"); }',
+    '      if (best) { full.src = best.src; overlay.querySelector(".lightbox-bu").textContent = best.getAttribute("alt") || ""; overlay.classList.add("open"); }')
+
 ZUSATZ_CSS = """<style>
 .luecke{border:1.5px dashed #c98a4b;background:rgba(217,72,15,.05);color:inherit;padding:.7rem .9rem;border-radius:8px;font-size:.93rem;margin:.8rem 0}
 .luecke strong{color:#b5651d}
@@ -157,6 +242,59 @@ td .luecke{margin:0;padding:.3rem .5rem;font-size:.88rem;white-space:normal}
 .etappe-zahlen span{white-space:nowrap}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .luecke{border-color:#a8703c;background:rgba(224,151,90,.08)}}
 :root[data-theme="dark"] .luecke{border-color:#a8703c;background:rgba(224,151,90,.08)}
+/* Fotos: Hoch-/Querformat je Gerät (wie Alta Via) */
+.story-media.lightbox-container { cursor: zoom-in; }
+.story-img.quer { object-fit: cover; }
+.story-img.hoch { object-fit: contain; background: #000; }
+@media (max-width: 799px) { .tagstory .story-media { height: 40vh; } }
+@media (min-width: 800px) {
+  .story-img.hoch { object-fit: cover; }
+  .story-img.quer { object-fit: contain; background: #000; }
+}
+.tagstory .story-section.pic { min-height: 55vh; }
+.tagstory .story-section:last-child { padding-bottom: 8vh; }
+figure.foto { margin: 0; }
+.bu-unter { margin: .45rem 0 0; font-size: .82rem; line-height: 1.45; color: var(--muted); text-align: left; }
+.bu-drauf { position: absolute; left: 0; right: 0; bottom: 0; padding: 1.6rem .8rem .55rem; color: #fff;
+  font-size: .78rem; line-height: 1.4; background: linear-gradient(transparent, rgba(0,0,0,.6));
+  text-shadow: 0 1px 3px rgba(0,0,0,.6); pointer-events: none; }
+.lightbox-overlay { flex-direction: column; gap: .6rem; }
+.lightbox-full { max-height: calc(100% - 3rem); }
+.lightbox-bu { color: #ddd; font-size: .85rem; text-align: center; max-width: 40rem; }
+/* Hochformat am Handy (Wunsch Jannis 28.11.2026): nicht im Streifen, sondern als Vollbild, das stehen bleibt;
+   nur der Textkasten scrollt darüber. Am Desktop bleibt es in der linken Spalte. */
+.vollbild, .vollbild-luft { display: none; }
+@media (max-width: 799px) {
+  .tagstory .story-img.hoch { display: none; }
+  .tagstory.nurhoch .story-media { display: none; }
+  .tagstory .story-section.hochbild { position: relative; z-index: 4; padding: 0; background: #000; min-height: 0; }
+  .hochbild .vollbild { display: block; position: -webkit-sticky; position: sticky; top: 0; height: 100vh; height: 100svh; margin: 0; }
+  .hochbild .vollbild img { display: block; width: 100%; height: 100%; object-fit: cover; cursor: zoom-in; }
+  .hochbild .vollbild .bu-drauf { padding-bottom: max(.8rem, env(safe-area-inset-bottom, 0px)); }
+  .hochbild .vollbild-text { position: relative; margin: 0 1rem; padding: 1.1rem 1.25rem 1.2rem;
+    background: rgba(18,17,15,.78); -webkit-backdrop-filter: blur(5px); backdrop-filter: blur(5px);
+    border-radius: 12px; color: #f3f1ec; }
+  .hochbild .vollbild-luft { display: block; height: 55vh; height: 55svh; }
+  .story-section.pic.hochbild .vollbild-luft { height: 35vh; height: 35svh; }
+  .hochbild .vollbild-text h3 { color: #f2b47a; }
+  .hochbild .vollbild-text p, .hochbild .vollbild-text .etappe-zahlen { color: #f3f1ec; }
+  .hochbild .vollbild-text > :last-child { margin-bottom: 0; }
+}
+/* Titelbild im Hochformat: Desktop Foto neben Titel und Einleitung, Handy Foto als Vollbild, Titel darunter */
+.hero-hoch { max-width: 64rem; padding: 1.5rem 1.5rem 2rem; display: grid; gap: 1rem 2.5rem; align-items: center; }
+.hero-hoch .hero-img { display: block; width: 100%; height: auto; max-height: none; aspect-ratio: var(--ar); object-fit: cover; margin: 0; cursor: zoom-in; }
+.hero-hoch .posttitle { padding: 0; margin: 0 0 1rem; max-width: none; }
+@media (min-width: 800px) {
+  .hero-hoch { grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); }
+  .hero-hoch .hero-img { max-height: 85vh; border-radius: 10px; }
+}
+@media (max-width: 799px) {
+  .hero-hoch { padding: 0 0 1.5rem; }
+  .hero-hoch .hero-img { border-radius: 0; max-height: 100svh; }
+  .hero-hoch .bu-unter { padding: 0 1.5rem; }
+  .hero-hoch .hero-inner { padding: 1rem 1.5rem 0; }
+}
+.leaflet-popup-content .huette-img { display: block; width: 100%; height: 110px; object-fit: cover; border-radius: 6px; margin-bottom: .4rem; }
 </style>"""
 
 KOPF_CSS = """
@@ -207,7 +345,9 @@ def stops():
         lat, lon = TRACK[u['tag'] - 1][-1]
         name = u['name'] + (f", {u['ort']}" if u['ort'] else '')
         out.append(dict(name=name, elev=f"ca. {tsd(ende_hoehe(u['tag']))} m", tag=u['tag'],
-                        day=u.get('naechte', f"Tag {u['tag']}"), lat=lat, lon=lon, img='', imgAlt=''))
+                        day=u.get('naechte', f"Tag {u['tag']}"), lat=lat, lon=lon,
+                        img=bild(UNTERKUNFT_FOTO[u['tag']]) if u['tag'] in UNTERKUNFT_FOTO else '',
+                        imgAlt=next((b for t in FOTOS.values() for n, b, _ in t if n == UNTERKUNFT_FOTO.get(u['tag'])), '')))
     return out
 
 KARTE_JS = r"""
@@ -274,16 +414,51 @@ LEGENDE = """  <div class="legend">
 
 # --------------------------------------------------------------------------- Bericht
 
-def tag_story(tag, titel, zahlen_html, inhalt_html):
-    cap = esc(titel)
+def tag_story(tag, titel, zahlen_html, platzhalter_html=''):
+    """Sticky-Story eines Tages: ein Abschnitt je Foto, Texte stehen neben dem in FOTOS genannten Foto."""
+    fotos, texte = FOTOS[tag], TEXTE.get(tag, [])
+    genutzt = sorted(a for _, _, a in fotos if a is not None)
+    assert genutzt == list(range(len(texte))), f'Tag {tag}: Absätze {genutzt}, Texte {len(texte)}'
+    arten = [art(n) for n, _, _ in fotos]
+    units = [f't{tag}-{i}' for i in range(len(fotos))]
+    def ersatz(i):  # Querformat für den Handy-Streifen neben einem Hochformat
+        vor = [units[j] for j in range(i) if arten[j] == 'quer']
+        nach = [units[j] for j in range(i + 1, len(fotos)) if arten[j] == 'quer']
+        return (vor[-1:] or nach[:1] or [None])[0]
+    imgs, secs = [], []
+    for i, (name, bu, absatz) in enumerate(fotos):
+        bu_ = esc(bu)
+        imgs.append(f'<img class="story-img {arten[i]}{" active" if i == 0 else ""}" data-unit="{units[i]}" '
+                    f'src="{bild(name)}" alt="{bu_}" loading="lazy">')
+        inhalt = ''
+        if i == 0:
+            inhalt += f'<h3>{esc(titel)}</h3>{zahlen_html}'
+        if absatz is not None:
+            inhalt += '<p>' + esc(texte[absatz]) + '</p>'
+        if i == 0:
+            inhalt += platzhalter_html
+        attr = (f' id="tag{tag}"' if i == 0 else '') + f' data-unit="{units[i]}" data-caption="{bu_}"'
+        cls = '' if inhalt else ' pic'
+        if arten[i] == 'hoch':
+            e = ersatz(i)
+            if e:
+                attr += f' data-unit-mobil="{e}"'
+            voll = (f'<figure class="vollbild"><img class="lightbox-img" src="{bild(name)}" alt="{bu_}" loading="lazy">'
+                    f'<figcaption class="bu-drauf">{bu_}</figcaption></figure>')
+            text_ = (f'<div class="vollbild-text">{inhalt}</div>' if inhalt else '') + '<div class="vollbild-luft"></div>'
+            secs.append(f'<section class="story-section{cls} hochbild"{attr}>{voll}{text_}</section>')
+        else:
+            secs.append(f'<section class="story-section{cls}"{attr}>{inhalt}</section>')
+    nurhoch = ' nurhoch' if 'quer' not in arten else ''
+    nl = '\n    '
     return f"""
-<div class="story tagstory">
+<div class="story tagstory{nurhoch}">
   <div class="story-media lightbox-container">
-    <img class="story-img quer active" data-unit="t{tag}-0" src="{PLATZHALTER}" alt="{cap} (Foto folgt)" loading="lazy">
-    <div class="story-caption">{cap}</div>
+    {''.join(imgs)}
+    <div class="story-caption">{esc(fotos[0][1])}</div>
   </div>
   <div class="story-text">
-    <section class="story-section" id="tag{tag}" data-unit="t{tag}-0" data-caption="{cap}"><h3>{cap}</h3>{zahlen_html}{inhalt_html}</section>
+    {nl.join(secs)}
   </div>
 </div>
 """
@@ -297,9 +472,10 @@ def absaetze(tag):
 
 def bericht():
     s = kopf(TITEL, BESCHREIBUNG, PFAD_BERICHT, True)
-    s += f'<h1 class="posttitle">{esc(TITEL)}</h1>\n'
-    s += (f'<section class="hero"><img class="hero-img" src="{PLATZHALTER}" alt="Titelbild folgt">'
-          f'<div class="hero-inner">{'<p>' + esc(EINLEITUNG) + '</p>'}</div></section>\n')
+    w, h = Image.open(ROOT / 'public' / bild(TITELBILD[0]).lstrip('/')).size
+    s += (f'<section class="hero hero-hoch"><figure class="foto"><img class="hero-img lightbox-img" style="--ar:{w / h:.3f}" '
+          f'src="{bild(TITELBILD[0])}" alt="{esc(TITELBILD[1])}"><figcaption class="bu-unter">{esc(TITELBILD[1])}</figcaption></figure>'
+          f'<div class="hero-inner"><h1 class="posttitle">{esc(TITEL)}</h1><p>{esc(EINLEITUNG)}</p></div></section>\n')
     s += f"""
 <section class="plain routemap-wrap">
   <h2>Die Route</h2>
@@ -313,13 +489,12 @@ def bericht():
 """
     for (tag, datum, von, nach, km, up, dn, h) in ETAPPEN:
         s += tag_story(tag, f'Tag {tag}: {von} → {nach}', etappe_zahlen(km, up, dn),
-                       absaetze(tag) + luecke('Fotos folgen.' if tag in TEXTE else 'Text und Fotos zu diesem Tag folgen.'))
-    s += tag_story(9, 'Tag 9: Am Gardasee', '', '<p>Ruhetag am Gardasee: Mittags waren wir am Lago di Ledro. Am Abend war in der Ferne ein Waldbrand zu sehen.</p>')
-    tag, datum, von, nach, km, up, dn, h = RUECKFAHRT
-    s += tag_story(10, f'Tag 10: {von} → {nach}', etappe_zahlen(km, up, dn),
-                   absaetze(10))
+                       '' if tag in TEXTE else luecke('Text zu diesem Tag folgt.'))
+    s += tag_story(9, 'Tag 9: Am Gardasee', '')
+    tag, datum, von, nach, km, up, dn, h = RUECKFAHRT  # ohne Foto
+    s += (f'<section class="plain" id="tag{tag}"><h3>Tag {tag}: {esc(von)} → {esc(nach)}</h3>'
+          f'{etappe_zahlen(km, up, dn)}{absaetze(tag)}</section>\n')
     s += f"""<section class="plain"><h2>Gesamteindruck</h2>{''.join('<p>' + esc(t) + '</p>' for t in GESAMTEINDRUCK)}</section>
-<section class="plain sub"><h3>Weitere Eindrücke</h3>{luecke('Galerie: Fotos folgen.')}</section>
 <section class="plain"><h2>Fazit</h2><p>{esc(FAZIT)}</p></section>
 
 <section class="plain crosslink">
@@ -385,18 +560,7 @@ def fakten():
     s += FUSS + '\n</body>\n</html>\n'
     return s
 
-PLATZHALTER_SVG = """<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1500 1000" width="1500" height="1000">
-<rect width="1500" height="1000" fill="#e9e4dc"/>
-<path d="M0 760 L330 430 L520 610 L780 300 L1080 640 L1250 500 L1500 720 L1500 1000 L0 1000 Z" fill="#d6cdbf"/>
-<path d="M0 860 L420 640 L700 800 L1000 600 L1500 860 L1500 1000 L0 1000 Z" fill="#c9bead"/>
-<text x="750" y="520" text-anchor="middle" font-family="system-ui,-apple-system,sans-serif" font-size="64" font-weight="600" fill="#8a7b66">Foto folgt</text>
-</svg>
-"""
-
 if __name__ == '__main__':
-    bild = ROOT / 'public' / 'bilder' / SLUG / 'platzhalter.svg'
-    bild.parent.mkdir(parents=True, exist_ok=True)
-    bild.write_text(PLATZHALTER_SVG, encoding='utf-8')
     for pfad, inhalt in ((PFAD_BERICHT, bericht()), (PFAD_FAKTEN, fakten())):
         ziel = ROOT / 'public' / pfad.strip('/') / 'index.html'
         ziel.parent.mkdir(parents=True, exist_ok=True)
