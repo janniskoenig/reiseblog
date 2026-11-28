@@ -350,6 +350,8 @@ def main():
     s = s[:g0] + kopf + ''.join(f'<img class="gallery-img lightbox-img" src="{src}" alt="Weitere Impression" loading="lazy">' for src in GALERIE) + s[g1:]
     # Titelbild (Wunsch Jannis 26.11.2026): Kamerafoto statt Handyfoto mit Personen im Fokus
     s = s.replace('/bilder/alta-via-2/titel-2af9ad.jpg', TITELBILD)
+    # Persönliche Verbindung zum Traumpfad (Jannis 28.11.2026)
+    s = einmal(s, 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt.', 'unter die Füße nahmen – ein Weg, der offensichtlich viele Menschen zusammenbringt. Spannend für uns: Im Vorjahr waren wir mit derselben Gruppe schon im Karwendel auf einem Abschnitt des Traumpfads unterwegs.')
     # Praktisches gehört nach Zahlen & Fakten, nicht in den Bericht (Jannis 27.11.2026)
     s = einmal(s, ' (Bus und Einzelfahrt mit der Seilbahn zusammen 26 € pro Person)', '')
     s = einmal(s, ' Wer am Vortag mehr Strecke schafft und es bis zum Rifugio Boè schafft – es wirkte übrigens sehr modern und gepflegt – kann früh losgehen und noch vor der ersten Gondel oben sein; das lohnt sich definitiv.', '')
