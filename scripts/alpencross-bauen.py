@@ -314,7 +314,7 @@ def bericht():
     for (tag, datum, von, nach, km, up, dn, h) in ETAPPEN:
         s += tag_story(tag, f'Tag {tag}: {von} → {nach}', etappe_zahlen(km, up, dn),
                        absaetze(tag) + luecke('Fotos folgen.' if tag in TEXTE else 'Text und Fotos zu diesem Tag folgen.'))
-    s += tag_story(9, 'Tag 9: Am Gardasee', '', '<p>Ruhetag am Gardasee.</p>' + luecke('Was habt ihr am Ruhetag gemacht?'))
+    s += tag_story(9, 'Tag 9: Am Gardasee', '', '<p>Ruhetag am Gardasee: Mittags waren wir am Lago di Ledro. Am Abend war in der Ferne ein Waldbrand zu sehen.</p>')
     tag, datum, von, nach, km, up, dn, h = RUECKFAHRT
     s += tag_story(10, f'Tag 10: {von} → {nach}', etappe_zahlen(km, up, dn),
                    absaetze(10))
